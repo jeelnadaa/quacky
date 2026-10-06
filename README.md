@@ -49,10 +49,17 @@
 
 ## 🚀 Building & Testing
 
+For detailed step-by-step instructions across Windows, macOS, and Linux, see the [Build Guide (BUILD.md)](file:///d:/quacky-app/BUILD.md).
+
+### Quick Start:
+
 ```bash
 # Run all unit tests (including strict offline manifest assertion)
 ./gradlew testDebugUnitTest
 
 # Assemble debug APK
 ./gradlew assembleDebug
+
+# Output APK location:
+# app/build/outputs/apk/debug/app-debug.apk
 ```
