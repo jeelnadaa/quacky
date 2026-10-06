@@ -262,6 +262,14 @@ fun AppNavHost(
                                     onOpenHowToUse = { activeGuideTool = tool }
                                 )
                             }
+                            ToolRegistry.COLOR_PICKER.id -> {
+                                val colorPickerViewModel: app.quacky.feature.colorpicker.presentation.ColorPickerViewModel = hiltViewModel()
+                                app.quacky.feature.colorpicker.presentation.ColorPickerScreen(
+                                    viewModel = colorPickerViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool }
+                                )
+                            }
                             else -> {
                                 ToolScaffold(
                                     tool = tool,

@@ -252,6 +252,53 @@ object GuideRegistry {
                     a11yDescription = "Shuffling teams into cards"
                 )
             )
+        ),
+        ToolRegistry.COLOR_PICKER.id to ToolGuide(
+            toolId = ToolRegistry.COLOR_PICKER.id,
+            steps = listOf(
+                TipStep(
+                    visualType = VisualType.COLOR_SOURCE,
+                    title = "Choose a source",
+                    body = "Pick colors live with the camera, or open a photo from your gallery.",
+                    a11yDescription = "Segmented toggle between camera and gallery"
+                ),
+                TipStep(
+                    visualType = VisualType.COLOR_RETICLE,
+                    title = "Place the pin exactly",
+                    body = "Tap to place the crosshair, then drag it. The magnifier shows exactly which pixel you are on.",
+                    a11yDescription = "Dragging crosshair reticle with magnifier loupe"
+                ),
+                TipStep(
+                    visualType = VisualType.COLOR_NUDGE,
+                    title = "Nudge by one pixel",
+                    body = "Use the small arrows to move the pin one pixel at a time.",
+                    a11yDescription = "Arrow pad moving reticle by 1 pixel"
+                ),
+                TipStep(
+                    visualType = VisualType.COLOR_SAMPLE,
+                    title = "Point or average?",
+                    body = "Point reads one pixel. Average blends nearby pixels, which is steadier for camera colors.",
+                    a11yDescription = "Sampling size selector chips"
+                ),
+                TipStep(
+                    visualType = VisualType.COLOR_FREEZE,
+                    title = "Freeze the camera",
+                    body = "Tap Freeze to hold the picture still, then take your time placing the pin.",
+                    a11yDescription = "Freezing camera preview into still image"
+                ),
+                TipStep(
+                    visualType = VisualType.COLOR_PALETTE,
+                    title = "Build a palette",
+                    body = "Drop up to 8 pins and save them together as a palette.",
+                    a11yDescription = "Numbered pins forming a color palette"
+                ),
+                TipStep(
+                    visualType = VisualType.COLOR_VALUES,
+                    title = "Copy the value",
+                    body = "Tap any value to copy it. Open Contrast to check if two colors are readable together.",
+                    a11yDescription = "Inspection sheet with color formats"
+                )
+            )
         )
     )
 
