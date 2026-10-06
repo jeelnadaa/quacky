@@ -299,6 +299,35 @@ object GuideRegistry {
                     a11yDescription = "Inspection sheet with color formats"
                 )
             )
+        ),
+        ToolRegistry.METADATA.id to ToolGuide(
+            toolId = ToolRegistry.METADATA.id,
+            steps = listOf(
+                TipStep(
+                    visualType = VisualType.METADATA_PICK,
+                    title = "Pick photos",
+                    body = "Choose one or many photos.",
+                    a11yDescription = "Grid of photos with selection checkmarks"
+                ),
+                TipStep(
+                    visualType = VisualType.METADATA_INSPECT,
+                    title = "See what's hidden",
+                    body = "Photos can secretly store where and when they were taken and which device took them. This is called metadata.",
+                    a11yDescription = "Photo with unfolding data tags"
+                ),
+                TipStep(
+                    visualType = VisualType.METADATA_REMOVE,
+                    title = "Choose what to remove",
+                    body = "Remove everything, only the location, or pick exactly what to remove.",
+                    a11yDescription = "Options to remove all metadata or location only"
+                ),
+                TipStep(
+                    visualType = VisualType.METADATA_CLEAN,
+                    title = "Save a clean copy",
+                    body = "Your original photo is never changed. A clean copy is saved separately, then checked to confirm the data is gone.",
+                    a11yDescription = "Original photo preserved alongside clean verified copy"
+                )
+            )
         )
     )
 

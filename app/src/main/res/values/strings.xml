@@ -135,5 +135,44 @@
     <string name="ruler_unit_inch">in</string>
     <string name="ruler_grid_toggle">Grid</string>
     <string name="ruler_flip_toggle">Flip 0</string>
+
+    <!-- Photo Metadata Viewer & Remover strings (7.7) -->
+    <string name="metadata_pick_photos">Select photos</string>
+    <string name="metadata_add_photos">Add photos</string>
+    <string name="metadata_clear">Clear selection</string>
+    <string name="metadata_privacy_score_clean">Clean</string>
+    <string name="metadata_privacy_score_meta">Contains metadata</string>
+    <string name="metadata_privacy_score_gps">Contains location</string>
+    <string name="metadata_gps_warning">Contains GPS location</string>
+    <string name="metadata_open_maps">Open in maps app</string>
+    <string name="metadata_section_location">Location</string>
+    <string name="metadata_section_device">Device</string>
+    <string name="metadata_section_capture">Capture</string>
+    <string name="metadata_section_image">Image</string>
+    <string name="metadata_section_other">Other tags</string>
+    <string name="metadata_search_tags_hint">Search tags…</string>
+    <string name="metadata_no_tags">No metadata found</string>
+    <string name="metadata_strip_all">Remove all metadata</string>
+    <string name="metadata_strip_location">Remove only location</string>
+    <string name="metadata_strip_custom">Custom</string>
+    <string name="metadata_clean_action">Clean photo</string>
+    <string name="metadata_clean_batch_action">Clean %1$d photos</string>
+    <string name="metadata_cleaning_progress">Cleaning photo %1$d of %2$d…</string>
+    <string name="metadata_cleaned_verified">Verified: no GPS data found</string>
+    <string name="metadata_cleaned_success">Clean copy saved to Pictures/Quacky/Clean</string>
+    <string name="metadata_share_cleaned">Share</string>
+    <string name="metadata_batch_summary">%1$d photos cleaned successfully</string>
+    <string name="metadata_lossless_note">Lossless strip (pixels preserved)</string>
+    <string name="metadata_reencoded_note">Re-encoded at maximum quality</string>
+
+    <!-- Metadata Guide strings (7C.4) -->
+    <string name="guide_metadata_step1_title">Pick photos</string>
+    <string name="guide_metadata_step1_body">Choose one or many photos.</string>
+    <string name="guide_metadata_step2_title">See what\'s hidden</string>
+    <string name="guide_metadata_step2_body">Photos can secretly store where and when they were taken and which device took them. This is called metadata.</string>
+    <string name="guide_metadata_step3_title">Choose what to remove</string>
+    <string name="guide_metadata_step3_body">Remove everything, only the location, or pick exactly what to remove.</string>
+    <string name="guide_metadata_step4_title">Save a clean copy</string>
+    <string name="guide_metadata_step4_body">Your original photo is never changed. A clean copy is saved separately, then checked to confirm the data is gone.</string>
 </resources>
 

@@ -84,6 +84,10 @@ fun TipVisual(
             VisualType.COIN_FLIP -> drawCoinFlipVisual(progress)
             VisualType.WHEEL_SPIN -> drawWheelSpinVisual(progress)
             VisualType.TEAM_SPLIT -> drawTeamSplitVisual(progress)
+            VisualType.METADATA_PICK -> drawMetadataPickVisual(progress)
+            VisualType.METADATA_INSPECT -> drawMetadataInspectVisual(progress)
+            VisualType.METADATA_REMOVE -> drawMetadataRemoveVisual(progress)
+            VisualType.METADATA_CLEAN -> drawMetadataCleanVisual(progress)
             else -> drawGenericTipVisual(progress)
         }
     }
@@ -402,3 +406,60 @@ private fun DrawScope.drawGenericTipVisual(progress: Float) {
     val cy = size.height / 2
     drawCircle(QuackyAccent, radius = 20f + progress * 10f, center = Offset(cx, cy), style = Stroke(2f))
 }
+
+private fun DrawScope.drawMetadataPickVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+    // Grid of 3 photo cards
+    for (i in 0..2) {
+        val x = cx - 75f + (i * 55f)
+        drawRoundRect(QuackyTextTertiary, Offset(x, cy - 25f), Size(45f, 50f), CornerRadius(6f, 6f), Stroke(2f))
+        if (i < 2 || progress > 0.5f) {
+            // Checkmark
+            drawCircle(QuackyAccent, radius = 6f, center = Offset(x + 35f, cy - 15f))
+        }
+    }
+}
+
+private fun DrawScope.drawMetadataInspectVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+    // Photo on left
+    drawRoundRect(QuackyTextSecondary, Offset(cx - 65f, cy - 30f), Size(55f, 60f), CornerRadius(6f, 6f), Stroke(2f))
+    // Data tags unfolding on right
+    val tagAnim = (progress * 3).toInt().coerceIn(0, 2)
+    val tags = listOf("GPS 37°N", "ISO 100", "Pixel 8")
+    for (i in 0..tagAnim) {
+        val y = cy - 25f + (i * 20f)
+        drawRoundRect(QuackyOutline, Offset(cx + 5f, y), Size(65f, 16f), CornerRadius(4f, 4f))
+        drawLine(QuackyTextPrimary, Offset(cx + 12f, y + 8f), Offset(cx + 45f, y + 8f), 2f)
+    }
+}
+
+private fun DrawScope.drawMetadataRemoveVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+    // 3 chips: All, Location, Custom
+    val chipNames = listOf("All", "Location", "Custom")
+    for (i in 0..2) {
+        val x = cx - 85f + (i * 60f)
+        drawRoundRect(QuackyOutline, Offset(x, cy - 14f), Size(52f, 28f), CornerRadius(14f, 14f))
+        // Strikethrough line on location chip (index 1)
+        if (i == 1 && progress > 0.3f) {
+            drawLine(QuackyAccent, Offset(x + 8f, cy), Offset(x + 44f, cy), 2f)
+        }
+    }
+}
+
+private fun DrawScope.drawMetadataCleanVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+    // Original photo
+    drawRoundRect(QuackyTextTertiary, Offset(cx - 60f, cy - 25f), Size(45f, 50f), CornerRadius(6f, 6f), Stroke(2f))
+    // Arrow
+    drawLine(QuackyTextSecondary, Offset(cx - 5f, cy), Offset(cx + 15f, cy), 2f)
+    // Clean photo with shield
+    drawRoundRect(QuackyAccent, Offset(cx + 25f, cy - 25f), Size(45f, 50f), CornerRadius(6f, 6f), Stroke(2f))
+    drawCircle(QuackyAccent, radius = 6f, center = Offset(cx + 47f, cy))
+}
+

@@ -270,6 +270,16 @@ fun AppNavHost(
                                     onOpenHowToUse = { activeGuideTool = tool }
                                 )
                             }
+                            ToolRegistry.METADATA.id -> {
+                                val metadataViewModel: app.quacky.feature.metadata.presentation.MetadataViewModel = hiltViewModel()
+                                app.quacky.feature.metadata.presentation.MetadataScreen(
+                                    viewModel = metadataViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool },
+                                    isPinned = pinnedToolIds.contains(tool.id),
+                                    onTogglePin = { homeViewModel.togglePin(tool.id) }
+                                )
+                            }
                             else -> {
                                 ToolScaffold(
                                     tool = tool,
