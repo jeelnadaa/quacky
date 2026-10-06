@@ -92,6 +92,10 @@ fun TipVisual(
             VisualType.COMPRESS_SLIDER -> drawCompressSliderVisual(progress)
             VisualType.COMPRESS_SPLIT -> drawCompressSplitVisual(progress)
             VisualType.COMPRESS_SAVE -> drawCompressSaveVisual(progress)
+            VisualType.AREA_TABS -> drawAreaTabsVisual(progress)
+            VisualType.AREA_SHAPE -> drawAreaShapeVisual(progress)
+            VisualType.AREA_RESULTS -> drawAreaResultsVisual(progress)
+            VisualType.AREA_ESTIMATE -> drawAreaEstimateVisual(progress)
             else -> drawGenericTipVisual(progress)
         }
     }
@@ -513,5 +517,44 @@ private fun DrawScope.drawCompressSaveVisual(progress: Float) {
         drawCircle(QuackyAccent, radius = 8f, center = Offset(cx + 40f, cy))
     }
 }
+
+private fun DrawScope.drawAreaTabsVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+    // Two tab boxes
+    val activeTab = if (progress < 0.5f) 0 else 1
+    drawRoundRect(if (activeTab == 0) QuackyAccent else QuackySurface, Offset(cx - 70f, cy - 18f), Size(65f, 36f), CornerRadius(8f, 8f))
+    drawRoundRect(if (activeTab == 1) QuackyAccent else QuackySurface, Offset(cx + 5f, cy - 18f), Size(65f, 36f), CornerRadius(8f, 8f))
+}
+
+private fun DrawScope.drawAreaShapeVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+    // Labeled rectangle
+    drawRect(QuackyOutline, Offset(cx - 50f, cy - 25f), Size(100f, 50f), style = Stroke(2f))
+    // Side 'a' highlight
+    val aColor = if (progress > 0.3f) QuackyAccent else QuackyTextSecondary
+    drawLine(aColor, Offset(cx - 50f, cy - 25f), Offset(cx + 50f, cy - 25f), 3.5f)
+}
+
+private fun DrawScope.drawAreaResultsVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+    // Card with expanding units
+    val h = 40f + (progress * 30f)
+    drawRoundRect(QuackySurface, Offset(cx - 60f, cy - h / 2), Size(120f, h), CornerRadius(8f, 8f))
+    drawRoundRect(QuackyOutline, Offset(cx - 60f, cy - h / 2), Size(120f, h), CornerRadius(8f, 8f), Stroke(1.5f))
+}
+
+private fun DrawScope.drawAreaEstimateVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+    // Wall rectangle with door cut out
+    drawRect(QuackyTextSecondary, Offset(cx - 55f, cy - 30f), Size(80f, 60f), style = Stroke(2f))
+    drawRect(QuackyOutline, Offset(cx - 25f, cy), Size(20f, 30f))
+    // Bucket/number
+    drawCircle(QuackyAccent, radius = 10f, center = Offset(cx + 45f, cy))
+}
+
 
 

@@ -198,6 +198,16 @@ fun AppNavHost(
                                     onOpenHowToUse = { activeGuideTool = tool }
                                 )
                             }
+                            ToolRegistry.AREA_VOLUME.id -> {
+                                val areaVolumeViewModel: app.quacky.feature.areavolume.presentation.AreaVolumeViewModel = hiltViewModel()
+                                app.quacky.feature.areavolume.presentation.AreaVolumeScreen(
+                                    viewModel = areaVolumeViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool },
+                                    isPinned = pinnedToolIds.contains(tool.id),
+                                    onTogglePin = { homeViewModel.togglePin(tool.id) }
+                                )
+                            }
                             ToolRegistry.DICE.id -> {
                                 val diceViewModel: app.quacky.feature.random.dice.DiceViewModel = hiltViewModel()
                                 app.quacky.feature.random.dice.DiceScreen(

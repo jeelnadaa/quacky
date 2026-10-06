@@ -138,6 +138,35 @@ object GuideRegistry {
                 )
             )
         ),
+        ToolRegistry.AREA_VOLUME.id to ToolGuide(
+            toolId = ToolRegistry.AREA_VOLUME.id,
+            steps = listOf(
+                TipStep(
+                    visualType = VisualType.AREA_TABS,
+                    title = "Choose Area or Volume",
+                    body = "Pick Area for flat surfaces and Volume for 3D shapes, then choose the shape.",
+                    a11yDescription = "Toggling Area and Volume tabs with shape selector"
+                ),
+                TipStep(
+                    visualType = VisualType.AREA_SHAPE,
+                    title = "Enter the measurements",
+                    body = "Each field matches a labeled side in the picture. Choose a unit for each one.",
+                    a11yDescription = "Diagram highlighting labeled dimensions as fields are entered"
+                ),
+                TipStep(
+                    visualType = VisualType.AREA_RESULTS,
+                    title = "Read the results",
+                    body = "See the answer instantly. Tap Show all units to see it in other units.",
+                    a11yDescription = "Result card expanding into full unit conversion breakdown"
+                ),
+                TipStep(
+                    visualType = VisualType.AREA_ESTIMATE,
+                    title = "Estimate materials",
+                    body = "Use the Estimate tab to work out paint, tiles, concrete or water tank size.",
+                    a11yDescription = "Estimator calculation for paint, tiles, concrete and tanks"
+                )
+            )
+        ),
         ToolRegistry.DICE.id to ToolGuide(
             toolId = ToolRegistry.DICE.id,
             steps = listOf(

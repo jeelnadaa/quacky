@@ -206,5 +206,50 @@
     <string name="guide_compress_step3_body">Drag the divider to compare quality. The new file size is shown right away.</string>
     <string name="guide_compress_step4_title">Save it</string>
     <string name="guide_compress_step4_body">Save or share the smaller file. Your original is kept.</string>
+
+    <!-- Area & Volume strings (7.5) -->
+    <string name="areavolume_tab_area">Area</string>
+    <string name="areavolume_tab_volume">Volume</string>
+    <string name="areavolume_tab_estimate">Estimate</string>
+    <string name="areavolume_shape_rectangle">Rectangle</string>
+    <string name="areavolume_shape_square">Square</string>
+    <string name="areavolume_shape_triangle">Triangle</string>
+    <string name="areavolume_shape_circle">Circle</string>
+    <string name="areavolume_shape_semicircle">Semicircle</string>
+    <string name="areavolume_shape_trapezoid">Trapezoid</string>
+    <string name="areavolume_shape_parallelogram">Parallelogram</string>
+    <string name="areavolume_shape_ellipse">Ellipse</string>
+    <string name="areavolume_shape_ring">Ring</string>
+    <string name="areavolume_shape_regular_polygon">Regular Polygon</string>
+    <string name="areavolume_shape_irregular_polygon">Irregular Polygon</string>
+    <string name="areavolume_shape_cube">Cube</string>
+    <string name="areavolume_shape_cuboid">Cuboid</string>
+    <string name="areavolume_shape_cylinder">Cylinder</string>
+    <string name="areavolume_shape_cone">Cone</string>
+    <string name="areavolume_shape_sphere">Sphere</string>
+    <string name="areavolume_shape_hemisphere">Hemisphere</string>
+    <string name="areavolume_shape_pyramid">Pyramid</string>
+    <string name="areavolume_shape_prism">Triangular Prism</string>
+    <string name="areavolume_shape_capsule">Capsule</string>
+    <string name="areavolume_estimator_paint">Paint</string>
+    <string name="areavolume_estimator_tile">Tiles</string>
+    <string name="areavolume_estimator_concrete">Concrete</string>
+    <string name="areavolume_estimator_tank">Water Tank</string>
+    <string name="areavolume_use_ar">Use AR measurement</string>
+    <string name="areavolume_show_all_units">Show all units</string>
+    <string name="areavolume_hide_all_units">Hide all units</string>
+    <string name="areavolume_save_calc">Save calculation</string>
+
+    <!-- Area & Volume Guide strings (7C.4) -->
+    <string name="guide_areavolume_step1_title">Choose Area or Volume</string>
+    <string name="guide_areavolume_step1_body">Pick Area for flat surfaces and Volume for 3D shapes, then choose the shape.</string>
+    <string name="guide_areavolume_step2_title">Enter the measurements</string>
+    <string name="guide_areavolume_step2_body">Each field matches a labeled side in the picture. Choose a unit for each one.</string>
+    <string name="guide_areavolume_step3_title">Read the results</string>
+    <string name="guide_areavolume_step3_body">See the answer instantly. Tap Show all units to see it in other units.</string>
+    <string name="guide_areavolume_step4_title">Estimate materials</string>
+    <string name="guide_areavolume_step4_body">Use the Estimate tab to work out paint, tiles, concrete or water tank size.</string>
+    <string name="guide_areavolume_step5_title">Use your AR measurement</string>
+    <string name="guide_areavolume_step5_body">Tap Use AR measurement to fill a field from a saved AR Ruler result.</string>
 </resources>
 
