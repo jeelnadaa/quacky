@@ -174,5 +174,37 @@
     <string name="guide_metadata_step3_body">Remove everything, only the location, or pick exactly what to remove.</string>
     <string name="guide_metadata_step4_title">Save a clean copy</string>
     <string name="guide_metadata_step4_body">Your original photo is never changed. A clean copy is saved separately, then checked to confirm the data is gone.</string>
+
+    <!-- Compressor strings (7.8) -->
+    <string name="compressor_pick_files">Select files</string>
+    <string name="compressor_mode_quality">Quality slider</string>
+    <string name="compressor_mode_target">Target file size</string>
+    <string name="compressor_target_size_hint">Target size in KB (e.g. 200)</string>
+    <string name="compressor_preset_small">Small (40%)</string>
+    <string name="compressor_preset_balanced">Balanced (70%)</string>
+    <string name="compressor_preset_high">High (85%)</string>
+    <string name="compressor_strip_meta">Strip metadata</string>
+    <string name="compressor_keep_dims">Keep original dimensions</string>
+    <string name="compressor_pdf_dpi">Render resolution (DPI)</string>
+    <string name="compressor_pdf_text_note">Text becomes image-based (not selectable) when compressed this way.</string>
+    <string name="compressor_action_compress">Compress file</string>
+    <string name="compressor_action_batch">Compress %1$d files</string>
+    <string name="compressor_saved_note">Saved %1$d%% (%2$s → %3$s)</string>
+    <string name="compressor_not_smaller_note">Could not compress smaller than original without severe degradation. Original preserved.</string>
+    <string name="compressor_memory_warning">This file is too large to process safely on this phone.</string>
+    <string name="compressor_save_file">Save</string>
+    <string name="compressor_share_file">Share</string>
+    <string name="compressor_split_original">Original</string>
+    <string name="compressor_split_compressed">Compressed</string>
+
+    <!-- Compressor Guide strings (7C.4) -->
+    <string name="guide_compress_step1_title">Pick a file</string>
+    <string name="guide_compress_step1_body">Choose JPG, PNG, WebP images, or a PDF.</string>
+    <string name="guide_compress_step2_title">Choose how to shrink it</string>
+    <string name="guide_compress_step2_body">Drag the quality slider, or type a target size like 200 KB and let the app find the settings.</string>
+    <string name="guide_compress_step3_title">Compare before and after</string>
+    <string name="guide_compress_step3_body">Drag the divider to compare quality. The new file size is shown right away.</string>
+    <string name="guide_compress_step4_title">Save it</string>
+    <string name="guide_compress_step4_body">Save or share the smaller file. Your original is kept.</string>
 </resources>
 

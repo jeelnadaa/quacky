@@ -328,6 +328,35 @@ object GuideRegistry {
                     a11yDescription = "Original photo preserved alongside clean verified copy"
                 )
             )
+        ),
+        ToolRegistry.COMPRESSOR.id to ToolGuide(
+            toolId = ToolRegistry.COMPRESSOR.id,
+            steps = listOf(
+                TipStep(
+                    visualType = VisualType.COMPRESS_PICK,
+                    title = "Pick a file",
+                    body = "Choose JPG, PNG, WebP images, or a PDF.",
+                    a11yDescription = "Image and PDF file types icon selection"
+                ),
+                TipStep(
+                    visualType = VisualType.COMPRESS_SLIDER,
+                    title = "Choose how to shrink it",
+                    body = "Drag the quality slider, or type a target size like 200 KB and let the app find the settings.",
+                    a11yDescription = "Quality slider and target file size input"
+                ),
+                TipStep(
+                    visualType = VisualType.COMPRESS_SPLIT,
+                    title = "Compare before and after",
+                    body = "Drag the divider to compare quality. The new file size is shown right away.",
+                    a11yDescription = "Draggable split comparison slider"
+                ),
+                TipStep(
+                    visualType = VisualType.COMPRESS_SAVE,
+                    title = "Save it",
+                    body = "Save or share the smaller file. Your original is kept.",
+                    a11yDescription = "Result card showing percentage saved with save and share actions"
+                )
+            )
         )
     )
 

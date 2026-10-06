@@ -23,3 +23,12 @@
 ## ADR 006: Brand Vector Asset Pipeline
 - **Decision:** The Quacky mascot is hand-authored as a geometric SVG vector (`quacky_mark.svg`), adaptive vector drawables (`ic_launcher_foreground.xml`, `ic_launcher_background.xml`, `ic_launcher_monochrome.xml`), and a native Compose Canvas composable (`QuackyMark`).
 - **Rationale:** Guarantees crisp resolution at any scale, support for Android 13+ themed icons, and ultra-lightweight rendering across splash, empty states, and Easter egg animations.
+
+## ADR 007: Lossless Metadata Stripping & Zero-Value Privacy History
+- **Decision:** JPEG metadata is removed at the byte level by stripping APP1 (EXIF/XMP) and APP13 (IPTC) markers without re-encoding DCT coefficients, preserving pixel quality. Orientation rotation is applied to pixels only when orientation tags would otherwise be lost. History entries strictly log file names and category summaries—never metadata values.
+- **Rationale:** Adheres strictly to Sections 7.7 and 8 privacy specifications while preserving image fidelity.
+
+## ADR 008: Memory-Safe Compression & Binary Search Sizing
+- **Decision:** Target-file-size compression utilizes an iterative binary search on quality, followed by proportional dimension downscaling if needed. PDF compression processes pages sequentially using `PdfRenderer` and `PdfDocument` with immediate bitmap recycling to prevent out-of-memory errors on large documents.
+- **Rationale:** Adheres to Section 5A.5 runtime honesty and prevents OOM crashes on memory-constrained devices.
+

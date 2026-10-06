@@ -280,6 +280,16 @@ fun AppNavHost(
                                     onTogglePin = { homeViewModel.togglePin(tool.id) }
                                 )
                             }
+                            ToolRegistry.COMPRESSOR.id -> {
+                                val compressorViewModel: app.quacky.feature.compressor.presentation.CompressorViewModel = hiltViewModel()
+                                app.quacky.feature.compressor.presentation.CompressorScreen(
+                                    viewModel = compressorViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool },
+                                    isPinned = pinnedToolIds.contains(tool.id),
+                                    onTogglePin = { homeViewModel.togglePin(tool.id) }
+                                )
+                            }
                             else -> {
                                 ToolScaffold(
                                     tool = tool,

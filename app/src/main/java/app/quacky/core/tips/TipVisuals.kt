@@ -88,6 +88,10 @@ fun TipVisual(
             VisualType.METADATA_INSPECT -> drawMetadataInspectVisual(progress)
             VisualType.METADATA_REMOVE -> drawMetadataRemoveVisual(progress)
             VisualType.METADATA_CLEAN -> drawMetadataCleanVisual(progress)
+            VisualType.COMPRESS_PICK -> drawCompressPickVisual(progress)
+            VisualType.COMPRESS_SLIDER -> drawCompressSliderVisual(progress)
+            VisualType.COMPRESS_SPLIT -> drawCompressSplitVisual(progress)
+            VisualType.COMPRESS_SAVE -> drawCompressSaveVisual(progress)
             else -> drawGenericTipVisual(progress)
         }
     }
@@ -462,4 +466,52 @@ private fun DrawScope.drawMetadataCleanVisual(progress: Float) {
     drawRoundRect(QuackyAccent, Offset(cx + 25f, cy - 25f), Size(45f, 50f), CornerRadius(6f, 6f), Stroke(2f))
     drawCircle(QuackyAccent, radius = 6f, center = Offset(cx + 47f, cy))
 }
+
+private fun DrawScope.drawCompressPickVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+    // Image card
+    val dropY = cy - 25f + ((1f - progress.coerceIn(0f, 0.4f) / 0.4f) * -30f)
+    drawRoundRect(QuackyTextPrimary, Offset(cx - 55f, dropY), Size(45f, 50f), CornerRadius(6f, 6f), Stroke(2f))
+    // PDF card
+    val dropY2 = cy - 25f + ((1f - (progress - 0.2f).coerceIn(0f, 0.4f) / 0.4f) * -30f)
+    drawRoundRect(QuackyTextSecondary, Offset(cx + 10f, dropY2), Size(45f, 50f), CornerRadius(6f, 6f), Stroke(2f))
+}
+
+private fun DrawScope.drawCompressSliderVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+    // Slider track
+    drawLine(QuackyOutline, Offset(cx - 60f, cy), Offset(cx + 60f, cy), 4f, StrokeCap.Round)
+    // Thumb moving
+    val thumbX = cx - 60f + (progress * 120f)
+    drawLine(QuackyAccent, Offset(cx - 60f, cy), Offset(thumbX, cy), 4f, StrokeCap.Round)
+    drawCircle(QuackyAccent, radius = 8f, center = Offset(thumbX, cy))
+}
+
+private fun DrawScope.drawCompressSplitVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+    // Image frame
+    drawRoundRect(QuackyOutline, Offset(cx - 60f, cy - 35f), Size(120f, 70f), CornerRadius(8f, 8f))
+    // Split line oscillating
+    val splitX = cx - 40f + (kotlin.math.sin(progress * kotlin.math.PI * 2).toFloat() * 35f)
+    drawLine(QuackyAccent, Offset(splitX, cy - 35f), Offset(splitX, cy + 35f), 2.5f)
+    drawCircle(QuackyAccent, radius = 5f, center = Offset(splitX, cy))
+}
+
+private fun DrawScope.drawCompressSaveVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+    // Result card
+    drawRoundRect(QuackySurface, Offset(cx - 65f, cy - 25f), Size(130f, 50f), CornerRadius(8f, 8f))
+    drawRoundRect(QuackyOutline, Offset(cx - 65f, cy - 25f), Size(130f, 50f), CornerRadius(8f, 8f), Stroke(1.5f))
+    // Percentage badge
+    drawRoundRect(QuackyAccent, Offset(cx - 50f, cy - 10f), Size(50f, 20f), CornerRadius(4f, 4f))
+    // Save check
+    if (progress > 0.4f) {
+        drawCircle(QuackyAccent, radius = 8f, center = Offset(cx + 40f, cy))
+    }
+}
+
 
