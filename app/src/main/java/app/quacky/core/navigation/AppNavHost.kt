@@ -198,6 +198,46 @@ fun AppNavHost(
                                     onOpenHowToUse = { activeGuideTool = tool }
                                 )
                             }
+                            ToolRegistry.DICE.id -> {
+                                val diceViewModel: app.quacky.feature.random.dice.DiceViewModel = hiltViewModel()
+                                app.quacky.feature.random.dice.DiceScreen(
+                                    viewModel = diceViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool }
+                                )
+                            }
+                            ToolRegistry.COIN_FLIP.id -> {
+                                val coinFlipViewModel: app.quacky.feature.random.coinflip.CoinFlipViewModel = hiltViewModel()
+                                app.quacky.feature.random.coinflip.CoinFlipScreen(
+                                    viewModel = coinFlipViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool }
+                                )
+                            }
+                            ToolRegistry.RANDOM_NUMBER.id -> {
+                                val rngViewModel: app.quacky.feature.random.randomnumber.RandomNumberViewModel = hiltViewModel()
+                                app.quacky.feature.random.randomnumber.RandomNumberScreen(
+                                    viewModel = rngViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool }
+                                )
+                            }
+                            ToolRegistry.PICKER_WHEEL.id -> {
+                                val pickerWheelViewModel: app.quacky.feature.random.pickerwheel.PickerWheelViewModel = hiltViewModel()
+                                app.quacky.feature.random.pickerwheel.PickerWheelScreen(
+                                    viewModel = pickerWheelViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool }
+                                )
+                            }
+                            ToolRegistry.TEAM_SPLITTER.id -> {
+                                val teamSplitterViewModel: app.quacky.feature.random.teamsplitter.TeamSplitterViewModel = hiltViewModel()
+                                app.quacky.feature.random.teamsplitter.TeamSplitterScreen(
+                                    viewModel = teamSplitterViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool }
+                                )
+                            }
                             else -> {
                                 ToolScaffold(
                                     tool = tool,
