@@ -181,23 +181,43 @@ fun AppNavHost(
                         )
                     }
                     RequirementResult.Ready -> {
-                        ToolScaffold(
-                            tool = tool,
-                            onBack = { navController.popBackStack() },
-                            isPinned = pinnedToolIds.contains(tool.id),
-                            onTogglePin = { homeViewModel.togglePin(tool.id) },
-                            onHelpClick = { activeGuideTool = tool }
-                        ) { toolPadding ->
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(toolPadding),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "${tool.id} - Ready to build",
-                                    color = QuackyTextSecondary
+                        when (tool.id) {
+                            ToolRegistry.TEXT_COUNTER.id -> {
+                                val textCounterViewModel: app.quacky.feature.textcounter.presentation.TextCounterViewModel = hiltViewModel()
+                                app.quacky.feature.textcounter.presentation.TextCounterScreen(
+                                    viewModel = textCounterViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool }
                                 )
+                            }
+                            ToolRegistry.DATE_CALC.id -> {
+                                val dateCalcViewModel: app.quacky.feature.datecalc.presentation.DateCalcViewModel = hiltViewModel()
+                                app.quacky.feature.datecalc.presentation.DateCalcScreen(
+                                    viewModel = dateCalcViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool }
+                                )
+                            }
+                            else -> {
+                                ToolScaffold(
+                                    tool = tool,
+                                    onBack = { navController.popBackStack() },
+                                    isPinned = pinnedToolIds.contains(tool.id),
+                                    onTogglePin = { homeViewModel.togglePin(tool.id) },
+                                    onHelpClick = { activeGuideTool = tool }
+                                ) { toolPadding ->
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(toolPadding),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = "${tool.id} - Ready to build",
+                                            color = QuackyTextSecondary
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
