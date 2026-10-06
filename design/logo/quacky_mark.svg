@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="104" fill="#0A0A0A" />
+  <g fill="#F2F2F2">
+    <!-- Quacky Duck Silhouette -->
+    <!-- Tail, Back, Neck, Head, Beak, Breast, and Belly in a unified geometric profile -->
+    <path d="M 120 280
+             C 100 245, 140 220, 180 235
+             C 215 248, 245 220, 275 180
+             C 290 160, 305 130, 340 130
+             C 385 130, 415 165, 415 205
+             C 415 210, 414 216, 412 222
+             L 470 236
+             C 478 238, 480 248, 474 254
+             L 412 282
+             C 395 330, 345 365, 290 370
+             C 210 375, 135 340, 120 280 Z" />
+  </g>
+  <!-- Beak separation & subtle duck smile -->
+  <path d="M 412 248 L 460 245" stroke="#0A0A0A" stroke-width="4" stroke-linecap="round" />
+  <!-- Eye cutout: clean negative space -->
+  <circle cx="360" cy="190" r="14" fill="#0A0A0A" />
+  <!-- Catchlight in eye for a friendly, calm expression -->
+  <circle cx="364" cy="186" r="4.5" fill="#F2F2F2" />
+</svg>

@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "app.quacky.app-mergeDebugResources-78:/values-v31/values-v31.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\solarquack\\.gradle\\caches\\8.11.1\\transforms\\b3408d4f85fd00d2c6073bb25bc39c59\\transformed\\core-splashscreen-1.0.1\\res\\values-v31\\values-v31.xml",
+                    "from": {
+                        "startLines": "2,9",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,473",
+                        "endLines": "8,13",
+                        "endColumns": "12,12",
+                        "endOffsets": "468,697"
+                    }
+                }
+            ]
+        }
+    ]
+}

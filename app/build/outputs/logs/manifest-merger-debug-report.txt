@@ -1,0 +1,792 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:2:1-105:12
+INJECTED from D:\quacky-app\app\src\main\AndroidManifest.xml:2:1-105:12
+INJECTED from D:\quacky-app\app\src\main\AndroidManifest.xml:2:1-105:12
+INJECTED from D:\quacky-app\app\src\main\AndroidManifest.xml:2:1-105:12
+MERGED from [androidx.camera:camera-video:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\5273469fbdff1339ca27867095d4125e\transformed\camera-video-1.4.1\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.camera:camera-view:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4c4ffe35f911cdad100086dac441bd29\transformed\camera-view-1.4.1\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.camera:camera-lifecycle:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4b37d6ed1274426bdcfb0bbcbc09677d\transformed\camera-lifecycle-1.4.1\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.camera:camera-camera2:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb7db9f77b6c98f2859e9c333c6bcd1\transformed\camera-camera2-1.4.1\AndroidManifest.xml:17:1-36:12
+MERGED from [androidx.camera:camera-core:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f21a7eb0471e54f95c63c1fb78b6b8d5\transformed\camera-core-1.4.1\AndroidManifest.xml:17:1-36:12
+MERGED from [com.google.mlkit:barcode-scanning:17.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b2af4f533dd1059d40a8dc1933542aa1\transformed\barcode-scanning-17.3.0\AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\42f5b1f80005d3f40ebab8c1073b4894\transformed\play-services-mlkit-barcode-scanning-18.3.1\AndroidManifest.xml:2:1-18:12
+MERGED from [com.google.mlkit:barcode-scanning-common:17.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a91a3206e9d6af1416873e16218a3560\transformed\barcode-scanning-common-17.0.0\AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.mlkit:vision-common:17.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\3234aa7cc92b7b2de0e18bf1428b5999\transformed\vision-common-17.3.0\AndroidManifest.xml:2:1-18:12
+MERGED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:2:1-26:12
+MERGED from [com.google.android.gms:play-services-base:18.5.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\05afd779cf5442989db6a593a1da1bb0\transformed\play-services-base-18.5.0\AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.mlkit:vision-interfaces:16.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\c8848970861c2045b2bfda5313fb10c9\transformed\vision-interfaces-16.3.0\AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\23ca206c67d5926efc10a7447f603bb2\transformed\play-services-tasks-18.2.0\AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e36e0799879adae06c8d8592500806b9\transformed\play-services-basement-18.4.0\AndroidManifest.xml:2:1-9:12
+MERGED from [androidx.hilt:hilt-navigation-compose:1.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\67f5e038ca34a59f67111a9ff880c59e\transformed\hilt-navigation-compose-1.2.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.hilt:hilt-navigation:1.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\2c04d0ebf376457a14fb7350651de432\transformed\hilt-navigation-1.2.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigation:navigation-common:2.8.5] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\0d452952ecd5d3d96394117db1a0ee8d\transformed\navigation-common-2.8.5\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-runtime:2.8.5] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b3d87020c1037b0bd595d2ba95e5f1a4\transformed\navigation-runtime-2.8.5\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-common-ktx:2.8.5] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d42297e27390784edec9ed10758e8e53\transformed\navigation-common-ktx-2.8.5\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.8.5] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\65dc8e49d55602aa66e894d12b8d9176\transformed\navigation-runtime-ktx-2.8.5\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigation:navigation-compose:2.8.5] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\32f233a9038ad2e28644dce8f109d367\transformed\navigation-compose-2.8.5\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material3:material3-android:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\638ff4a20ef31be2bef62d8b870b7405\transformed\material3-release\AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.dagger:hilt-android:2.52] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\97de070528f7b080f6b026bb0f807195\transformed\hilt-android-2.52\AndroidManifest.xml:16:1-19:12
+MERGED from [io.coil-kt:coil-compose:2.7.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4712cdeefaabd4b1033c2a244acf5bf1\transformed\coil-compose-2.7.0\AndroidManifest.xml:2:1-7:12
+MERGED from [io.coil-kt:coil-compose-base:2.7.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\1b59420125010467344176a77ed5318d\transformed\coil-compose-base-2.7.0\AndroidManifest.xml:2:1-7:12
+MERGED from [io.coil-kt:coil:2.7.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d37517c7d1d8f5cfd786bb5b43834682\transformed\coil-2.7.0\AndroidManifest.xml:2:1-7:12
+MERGED from [io.coil-kt:coil-base:2.7.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e7af177342664fd694cfa18176a4ad50\transformed\coil-base-2.7.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\66d088299dc8d074b22959f1ea7dee86\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\002e98fdb41b9778b3093d1436bff389\transformed\appcompat-1.6.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.fragment:fragment:1.5.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8e2c5c69160f67ed8fd15a770e31ed2d\transformed\fragment-1.5.1\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.loader:loader:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\5561cc0d6d1510e814181ffe0ebfc21c\transformed\loader-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.material:material-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7d9bd868d29334134b83df6f16a13c83\transformed\material-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-core-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\00cfd5a9432e113d2c53baaf08c601a6\transformed\animation-core-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-ripple-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\08461726c7cae989f2ac6f2c5e2289a1\transformed\material-ripple-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\5cbd2411b9e988cd8401906305f2c097\transformed\animation-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\90e0eb87227b59d93da489c277fc3afd\transformed\foundation-layout-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6262325298ed1ec0f06b8818f36155a2\transformed\foundation-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a8bff1372502465ecc56b462fb3d31a7\transformed\ui-tooling-data-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-unit-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\3047ebf03ae1d72928e5ab41f429442c\transformed\ui-unit-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-geometry-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6218220197ec8986a53692f7c2b5ed2a\transformed\ui-geometry-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-util-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\107c3907da175dc71fcfb31c4e210797\transformed\ui-util-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\ee898055b62e5a3135e9d5b0d897f824\transformed\ui-tooling-preview-release\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.ui:ui-graphics-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6f63f8381c77af114649c6a1312db7cf\transformed\ui-graphics-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-text-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6be5bbdef5b1a072c59a1231ad7e7ffd\transformed\ui-text-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\176804b92f0df5febfa61f57fcb4a357\transformed\emoji2-views-helper-1.3.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.emoji2:emoji2:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e0341de45fd690e3d8d6b845d4515582\transformed\emoji2-1.3.0\AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8232b3aa3ef09cfcd92302ea693560b2\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d9a794874cbd71cb0de4ba5e9e518f0f\transformed\lifecycle-runtime-compose-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\91422b80ddeb56c7ae9109d49aa5f8ad\transformed\lifecycle-viewmodel-2.8.7\AndroidManifest.xml:2:1-5:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\9136efa11b4eb707b58ed2b53aaabbd9\transformed\lifecycle-viewmodel-release\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\5e351edb8c268c01a27baeb705ef8639\transformed\lifecycle-livedata-core-ktx-2.8.7\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\5cd567e2f1f6827ff45978e9fc8a7e04\transformed\savedstate-ktx-1.2.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8131072aa9a3b66a6d58d8b3a95935bc\transformed\savedstate-1.2.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d4aa765e322ce8a52aec8aeb511c2f9b\transformed\lifecycle-runtime-release\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b258cb6b5b2dd3af45ea6a168fa43d0f\transformed\lifecycle-livedata-core-2.8.7\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\67cf2fa7f6f720a7792729acb766c863\transformed\lifecycle-viewmodel-ktx-2.8.7\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\48c14718aaf229be24f040668aa31dec\transformed\lifecycle-viewmodel-savedstate-2.8.7\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\50147a5c239416e296050df67cd3d8e4\transformed\lifecycle-livedata-2.8.7\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d102e7984f60fbe52012dc11a3837078\transformed\lifecycle-runtime-ktx-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6caf28a0be45370bf09813fe891e8f8d\transformed\lifecycle-viewmodel-compose-release\AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.accompanist:accompanist-drawablepainter:0.32.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\28bd35167e112f92f22ec123b69184c4\transformed\accompanist-drawablepainter-0.32.0\AndroidManifest.xml:17:1-23:12
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\37483614d0017708c21a9be68f3f6241\transformed\material-icons-extended-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f96baa60fb3566b570da004cfc0654e6\transformed\material-icons-core-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\87d3f7a753da0f9729e54a77a79bf45c\transformed\ui-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-test-manifest:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\0a2051f04bd42058beda67ffdcff93ed\transformed\ui-test-manifest-1.7.6\AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a029491cd99da64c000523f5cfa5eac3\transformed\ui-tooling-release\AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.activity:activity-compose:1.9.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\97e85fa5700bf6193043d980a6c9aff3\transformed\activity-compose-1.9.3\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity-ktx:1.9.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\1e2403ba2c9bbf1690a735b96dfef4a9\transformed\activity-ktx-1.9.3\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity:1.9.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\92b70acfbded12ddd2a892aa46af91bf\transformed\activity-1.9.3\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d5fe45651dba645e9bdb12880ad411ab\transformed\viewpager-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.autofill:autofill:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\53cbfbc5dedf5ce0cab41c8bba583ffd\transformed\autofill-1.0.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.graphics:graphics-path:1.0.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\043910e8c7822482136131b0baf5dc8f\transformed\graphics-path-1.0.1\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\429dfa8ac944e148f8206075d5100143\transformed\drawerlayout-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6c9c7acd8c666b98a798b64c108185c2\transformed\customview-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\827e48d30d9d68dc0ecec33dfd68466d\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b3868661afd9e8fcdef46b7570945e6a\transformed\vectordrawable-1.1.0\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb28d714139c9c129f939ebe9a44f9d\transformed\customview-poolingcontainer-1.0.0\AndroidManifest.xml:17:1-23:12
+MERGED from [androidx.core:core-ktx:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\baf44649a97a06506cf60af21f83b01d\transformed\core-ktx-1.15.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.core:core-splashscreen:1.0.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b3408d4f85fd00d2c6073bb25bc39c59\transformed\core-splashscreen-1.0.1\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.room:room-runtime:2.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\19b0b53bc36095546d07c21a3cccf661\transformed\room-runtime-2.6.1\AndroidManifest.xml:17:1-31:12
+MERGED from [androidx.room:room-ktx:2.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\13fbf89f8b3e31e77e82e11bb7063c13\transformed\room-ktx-2.6.1\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.datastore:datastore-core-android:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\2be07bcbadd6df1f4c9abc9c851ead39\transformed\datastore-core-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.datastore:datastore-android:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a49966e083e569cb740dca80f872e109\transformed\datastore-release\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.datastore:datastore-preferences-android:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\1a1380c79adeed6e3e3494dd588bd1dd\transformed\datastore-preferences-release\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7106f13a2befe07a50796a44d1f0c142\transformed\runtime-saveable-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\875a57d33595c6042c4f30a71baeadf1\transformed\runtime-release\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.sqlite:sqlite-framework:2.4.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\de6d19cbd2a887cd6258623f70001964\transformed\sqlite-framework-2.4.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.sqlite:sqlite:2.4.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\53860b63b7a86d1dc58518496b8c27fb\transformed\sqlite-2.4.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\1917eb60a9ba3175104ef4e50db0cda3\transformed\annotation-experimental-1.4.1\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\14bfb185f851af3458f85275bd31b3fb\transformed\startup-runtime-1.1.1\AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\db3f5370c56d6029bc00d9b06f5937d8\transformed\tracing-1.2.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.tracing:tracing-ktx:1.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\fb4d606ebd333abd38de946224749ada\transformed\tracing-ktx-1.2.0\AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:8:1-45:12
+MERGED from [androidx.exifinterface:exifinterface:1.3.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\2cdec0580aac50955b7c411477eba384\transformed\exifinterface-1.3.7\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\39dc62a3689d940e680b018a3e337e17\transformed\core-runtime-2.2.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8d321f423d828fdeb8fb30e1a299b0be\transformed\interpolator-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7d1809d07cbdabd798080e578a0f716b\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:17:1-27:12
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6d5ba7d2b6163c4c8811a464e6c1b8af\transformed\transport-backend-cct-2.3.3\AndroidManifest.xml:15:1-38:12
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:15:1-41:12
+MERGED from [com.google.android.datatransport:transport-api:2.2.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a497298e0b100ae7dd98fbee58de0d0b\transformed\transport-api-2.2.1\AndroidManifest.xml:15:1-22:12
+MERGED from [com.google.firebase:firebase-components:16.1.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6c3a4f38d2a999c79941e61ef3dabb06\transformed\firebase-components-16.1.0\AndroidManifest.xml:15:1-23:12
+MERGED from [com.google.firebase:firebase-encoders-json:17.1.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\953313935c39b3a45429b611a1b492ad\transformed\firebase-encoders-json-17.1.0\AndroidManifest.xml:15:1-23:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\79c8427549b44c077ef1d75e6764a964\transformed\cursoradapter-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.dagger:dagger-lint-aar:2.52] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\72ac025b751dc03ba2a21d5645903e83\transformed\dagger-lint-aar-2.52\AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4818f36503d44e64da5e095512529d55\transformed\image-1.0.0-beta1\AndroidManifest.xml:2:1-9:12
+	package
+		INJECTED from D:\quacky-app\app\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from D:\quacky-app\app\src\main\AndroidManifest.xml
+	android:versionCode
+		INJECTED from D:\quacky-app\app\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:2:11-69
+uses-permission#android.permission.CAMERA
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:5:5-65
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:5:22-62
+uses-permission#android.permission.VIBRATE
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:6:5-66
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:6:22-63
+uses-feature#android.hardware.camera
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:9:5-11:36
+	android:required
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:11:9-33
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:10:9-47
+uses-feature#android.hardware.camera.autofocus
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:12:5-14:36
+	android:required
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:14:9-33
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:13:9-57
+uses-feature#android.hardware.camera.flash
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:15:5-17:36
+	android:required
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:17:9-33
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:16:9-53
+uses-feature#android.hardware.camera.ar
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:18:5-20:36
+	android:required
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:20:9-33
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:19:9-50
+uses-feature#android.hardware.sensor.accelerometer
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:21:5-23:36
+	android:required
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:23:9-33
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:22:9-61
+queries
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:26:5-55:15
+MERGED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:20:5-27:15
+MERGED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:20:5-27:15
+intent#action:name:android.intent.action.VIEW+data:scheme:https
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:27:9-30:18
+action#android.intent.action.VIEW
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:28:13-65
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:28:21-62
+data
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:29:13-44
+	android:scheme
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:29:19-41
+	android:mimeType
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:87:23-52
+intent#action:name:android.intent.action.VIEW+data:scheme:http
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:31:9-34:18
+intent#action:name:android.intent.action.VIEW+data:scheme:upi
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:35:9-38:18
+intent#action:name:android.intent.action.VIEW+data:scheme:geo
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:39:9-42:18
+intent#action:name:android.intent.action.SENDTO+data:scheme:mailto
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:43:9-46:18
+action#android.intent.action.SENDTO
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:44:13-67
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:44:21-64
+intent#action:name:android.intent.action.SENDTO+data:scheme:smsto
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:47:9-50:18
+intent#action:name:android.intent.action.DIAL+data:scheme:tel
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:51:9-54:18
+action#android.intent.action.DIAL
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:52:13-65
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:52:21-62
+application
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:57:5-103:19
+INJECTED from D:\quacky-app\app\src\main\AndroidManifest.xml:57:5-103:19
+MERGED from [androidx.camera:camera-camera2:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb7db9f77b6c98f2859e9c333c6bcd1\transformed\camera-camera2-1.4.1\AndroidManifest.xml:23:5-34:19
+MERGED from [androidx.camera:camera-camera2:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb7db9f77b6c98f2859e9c333c6bcd1\transformed\camera-camera2-1.4.1\AndroidManifest.xml:23:5-34:19
+MERGED from [androidx.camera:camera-core:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f21a7eb0471e54f95c63c1fb78b6b8d5\transformed\camera-core-1.4.1\AndroidManifest.xml:23:5-34:19
+MERGED from [androidx.camera:camera-core:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f21a7eb0471e54f95c63c1fb78b6b8d5\transformed\camera-core-1.4.1\AndroidManifest.xml:23:5-34:19
+MERGED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\42f5b1f80005d3f40ebab8c1073b4894\transformed\play-services-mlkit-barcode-scanning-18.3.1\AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\42f5b1f80005d3f40ebab8c1073b4894\transformed\play-services-mlkit-barcode-scanning-18.3.1\AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\3234aa7cc92b7b2de0e18bf1428b5999\transformed\vision-common-17.3.0\AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\3234aa7cc92b7b2de0e18bf1428b5999\transformed\vision-common-17.3.0\AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:8:5-24:19
+MERGED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:8:5-24:19
+MERGED from [com.google.android.gms:play-services-base:18.5.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\05afd779cf5442989db6a593a1da1bb0\transformed\play-services-base-18.5.0\AndroidManifest.xml:4:5-6:19
+MERGED from [com.google.android.gms:play-services-base:18.5.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\05afd779cf5442989db6a593a1da1bb0\transformed\play-services-base-18.5.0\AndroidManifest.xml:4:5-6:19
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\23ca206c67d5926efc10a7447f603bb2\transformed\play-services-tasks-18.2.0\AndroidManifest.xml:4:5-20
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\23ca206c67d5926efc10a7447f603bb2\transformed\play-services-tasks-18.2.0\AndroidManifest.xml:4:5-20
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e36e0799879adae06c8d8592500806b9\transformed\play-services-basement-18.4.0\AndroidManifest.xml:5:5-7:19
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e36e0799879adae06c8d8592500806b9\transformed\play-services-basement-18.4.0\AndroidManifest.xml:5:5-7:19
+MERGED from [androidx.emoji2:emoji2:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e0341de45fd690e3d8d6b845d4515582\transformed\emoji2-1.3.0\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.emoji2:emoji2:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e0341de45fd690e3d8d6b845d4515582\transformed\emoji2-1.3.0\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8232b3aa3ef09cfcd92302ea693560b2\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8232b3aa3ef09cfcd92302ea693560b2\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.compose.ui:ui-test-manifest:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\0a2051f04bd42058beda67ffdcff93ed\transformed\ui-test-manifest-1.7.6\AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.compose.ui:ui-test-manifest:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\0a2051f04bd42058beda67ffdcff93ed\transformed\ui-test-manifest-1.7.6\AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a029491cd99da64c000523f5cfa5eac3\transformed\ui-tooling-release\AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a029491cd99da64c000523f5cfa5eac3\transformed\ui-tooling-release\AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:28:5-89
+MERGED from [androidx.room:room-runtime:2.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\19b0b53bc36095546d07c21a3cccf661\transformed\room-runtime-2.6.1\AndroidManifest.xml:23:5-29:19
+MERGED from [androidx.room:room-runtime:2.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\19b0b53bc36095546d07c21a3cccf661\transformed\room-runtime-2.6.1\AndroidManifest.xml:23:5-29:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\14bfb185f851af3458f85275bd31b3fb\transformed\startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\14bfb185f851af3458f85275bd31b3fb\transformed\startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
+MERGED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:29:5-43:19
+MERGED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:29:5-43:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7d1809d07cbdabd798080e578a0f716b\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7d1809d07cbdabd798080e578a0f716b\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6d5ba7d2b6163c4c8811a464e6c1b8af\transformed\transport-backend-cct-2.3.3\AndroidManifest.xml:28:5-36:19
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6d5ba7d2b6163c4c8811a464e6c1b8af\transformed\transport-backend-cct-2.3.3\AndroidManifest.xml:28:5-36:19
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:25:5-39:19
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:25:5-39:19
+MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4818f36503d44e64da5e095512529d55\transformed\image-1.0.0-beta1\AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4818f36503d44e64da5e095512529d55\transformed\image-1.0.0-beta1\AndroidManifest.xml:7:5-20
+	android:extractNativeLibs
+		INJECTED from D:\quacky-app\app\src\main\AndroidManifest.xml
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:28:18-86
+	android:supportsRtl
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:65:9-35
+	android:label
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:63:9-41
+	android:fullBackupContent
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:61:9-54
+	android:roundIcon
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:64:9-54
+	android:icon
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:62:9-43
+	android:allowBackup
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:59:9-35
+	android:theme
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:66:9-51
+	android:dataExtractionRules
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:60:9-65
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:58:9-42
+meta-data#com.google.ar.core
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:69:9-71:40
+	android:value
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:71:13-37
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:70:13-46
+activity#app.quacky.MainActivity
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:73:9-102:20
+	android:windowSoftInputMode
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:77:13-55
+	android:exported
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:75:13-36
+	android:theme
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:76:13-55
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:74:13-41
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:78:13-81:29
+action#android.intent.action.MAIN
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:79:17-69
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:79:25-66
+category#android.intent.category.LAUNCHER
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:80:17-77
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:80:27-74
+intent-filter#action:name:android.intent.action.PROCESS_TEXT+category:name:android.intent.category.DEFAULT+data:mimeType:text/plain
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:84:13-88:29
+action#android.intent.action.PROCESS_TEXT
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:85:17-77
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:85:25-74
+category#android.intent.category.DEFAULT
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:86:17-76
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:86:27-73
+intent-filter#action:name:android.intent.action.SEND+category:name:android.intent.category.DEFAULT+data:mimeType:image/*+data:mimeType:text/plain
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:91:13-96:29
+action#android.intent.action.SEND
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:92:17-69
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:92:25-66
+intent-filter#action:name:android.intent.action.SEND_MULTIPLE+category:name:android.intent.category.DEFAULT+data:mimeType:image/*
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:97:13-101:29
+action#android.intent.action.SEND_MULTIPLE
+ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:98:17-78
+	android:name
+		ADDED from D:\quacky-app\app\src\main\AndroidManifest.xml:98:25-75
+uses-sdk
+INJECTED from D:\quacky-app\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\quacky-app\app\src\main\AndroidManifest.xml
+INJECTED from D:\quacky-app\app\src\main\AndroidManifest.xml
+MERGED from [androidx.camera:camera-video:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\5273469fbdff1339ca27867095d4125e\transformed\camera-video-1.4.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-video:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\5273469fbdff1339ca27867095d4125e\transformed\camera-video-1.4.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-view:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4c4ffe35f911cdad100086dac441bd29\transformed\camera-view-1.4.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-view:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4c4ffe35f911cdad100086dac441bd29\transformed\camera-view-1.4.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-lifecycle:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4b37d6ed1274426bdcfb0bbcbc09677d\transformed\camera-lifecycle-1.4.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-lifecycle:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4b37d6ed1274426bdcfb0bbcbc09677d\transformed\camera-lifecycle-1.4.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-camera2:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb7db9f77b6c98f2859e9c333c6bcd1\transformed\camera-camera2-1.4.1\AndroidManifest.xml:21:5-44
+MERGED from [androidx.camera:camera-camera2:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb7db9f77b6c98f2859e9c333c6bcd1\transformed\camera-camera2-1.4.1\AndroidManifest.xml:21:5-44
+MERGED from [androidx.camera:camera-core:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f21a7eb0471e54f95c63c1fb78b6b8d5\transformed\camera-core-1.4.1\AndroidManifest.xml:21:5-44
+MERGED from [androidx.camera:camera-core:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f21a7eb0471e54f95c63c1fb78b6b8d5\transformed\camera-core-1.4.1\AndroidManifest.xml:21:5-44
+MERGED from [com.google.mlkit:barcode-scanning:17.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b2af4f533dd1059d40a8dc1933542aa1\transformed\barcode-scanning-17.3.0\AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:barcode-scanning:17.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b2af4f533dd1059d40a8dc1933542aa1\transformed\barcode-scanning-17.3.0\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\42f5b1f80005d3f40ebab8c1073b4894\transformed\play-services-mlkit-barcode-scanning-18.3.1\AndroidManifest.xml:6:5-44
+MERGED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\42f5b1f80005d3f40ebab8c1073b4894\transformed\play-services-mlkit-barcode-scanning-18.3.1\AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:barcode-scanning-common:17.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a91a3206e9d6af1416873e16218a3560\transformed\barcode-scanning-common-17.0.0\AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:barcode-scanning-common:17.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a91a3206e9d6af1416873e16218a3560\transformed\barcode-scanning-common-17.0.0\AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:vision-common:17.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\3234aa7cc92b7b2de0e18bf1428b5999\transformed\vision-common-17.3.0\AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:vision-common:17.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\3234aa7cc92b7b2de0e18bf1428b5999\transformed\vision-common-17.3.0\AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:6:5-44
+MERGED from [com.google.android.gms:play-services-base:18.5.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\05afd779cf5442989db6a593a1da1bb0\transformed\play-services-base-18.5.0\AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-base:18.5.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\05afd779cf5442989db6a593a1da1bb0\transformed\play-services-base-18.5.0\AndroidManifest.xml:3:5-44
+MERGED from [com.google.mlkit:vision-interfaces:16.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\c8848970861c2045b2bfda5313fb10c9\transformed\vision-interfaces-16.3.0\AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:vision-interfaces:16.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\c8848970861c2045b2bfda5313fb10c9\transformed\vision-interfaces-16.3.0\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\23ca206c67d5926efc10a7447f603bb2\transformed\play-services-tasks-18.2.0\AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\23ca206c67d5926efc10a7447f603bb2\transformed\play-services-tasks-18.2.0\AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e36e0799879adae06c8d8592500806b9\transformed\play-services-basement-18.4.0\AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e36e0799879adae06c8d8592500806b9\transformed\play-services-basement-18.4.0\AndroidManifest.xml:3:5-44
+MERGED from [androidx.hilt:hilt-navigation-compose:1.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\67f5e038ca34a59f67111a9ff880c59e\transformed\hilt-navigation-compose-1.2.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.hilt:hilt-navigation-compose:1.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\67f5e038ca34a59f67111a9ff880c59e\transformed\hilt-navigation-compose-1.2.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.hilt:hilt-navigation:1.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\2c04d0ebf376457a14fb7350651de432\transformed\hilt-navigation-1.2.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.hilt:hilt-navigation:1.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\2c04d0ebf376457a14fb7350651de432\transformed\hilt-navigation-1.2.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-common:2.8.5] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\0d452952ecd5d3d96394117db1a0ee8d\transformed\navigation-common-2.8.5\AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common:2.8.5] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\0d452952ecd5d3d96394117db1a0ee8d\transformed\navigation-common-2.8.5\AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-runtime:2.8.5] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b3d87020c1037b0bd595d2ba95e5f1a4\transformed\navigation-runtime-2.8.5\AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-runtime:2.8.5] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b3d87020c1037b0bd595d2ba95e5f1a4\transformed\navigation-runtime-2.8.5\AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common-ktx:2.8.5] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d42297e27390784edec9ed10758e8e53\transformed\navigation-common-ktx-2.8.5\AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-common-ktx:2.8.5] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d42297e27390784edec9ed10758e8e53\transformed\navigation-common-ktx-2.8.5\AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.8.5] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\65dc8e49d55602aa66e894d12b8d9176\transformed\navigation-runtime-ktx-2.8.5\AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.8.5] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\65dc8e49d55602aa66e894d12b8d9176\transformed\navigation-runtime-ktx-2.8.5\AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-compose:2.8.5] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\32f233a9038ad2e28644dce8f109d367\transformed\navigation-compose-2.8.5\AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-compose:2.8.5] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\32f233a9038ad2e28644dce8f109d367\transformed\navigation-compose-2.8.5\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material3:material3-android:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\638ff4a20ef31be2bef62d8b870b7405\transformed\material3-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material3:material3-android:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\638ff4a20ef31be2bef62d8b870b7405\transformed\material3-release\AndroidManifest.xml:20:5-44
+MERGED from [com.google.dagger:hilt-android:2.52] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\97de070528f7b080f6b026bb0f807195\transformed\hilt-android-2.52\AndroidManifest.xml:18:3-42
+MERGED from [com.google.dagger:hilt-android:2.52] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\97de070528f7b080f6b026bb0f807195\transformed\hilt-android-2.52\AndroidManifest.xml:18:3-42
+MERGED from [io.coil-kt:coil-compose:2.7.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4712cdeefaabd4b1033c2a244acf5bf1\transformed\coil-compose-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil-compose:2.7.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4712cdeefaabd4b1033c2a244acf5bf1\transformed\coil-compose-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil-compose-base:2.7.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\1b59420125010467344176a77ed5318d\transformed\coil-compose-base-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil-compose-base:2.7.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\1b59420125010467344176a77ed5318d\transformed\coil-compose-base-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil:2.7.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d37517c7d1d8f5cfd786bb5b43834682\transformed\coil-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil:2.7.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d37517c7d1d8f5cfd786bb5b43834682\transformed\coil-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil-base:2.7.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e7af177342664fd694cfa18176a4ad50\transformed\coil-base-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [io.coil-kt:coil-base:2.7.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e7af177342664fd694cfa18176a4ad50\transformed\coil-base-2.7.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\66d088299dc8d074b22959f1ea7dee86\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\66d088299dc8d074b22959f1ea7dee86\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\002e98fdb41b9778b3093d1436bff389\transformed\appcompat-1.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\002e98fdb41b9778b3093d1436bff389\transformed\appcompat-1.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment:1.5.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8e2c5c69160f67ed8fd15a770e31ed2d\transformed\fragment-1.5.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.5.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8e2c5c69160f67ed8fd15a770e31ed2d\transformed\fragment-1.5.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.loader:loader:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\5561cc0d6d1510e814181ffe0ebfc21c\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\5561cc0d6d1510e814181ffe0ebfc21c\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material:material-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7d9bd868d29334134b83df6f16a13c83\transformed\material-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7d9bd868d29334134b83df6f16a13c83\transformed\material-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\00cfd5a9432e113d2c53baaf08c601a6\transformed\animation-core-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\00cfd5a9432e113d2c53baaf08c601a6\transformed\animation-core-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\08461726c7cae989f2ac6f2c5e2289a1\transformed\material-ripple-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\08461726c7cae989f2ac6f2c5e2289a1\transformed\material-ripple-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\5cbd2411b9e988cd8401906305f2c097\transformed\animation-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\5cbd2411b9e988cd8401906305f2c097\transformed\animation-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\90e0eb87227b59d93da489c277fc3afd\transformed\foundation-layout-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\90e0eb87227b59d93da489c277fc3afd\transformed\foundation-layout-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6262325298ed1ec0f06b8818f36155a2\transformed\foundation-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6262325298ed1ec0f06b8818f36155a2\transformed\foundation-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a8bff1372502465ecc56b462fb3d31a7\transformed\ui-tooling-data-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a8bff1372502465ecc56b462fb3d31a7\transformed\ui-tooling-data-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\3047ebf03ae1d72928e5ab41f429442c\transformed\ui-unit-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\3047ebf03ae1d72928e5ab41f429442c\transformed\ui-unit-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6218220197ec8986a53692f7c2b5ed2a\transformed\ui-geometry-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6218220197ec8986a53692f7c2b5ed2a\transformed\ui-geometry-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\107c3907da175dc71fcfb31c4e210797\transformed\ui-util-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\107c3907da175dc71fcfb31c4e210797\transformed\ui-util-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\ee898055b62e5a3135e9d5b0d897f824\transformed\ui-tooling-preview-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\ee898055b62e5a3135e9d5b0d897f824\transformed\ui-tooling-preview-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6f63f8381c77af114649c6a1312db7cf\transformed\ui-graphics-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6f63f8381c77af114649c6a1312db7cf\transformed\ui-graphics-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6be5bbdef5b1a072c59a1231ad7e7ffd\transformed\ui-text-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6be5bbdef5b1a072c59a1231ad7e7ffd\transformed\ui-text-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\176804b92f0df5febfa61f57fcb4a357\transformed\emoji2-views-helper-1.3.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\176804b92f0df5febfa61f57fcb4a357\transformed\emoji2-views-helper-1.3.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e0341de45fd690e3d8d6b845d4515582\transformed\emoji2-1.3.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.emoji2:emoji2:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e0341de45fd690e3d8d6b845d4515582\transformed\emoji2-1.3.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8232b3aa3ef09cfcd92302ea693560b2\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8232b3aa3ef09cfcd92302ea693560b2\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d9a794874cbd71cb0de4ba5e9e518f0f\transformed\lifecycle-runtime-compose-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d9a794874cbd71cb0de4ba5e9e518f0f\transformed\lifecycle-runtime-compose-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\91422b80ddeb56c7ae9109d49aa5f8ad\transformed\lifecycle-viewmodel-2.8.7\AndroidManifest.xml:4:5-43
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\91422b80ddeb56c7ae9109d49aa5f8ad\transformed\lifecycle-viewmodel-2.8.7\AndroidManifest.xml:4:5-43
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\9136efa11b4eb707b58ed2b53aaabbd9\transformed\lifecycle-viewmodel-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\9136efa11b4eb707b58ed2b53aaabbd9\transformed\lifecycle-viewmodel-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\5e351edb8c268c01a27baeb705ef8639\transformed\lifecycle-livedata-core-ktx-2.8.7\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\5e351edb8c268c01a27baeb705ef8639\transformed\lifecycle-livedata-core-ktx-2.8.7\AndroidManifest.xml:5:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\5cd567e2f1f6827ff45978e9fc8a7e04\transformed\savedstate-ktx-1.2.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\5cd567e2f1f6827ff45978e9fc8a7e04\transformed\savedstate-ktx-1.2.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8131072aa9a3b66a6d58d8b3a95935bc\transformed\savedstate-1.2.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8131072aa9a3b66a6d58d8b3a95935bc\transformed\savedstate-1.2.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d4aa765e322ce8a52aec8aeb511c2f9b\transformed\lifecycle-runtime-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d4aa765e322ce8a52aec8aeb511c2f9b\transformed\lifecycle-runtime-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b258cb6b5b2dd3af45ea6a168fa43d0f\transformed\lifecycle-livedata-core-2.8.7\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b258cb6b5b2dd3af45ea6a168fa43d0f\transformed\lifecycle-livedata-core-2.8.7\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\67cf2fa7f6f720a7792729acb766c863\transformed\lifecycle-viewmodel-ktx-2.8.7\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\67cf2fa7f6f720a7792729acb766c863\transformed\lifecycle-viewmodel-ktx-2.8.7\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\48c14718aaf229be24f040668aa31dec\transformed\lifecycle-viewmodel-savedstate-2.8.7\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\48c14718aaf229be24f040668aa31dec\transformed\lifecycle-viewmodel-savedstate-2.8.7\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\50147a5c239416e296050df67cd3d8e4\transformed\lifecycle-livedata-2.8.7\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\50147a5c239416e296050df67cd3d8e4\transformed\lifecycle-livedata-2.8.7\AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d102e7984f60fbe52012dc11a3837078\transformed\lifecycle-runtime-ktx-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d102e7984f60fbe52012dc11a3837078\transformed\lifecycle-runtime-ktx-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6caf28a0be45370bf09813fe891e8f8d\transformed\lifecycle-viewmodel-compose-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6caf28a0be45370bf09813fe891e8f8d\transformed\lifecycle-viewmodel-compose-release\AndroidManifest.xml:5:5-44
+MERGED from [com.google.accompanist:accompanist-drawablepainter:0.32.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\28bd35167e112f92f22ec123b69184c4\transformed\accompanist-drawablepainter-0.32.0\AndroidManifest.xml:21:5-44
+MERGED from [com.google.accompanist:accompanist-drawablepainter:0.32.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\28bd35167e112f92f22ec123b69184c4\transformed\accompanist-drawablepainter-0.32.0\AndroidManifest.xml:21:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\37483614d0017708c21a9be68f3f6241\transformed\material-icons-extended-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\37483614d0017708c21a9be68f3f6241\transformed\material-icons-extended-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f96baa60fb3566b570da004cfc0654e6\transformed\material-icons-core-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f96baa60fb3566b570da004cfc0654e6\transformed\material-icons-core-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\87d3f7a753da0f9729e54a77a79bf45c\transformed\ui-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\87d3f7a753da0f9729e54a77a79bf45c\transformed\ui-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-test-manifest:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\0a2051f04bd42058beda67ffdcff93ed\transformed\ui-test-manifest-1.7.6\AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-test-manifest:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\0a2051f04bd42058beda67ffdcff93ed\transformed\ui-test-manifest-1.7.6\AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a029491cd99da64c000523f5cfa5eac3\transformed\ui-tooling-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a029491cd99da64c000523f5cfa5eac3\transformed\ui-tooling-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity-compose:1.9.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\97e85fa5700bf6193043d980a6c9aff3\transformed\activity-compose-1.9.3\AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-compose:1.9.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\97e85fa5700bf6193043d980a6c9aff3\transformed\activity-compose-1.9.3\AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.9.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\1e2403ba2c9bbf1690a735b96dfef4a9\transformed\activity-ktx-1.9.3\AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.9.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\1e2403ba2c9bbf1690a735b96dfef4a9\transformed\activity-ktx-1.9.3\AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity:1.9.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\92b70acfbded12ddd2a892aa46af91bf\transformed\activity-1.9.3\AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.9.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\92b70acfbded12ddd2a892aa46af91bf\transformed\activity-1.9.3\AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d5fe45651dba645e9bdb12880ad411ab\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\d5fe45651dba645e9bdb12880ad411ab\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.autofill:autofill:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\53cbfbc5dedf5ce0cab41c8bba583ffd\transformed\autofill-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.autofill:autofill:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\53cbfbc5dedf5ce0cab41c8bba583ffd\transformed\autofill-1.0.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.graphics:graphics-path:1.0.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\043910e8c7822482136131b0baf5dc8f\transformed\graphics-path-1.0.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.graphics:graphics-path:1.0.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\043910e8c7822482136131b0baf5dc8f\transformed\graphics-path-1.0.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\429dfa8ac944e148f8206075d5100143\transformed\drawerlayout-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\429dfa8ac944e148f8206075d5100143\transformed\drawerlayout-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6c9c7acd8c666b98a798b64c108185c2\transformed\customview-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6c9c7acd8c666b98a798b64c108185c2\transformed\customview-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\827e48d30d9d68dc0ecec33dfd68466d\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\827e48d30d9d68dc0ecec33dfd68466d\transformed\vectordrawable-animated-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b3868661afd9e8fcdef46b7570945e6a\transformed\vectordrawable-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b3868661afd9e8fcdef46b7570945e6a\transformed\vectordrawable-1.1.0\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb28d714139c9c129f939ebe9a44f9d\transformed\customview-poolingcontainer-1.0.0\AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb28d714139c9c129f939ebe9a44f9d\transformed\customview-poolingcontainer-1.0.0\AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.core:core-ktx:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\baf44649a97a06506cf60af21f83b01d\transformed\core-ktx-1.15.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\baf44649a97a06506cf60af21f83b01d\transformed\core-ktx-1.15.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-splashscreen:1.0.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b3408d4f85fd00d2c6073bb25bc39c59\transformed\core-splashscreen-1.0.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core-splashscreen:1.0.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b3408d4f85fd00d2c6073bb25bc39c59\transformed\core-splashscreen-1.0.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.room:room-runtime:2.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\19b0b53bc36095546d07c21a3cccf661\transformed\room-runtime-2.6.1\AndroidManifest.xml:21:5-44
+MERGED from [androidx.room:room-runtime:2.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\19b0b53bc36095546d07c21a3cccf661\transformed\room-runtime-2.6.1\AndroidManifest.xml:21:5-44
+MERGED from [androidx.room:room-ktx:2.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\13fbf89f8b3e31e77e82e11bb7063c13\transformed\room-ktx-2.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.room:room-ktx:2.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\13fbf89f8b3e31e77e82e11bb7063c13\transformed\room-ktx-2.6.1\AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-core-android:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\2be07bcbadd6df1f4c9abc9c851ead39\transformed\datastore-core-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.datastore:datastore-core-android:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\2be07bcbadd6df1f4c9abc9c851ead39\transformed\datastore-core-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.datastore:datastore-android:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a49966e083e569cb740dca80f872e109\transformed\datastore-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-android:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a49966e083e569cb740dca80f872e109\transformed\datastore-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-preferences-android:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\1a1380c79adeed6e3e3494dd588bd1dd\transformed\datastore-preferences-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-preferences-android:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\1a1380c79adeed6e3e3494dd588bd1dd\transformed\datastore-preferences-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7106f13a2befe07a50796a44d1f0c142\transformed\runtime-saveable-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7106f13a2befe07a50796a44d1f0c142\transformed\runtime-saveable-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\875a57d33595c6042c4f30a71baeadf1\transformed\runtime-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\875a57d33595c6042c4f30a71baeadf1\transformed\runtime-release\AndroidManifest.xml:5:5-44
+MERGED from [androidx.sqlite:sqlite-framework:2.4.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\de6d19cbd2a887cd6258623f70001964\transformed\sqlite-framework-2.4.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.sqlite:sqlite-framework:2.4.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\de6d19cbd2a887cd6258623f70001964\transformed\sqlite-framework-2.4.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.sqlite:sqlite:2.4.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\53860b63b7a86d1dc58518496b8c27fb\transformed\sqlite-2.4.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.sqlite:sqlite:2.4.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\53860b63b7a86d1dc58518496b8c27fb\transformed\sqlite-2.4.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\1917eb60a9ba3175104ef4e50db0cda3\transformed\annotation-experimental-1.4.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\1917eb60a9ba3175104ef4e50db0cda3\transformed\annotation-experimental-1.4.1\AndroidManifest.xml:5:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\14bfb185f851af3458f85275bd31b3fb\transformed\startup-runtime-1.1.1\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\14bfb185f851af3458f85275bd31b3fb\transformed\startup-runtime-1.1.1\AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\db3f5370c56d6029bc00d9b06f5937d8\transformed\tracing-1.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\db3f5370c56d6029bc00d9b06f5937d8\transformed\tracing-1.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing-ktx:1.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\fb4d606ebd333abd38de946224749ada\transformed\tracing-ktx-1.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing-ktx:1.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\fb4d606ebd333abd38de946224749ada\transformed\tracing-ktx-1.2.0\AndroidManifest.xml:20:5-44
+MERGED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:16:5-18:41
+MERGED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:16:5-18:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\2cdec0580aac50955b7c411477eba384\transformed\exifinterface-1.3.7\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\2cdec0580aac50955b7c411477eba384\transformed\exifinterface-1.3.7\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\39dc62a3689d940e680b018a3e337e17\transformed\core-runtime-2.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\39dc62a3689d940e680b018a3e337e17\transformed\core-runtime-2.2.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8d321f423d828fdeb8fb30e1a299b0be\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8d321f423d828fdeb8fb30e1a299b0be\transformed\interpolator-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7d1809d07cbdabd798080e578a0f716b\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7d1809d07cbdabd798080e578a0f716b\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6d5ba7d2b6163c4c8811a464e6c1b8af\transformed\transport-backend-cct-2.3.3\AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6d5ba7d2b6163c4c8811a464e6c1b8af\transformed\transport-backend-cct-2.3.3\AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-api:2.2.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a497298e0b100ae7dd98fbee58de0d0b\transformed\transport-api-2.2.1\AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-api:2.2.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a497298e0b100ae7dd98fbee58de0d0b\transformed\transport-api-2.2.1\AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.firebase:firebase-components:16.1.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6c3a4f38d2a999c79941e61ef3dabb06\transformed\firebase-components-16.1.0\AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-components:16.1.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6c3a4f38d2a999c79941e61ef3dabb06\transformed\firebase-components-16.1.0\AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-encoders-json:17.1.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\953313935c39b3a45429b611a1b492ad\transformed\firebase-encoders-json-17.1.0\AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-encoders-json:17.1.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\953313935c39b3a45429b611a1b492ad\transformed\firebase-encoders-json-17.1.0\AndroidManifest.xml:19:5-21:41
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\79c8427549b44c077ef1d75e6764a964\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\79c8427549b44c077ef1d75e6764a964\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [com.google.dagger:dagger-lint-aar:2.52] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\72ac025b751dc03ba2a21d5645903e83\transformed\dagger-lint-aar-2.52\AndroidManifest.xml:18:3-42
+MERGED from [com.google.dagger:dagger-lint-aar:2.52] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\72ac025b751dc03ba2a21d5645903e83\transformed\dagger-lint-aar-2.52\AndroidManifest.xml:18:3-42
+MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4818f36503d44e64da5e095512529d55\transformed\image-1.0.0-beta1\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4818f36503d44e64da5e095512529d55\transformed\image-1.0.0-beta1\AndroidManifest.xml:5:5-44
+	android:targetSdkVersion
+		INJECTED from D:\quacky-app\app\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\quacky-app\app\src\main\AndroidManifest.xml
+service#androidx.camera.core.impl.MetadataHolderService
+ADDED from [androidx.camera:camera-camera2:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb7db9f77b6c98f2859e9c333c6bcd1\transformed\camera-camera2-1.4.1\AndroidManifest.xml:24:9-33:19
+MERGED from [androidx.camera:camera-core:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f21a7eb0471e54f95c63c1fb78b6b8d5\transformed\camera-core-1.4.1\AndroidManifest.xml:29:9-33:78
+MERGED from [androidx.camera:camera-core:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f21a7eb0471e54f95c63c1fb78b6b8d5\transformed\camera-core-1.4.1\AndroidManifest.xml:29:9-33:78
+	tools:node
+		ADDED from [androidx.camera:camera-camera2:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb7db9f77b6c98f2859e9c333c6bcd1\transformed\camera-camera2-1.4.1\AndroidManifest.xml:29:13-31
+	android:enabled
+		ADDED from [androidx.camera:camera-camera2:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb7db9f77b6c98f2859e9c333c6bcd1\transformed\camera-camera2-1.4.1\AndroidManifest.xml:26:13-36
+	android:exported
+		ADDED from [androidx.camera:camera-camera2:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb7db9f77b6c98f2859e9c333c6bcd1\transformed\camera-camera2-1.4.1\AndroidManifest.xml:27:13-37
+	tools:ignore
+		ADDED from [androidx.camera:camera-camera2:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb7db9f77b6c98f2859e9c333c6bcd1\transformed\camera-camera2-1.4.1\AndroidManifest.xml:28:13-75
+	android:name
+		ADDED from [androidx.camera:camera-camera2:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb7db9f77b6c98f2859e9c333c6bcd1\transformed\camera-camera2-1.4.1\AndroidManifest.xml:25:13-75
+meta-data#androidx.camera.core.impl.MetadataHolderService.DEFAULT_CONFIG_PROVIDER
+ADDED from [androidx.camera:camera-camera2:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb7db9f77b6c98f2859e9c333c6bcd1\transformed\camera-camera2-1.4.1\AndroidManifest.xml:30:13-32:89
+	android:value
+		ADDED from [androidx.camera:camera-camera2:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb7db9f77b6c98f2859e9c333c6bcd1\transformed\camera-camera2-1.4.1\AndroidManifest.xml:32:17-86
+	android:name
+		ADDED from [androidx.camera:camera-camera2:1.4.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\7fb7db9f77b6c98f2859e9c333c6bcd1\transformed\camera-camera2-1.4.1\AndroidManifest.xml:31:17-103
+service#com.google.mlkit.common.internal.MlKitComponentDiscoveryService
+ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\42f5b1f80005d3f40ebab8c1073b4894\transformed\play-services-mlkit-barcode-scanning-18.3.1\AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\3234aa7cc92b7b2de0e18bf1428b5999\transformed\vision-common-17.3.0\AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\3234aa7cc92b7b2de0e18bf1428b5999\transformed\vision-common-17.3.0\AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:15:9-23:19
+MERGED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:15:9-23:19
+	android:exported
+		ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\42f5b1f80005d3f40ebab8c1073b4894\transformed\play-services-mlkit-barcode-scanning-18.3.1\AndroidManifest.xml:11:13-37
+	tools:targetApi
+		ADDED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:19:13-32
+	android:directBootAware
+		ADDED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:17:13-43
+	android:name
+		ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\42f5b1f80005d3f40ebab8c1073b4894\transformed\play-services-mlkit-barcode-scanning-18.3.1\AndroidManifest.xml:10:13-91
+meta-data#com.google.firebase.components:com.google.mlkit.vision.barcode.internal.BarcodeRegistrar
+ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\42f5b1f80005d3f40ebab8c1073b4894\transformed\play-services-mlkit-barcode-scanning-18.3.1\AndroidManifest.xml:12:13-14:85
+	android:value
+		ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\42f5b1f80005d3f40ebab8c1073b4894\transformed\play-services-mlkit-barcode-scanning-18.3.1\AndroidManifest.xml:14:17-82
+	android:name
+		ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\42f5b1f80005d3f40ebab8c1073b4894\transformed\play-services-mlkit-barcode-scanning-18.3.1\AndroidManifest.xml:13:17-120
+meta-data#com.google.firebase.components:com.google.mlkit.vision.common.internal.VisionCommonRegistrar
+ADDED from [com.google.mlkit:vision-common:17.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\3234aa7cc92b7b2de0e18bf1428b5999\transformed\vision-common-17.3.0\AndroidManifest.xml:12:13-14:85
+	android:value
+		ADDED from [com.google.mlkit:vision-common:17.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\3234aa7cc92b7b2de0e18bf1428b5999\transformed\vision-common-17.3.0\AndroidManifest.xml:14:17-82
+	android:name
+		ADDED from [com.google.mlkit:vision-common:17.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\3234aa7cc92b7b2de0e18bf1428b5999\transformed\vision-common-17.3.0\AndroidManifest.xml:13:17-124
+provider#com.google.mlkit.common.internal.MlKitInitProvider
+ADDED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:9:9-13:38
+	android:authorities
+		ADDED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:11:13-69
+	android:exported
+		ADDED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:12:13-37
+	android:initOrder
+		ADDED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:13:13-35
+	android:name
+		ADDED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:10:13-78
+meta-data#com.google.firebase.components:com.google.mlkit.common.internal.CommonComponentRegistrar
+ADDED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:20:13-22:85
+	android:value
+		ADDED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:22:17-82
+	android:name
+		ADDED from [com.google.mlkit:common:18.11.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\921e4efe994d7ffbea7fcb3959af1aaf\transformed\common-18.11.0\AndroidManifest.xml:21:17-120
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:18.5.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\05afd779cf5442989db6a593a1da1bb0\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:9-173
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:18.5.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\05afd779cf5442989db6a593a1da1bb0\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:146-170
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:18.5.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\05afd779cf5442989db6a593a1da1bb0\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:86-145
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:18.5.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\05afd779cf5442989db6a593a1da1bb0\transformed\play-services-base-18.5.0\AndroidManifest.xml:5:19-85
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.gms:play-services-basement:18.4.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e36e0799879adae06c8d8592500806b9\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:9-122
+	android:value
+		ADDED from [com.google.android.gms:play-services-basement:18.4.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e36e0799879adae06c8d8592500806b9\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:66-119
+	android:name
+		ADDED from [com.google.android.gms:play-services-basement:18.4.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e36e0799879adae06c8d8592500806b9\transformed\play-services-basement-18.4.0\AndroidManifest.xml:6:20-65
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e0341de45fd690e3d8d6b845d4515582\transformed\emoji2-1.3.0\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8232b3aa3ef09cfcd92302ea693560b2\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8232b3aa3ef09cfcd92302ea693560b2\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\14bfb185f851af3458f85275bd31b3fb\transformed\startup-runtime-1.1.1\AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\14bfb185f851af3458f85275bd31b3fb\transformed\startup-runtime-1.1.1\AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e0341de45fd690e3d8d6b845d4515582\transformed\emoji2-1.3.0\AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e0341de45fd690e3d8d6b845d4515582\transformed\emoji2-1.3.0\AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e0341de45fd690e3d8d6b845d4515582\transformed\emoji2-1.3.0\AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e0341de45fd690e3d8d6b845d4515582\transformed\emoji2-1.3.0\AndroidManifest.xml:25:13-67
+meta-data#androidx.emoji2.text.EmojiCompatInitializer
+ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e0341de45fd690e3d8d6b845d4515582\transformed\emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e0341de45fd690e3d8d6b845d4515582\transformed\emoji2-1.3.0\AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.3.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\e0341de45fd690e3d8d6b845d4515582\transformed\emoji2-1.3.0\AndroidManifest.xml:30:17-75
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8232b3aa3ef09cfcd92302ea693560b2\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8232b3aa3ef09cfcd92302ea693560b2\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\8232b3aa3ef09cfcd92302ea693560b2\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:30:17-78
+activity#androidx.activity.ComponentActivity
+ADDED from [androidx.compose.ui:ui-test-manifest:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\0a2051f04bd42058beda67ffdcff93ed\transformed\ui-test-manifest-1.7.6\AndroidManifest.xml:23:9-25:39
+	android:exported
+		ADDED from [androidx.compose.ui:ui-test-manifest:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\0a2051f04bd42058beda67ffdcff93ed\transformed\ui-test-manifest-1.7.6\AndroidManifest.xml:25:13-36
+	android:name
+		ADDED from [androidx.compose.ui:ui-test-manifest:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\0a2051f04bd42058beda67ffdcff93ed\transformed\ui-test-manifest-1.7.6\AndroidManifest.xml:24:13-63
+activity#androidx.compose.ui.tooling.PreviewActivity
+ADDED from [androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a029491cd99da64c000523f5cfa5eac3\transformed\ui-tooling-release\AndroidManifest.xml:23:9-25:39
+	android:exported
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a029491cd99da64c000523f5cfa5eac3\transformed\ui-tooling-release\AndroidManifest.xml:25:13-36
+	android:name
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\a029491cd99da64c000523f5cfa5eac3\transformed\ui-tooling-release\AndroidManifest.xml:24:13-71
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:23:9-81
+permission#app.quacky.debug.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:26:22-94
+uses-permission#app.quacky.debug.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.15.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\4afcc6c355dbfd178dcba89544ce8773\transformed\core-1.15.0\AndroidManifest.xml:26:22-94
+service#androidx.room.MultiInstanceInvalidationService
+ADDED from [androidx.room:room-runtime:2.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\19b0b53bc36095546d07c21a3cccf661\transformed\room-runtime-2.6.1\AndroidManifest.xml:24:9-28:63
+	android:exported
+		ADDED from [androidx.room:room-runtime:2.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\19b0b53bc36095546d07c21a3cccf661\transformed\room-runtime-2.6.1\AndroidManifest.xml:27:13-37
+	tools:ignore
+		ADDED from [androidx.room:room-runtime:2.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\19b0b53bc36095546d07c21a3cccf661\transformed\room-runtime-2.6.1\AndroidManifest.xml:28:13-60
+	android:directBootAware
+		ADDED from [androidx.room:room-runtime:2.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\19b0b53bc36095546d07c21a3cccf661\transformed\room-runtime-2.6.1\AndroidManifest.xml:26:13-43
+	android:name
+		ADDED from [androidx.room:room-runtime:2.6.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\19b0b53bc36095546d07c21a3cccf661\transformed\room-runtime-2.6.1\AndroidManifest.xml:25:13-74
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\b9ffb8638ab7cc56015405ee86d037e4\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
+package#com.google.ar.core
+ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:21:9-54
+	android:name
+		ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:21:18-51
+package#com.android.vending
+ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:22:9-55
+	android:name
+		ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:22:18-52
+intent#action:name:com.google.android.play.core.install.BIND_INSTALL_SERVICE
+ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:24:9-26:18
+action#com.google.android.play.core.install.BIND_INSTALL_SERVICE
+ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:25:13-96
+	android:name
+		ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:25:21-93
+meta-data#com.google.ar.core.min_apk_version
+ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:32:9-34:41
+	android:value
+		ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:34:13-38
+	android:name
+		ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:33:13-62
+activity#com.google.ar.core.InstallActivity
+ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:36:9-42:80
+	android:excludeFromRecents
+		ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:39:13-46
+	android:launchMode
+		ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:41:13-43
+	android:exported
+		ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:40:13-37
+	android:configChanges
+		ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:38:13-74
+	android:theme
+		ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:42:13-77
+	android:name
+		ADDED from [com.google.ar:core:1.46.0] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\dae538b769700b12b2f527de70f9e62b\transformed\core-1.46.0\AndroidManifest.xml:37:13-62
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6d5ba7d2b6163c4c8811a464e6c1b8af\transformed\transport-backend-cct-2.3.3\AndroidManifest.xml:25:5-79
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:22:5-79
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:22:5-79
+	android:name
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6d5ba7d2b6163c4c8811a464e6c1b8af\transformed\transport-backend-cct-2.3.3\AndroidManifest.xml:25:22-76
+uses-permission#android.permission.INTERNET
+ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6d5ba7d2b6163c4c8811a464e6c1b8af\transformed\transport-backend-cct-2.3.3\AndroidManifest.xml:26:5-67
+	android:name
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6d5ba7d2b6163c4c8811a464e6c1b8af\transformed\transport-backend-cct-2.3.3\AndroidManifest.xml:26:22-64
+service#com.google.android.datatransport.runtime.backends.TransportBackendDiscovery
+ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6d5ba7d2b6163c4c8811a464e6c1b8af\transformed\transport-backend-cct-2.3.3\AndroidManifest.xml:29:9-35:19
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:36:9-38:40
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:36:9-38:40
+	android:exported
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6d5ba7d2b6163c4c8811a464e6c1b8af\transformed\transport-backend-cct-2.3.3\AndroidManifest.xml:31:13-37
+	android:name
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6d5ba7d2b6163c4c8811a464e6c1b8af\transformed\transport-backend-cct-2.3.3\AndroidManifest.xml:30:13-103
+meta-data#backend:com.google.android.datatransport.cct.CctBackendFactory
+ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6d5ba7d2b6163c4c8811a464e6c1b8af\transformed\transport-backend-cct-2.3.3\AndroidManifest.xml:32:13-34:39
+	android:value
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6d5ba7d2b6163c4c8811a464e6c1b8af\transformed\transport-backend-cct-2.3.3\AndroidManifest.xml:34:17-36
+	android:name
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\6d5ba7d2b6163c4c8811a464e6c1b8af\transformed\transport-backend-cct-2.3.3\AndroidManifest.xml:33:17-94
+service#com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService
+ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:26:9-30:19
+	android:exported
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:28:13-37
+	android:permission
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:29:13-69
+	android:name
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:27:13-117
+receiver#com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver
+ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:32:9-34:40
+	android:exported
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:34:13-37
+	android:name
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] C:\Users\solarquack\.gradle\caches\8.11.1\transforms\f4be6ec8613a00afa851948bda70de1e\transformed\transport-runtime-2.2.6\AndroidManifest.xml:33:13-132

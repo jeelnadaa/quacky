@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 320" width="960" height="320">
+  <rect width="960" height="320" fill="#0A0A0A" />
+  <!-- Scaled Duck Mark on the left (height 200, y=60) -->
+  <g transform="translate(40, 60) scale(0.39)">
+    <path fill="#F2F2F2" d="M 120 280
+             C 100 245, 140 220, 180 235
+             C 215 248, 245 220, 275 180
+             C 290 160, 305 130, 340 130
+             C 385 130, 415 165, 415 205
+             C 415 210, 414 216, 412 222
+             L 470 236
+             C 478 238, 480 248, 474 254
+             L 412 282
+             C 395 330, 345 365, 290 370
+             C 210 375, 135 340, 120 280 Z" />
+    <path d="M 412 248 L 460 245" stroke="#0A0A0A" stroke-width="4" stroke-linecap="round" />
+    <circle cx="360" cy="190" r="14" fill="#0A0A0A" />
+    <circle cx="364" cy="186" r="4.5" fill="#F2F2F2" />
+  </g>
+
+  <!-- Wordmark 'Quacky' in clean geometric Satoshi Bold vector forms -->
+  <g fill="#F2F2F2" transform="translate(260, 100)">
+    <!-- Q -->
+    <path d="M 50 10 C 22 10 0 32 0 60 C 0 88 22 110 50 110 C 62 110 73 105 81 97 L 95 112 L 108 99 L 94 84 C 98 77 100 69 100 60 C 100 32 78 10 50 10 Z M 50 30 C 67 30 80 43 80 60 C 80 68 77 75 72 80 L 59 67 L 46 80 L 58 90 C 55 90 53 90 50 90 C 33 90 20 77 20 60 C 20 43 33 30 50 30 Z" />
+    
+    <!-- u -->
+    <path transform="translate(115, 30)" d="M 0 0 L 20 0 L 20 50 C 20 60 28 65 38 65 C 48 65 56 60 56 50 L 56 0 L 76 0 L 76 80 L 57 80 L 57 71 C 51 77 43 82 32 82 C 14 82 0 70 0 48 Z" />
+    
+    <!-- a -->
+    <path transform="translate(205, 30)" d="M 38 0 C 16 0 2 12 0 28 L 20 28 C 22 20 30 16 38 16 C 50 16 57 23 57 32 L 57 38 C 50 34 40 33 29 34 C 11 36 0 46 0 60 C 0 73 11 82 27 82 C 39 82 49 76 55 68 L 56 80 L 76 80 L 76 34 C 76 13 62 0 38 0 Z M 26 66 C 18 66 14 62 14 56 C 14 50 19 46 29 45 C 38 44 47 46 56 49 C 55 59 47 66 36 66 Z" />
+    
+    <!-- c -->
+    <path transform="translate(295, 30)" d="M 45 0 C 20 0 0 19 0 41 C 0 63 20 82 45 82 C 60 82 72 74 76 63 L 56 57 C 53 62 48 66 43 66 C 29 66 20 55 20 41 C 20 27 29 16 43 16 C 48 16 53 20 56 25 L 76 19 C 72 8 60 0 45 0 Z" />
+    
+    <!-- k -->
+    <path transform="translate(380, 0)" d="M 0 0 L 20 0 L 20 63 L 52 30 L 78 30 L 40 68 L 80 110 L 54 110 L 20 74 L 20 110 L 0 110 Z" />
+    
+    <!-- y -->
+    <path transform="translate(470, 30)" d="M 0 0 L 22 0 L 38 48 L 54 0 L 76 0 L 48 82 C 41 102 30 112 10 112 L 0 112 L 0 95 L 7 95 C 18 95 24 88 28 76 L 0 0 Z" />
+  </g>
+</svg>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Quacky Monochromatic Dark Palette -->
+    <color name="quacky_background">#0A0A0A</color>
+    <color name="quacky_surface">#121212</color>
+    <color name="quacky_surface_elevated">#1A1A1A</color>
+    <color name="quacky_outline">#2A2A2A</color>
+    <color name="quacky_text_primary">#F2F2F2</color>
+    <color name="quacky_text_secondary">#9A9A9A</color>
+    <color name="quacky_text_tertiary">#5E5E5E</color>
+    <color name="quacky_accent">#FFFFFF</color>
+    <color name="quacky_destructive">#B3261E</color>
+</resources>

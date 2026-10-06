@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">Quacky</string>
+    <string name="app_tagline">No ads · No tracking · 100% offline</string>
+
+    <!-- Developer Placeholders -->
+    <string name="developer_name">Quacky Developer</string>
+    <string name="developer_email">developer@quacky.app</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_history">History</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Home Sections -->
+    <string name="search_tools_hint">Search tools</string>
+    <string name="pinned_section_title">Pinned</string>
+    <string name="pinned_empty_hint">Long-press any tool to pin it.</string>
+    <string name="recent_section_title">Recent</string>
+    <string name="categories_section_title">Categories</string>
+    <string name="no_tools_found">No tool found for \"%1$s\"</string>
+
+    <!-- Categories -->
+    <string name="cat_scan_generate">Scan &amp; Generate</string>
+    <string name="cat_measure">Measure</string>
+    <string name="cat_color_image">Color &amp; Image</string>
+    <string name="cat_text_date">Text &amp; Date</string>
+    <string name="cat_random">Random</string>
+
+    <!-- Tool Names & Descriptions -->
+    <string name="tool_qr_scanner_name">QR &amp; Barcode Scanner</string>
+    <string name="tool_qr_scanner_desc">Scan QR codes and common barcodes offline</string>
+    <string name="tool_qr_generator_name">QR &amp; Barcode Generator</string>
+    <string name="tool_qr_generator_desc">Generate QR codes and barcodes in multiple formats</string>
+    <string name="tool_ar_ruler_name">AR Ruler</string>
+    <string name="tool_ar_ruler_desc">Measure real-world distances and heights with AR</string>
+    <string name="tool_screen_ruler_name">On-Screen Ruler</string>
+    <string name="tool_screen_ruler_desc">Physical on-screen ruler with mm and inch scale</string>
+    <string name="tool_area_volume_name">Area &amp; Volume Calculator</string>
+    <string name="tool_area_volume_desc">2D and 3D geometric shapes and material estimators</string>
+    <string name="tool_color_picker_name">Color Picker</string>
+    <string name="tool_color_picker_desc">Pin-point color inspection from camera or photos</string>
+    <string name="tool_metadata_name">Photo Metadata</string>
+    <string name="tool_metadata_desc">View EXIF data and strip private metadata losslessly</string>
+    <string name="tool_compressor_name">Image &amp; PDF Compressor</string>
+    <string name="tool_compressor_desc">Compress pictures and documents offline</string>
+    <string name="tool_text_counter_name">Text Counter</string>
+    <string name="tool_text_counter_desc">Word, character, and frequency stats with grapheme precision</string>
+    <string name="tool_date_calc_name">Date Calculator</string>
+    <string name="tool_date_calc_desc">Age, intervals, business days, and countdowns</string>
+    <string name="tool_dice_name">Dice</string>
+    <string name="tool_dice_desc">Roll d4 to d100 with optional modifiers and shake gesture</string>
+    <string name="tool_coin_flip_name">Coin Flip</string>
+    <string name="tool_coin_flip_desc">Flip 1–10 coins with session statistics and custom labels</string>
+    <string name="tool_random_number_name">Random Number</string>
+    <string name="tool_random_number_desc">Generate random numbers, unseeded or reproducible seeded</string>
+    <string name="tool_picker_wheel_name">Picker Wheel</string>
+    <string name="tool_picker_wheel_desc">Spin a custom weighted wheel with elimination mode</string>
+    <string name="tool_team_splitter_name">Team Splitter</string>
+    <string name="tool_team_splitter_desc">Divide groups fairly with skill balancing and constraints</string>
+
+    <!-- Missing Requirement Messages (Honest by Design, 5A.3) -->
+    <string name="req_missing_back_camera">Your phone doesn\'t have a back camera, which this tool needs.</string>
+    <string name="req_missing_scanner_camera">Your phone doesn\'t have a back camera, which the QR Scanner needs.</string>
+    <string name="req_missing_arcore_unsupported">Your phone doesn\'t support Google ARCore, which the AR Ruler needs to measure.</string>
+    <string name="req_missing_arcore_needs_install">Google Play Services for AR is required to use AR Ruler.</string>
+    <string name="req_missing_arcore_install_button">Install AR Services</string>
+    <string name="req_missing_flash">Your phone doesn\'t have a flash, so the torch isn\'t available.</string>
+    <string name="req_missing_accelerometer">Your phone doesn\'t have an accelerometer, so shake detection isn\'t available.</string>
+    <string name="req_missing_vibrator">Haptics are not supported on this device.</string>
+    <string name="req_missing_display_metrics">Display scale could not be verified automatically. Please calibrate the ruler to ensure physical accuracy.</string>
+    <string name="req_no_intent_handler">No app on this phone can open this.</string>
+    <string name="req_unsupported_file_type">This phone can\'t open this file type.</string>
+    <string name="req_file_too_large">This file is too large to process on this phone.</string>
+
+    <!-- Permission Rationale (In-tool) -->
+    <string name="camera_permission_rationale">Camera is used on-device only. Nothing is uploaded.</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="open_settings">Open Settings</string>
+
+    <!-- Easter Egg strings (7B) -->
+    <string name="quack_countdown">%1$d more quacks…</string>
+    <string name="quack_countdown_one">1 more quack…</string>
+    <string name="easter_egg_title">You found the quack.</string>
+    <string name="easter_egg_p1">Hi, I\'m %1$s, and I made Quacky.</string>
+    <string name="easter_egg_p2">I got tired of needing a QR scanner, a ruler, a color picker or a file compressor and ending up in an app that was half ads, half permission requests. The tools were simple, but the experience was not.</string>
+    <string name="easter_egg_p3">So I built the app I wanted for myself: all the small everyday tools in one place, clean and quiet.</string>
+    <string name="easter_egg_p4">Quacky works fully offline. It doesn\'t even have permission to access the internet. There are no ads, no accounts, no analytics, and no tracking. Nothing you scan, measure, pick, count or compress ever leaves your phone. Your history is stored only on your device, and you can delete it any time.</string>
+    <string name="easter_egg_p5">If your phone is missing something a tool needs, like a camera or AR support, Quacky will tell you plainly instead of pretending it works. I\'d rather be honest than give you false hope.</string>
+    <string name="easter_egg_p6">I built it myself, and I\'m still improving it. If something is broken, missing, or you just have an idea for a tool, I\'d genuinely like to hear from you.</string>
+    <string name="easter_egg_p7">Thanks for using it. Quack.</string>
+    <string name="easter_egg_signoff">— %1$s</string>
+    <string name="developed_by">Developed by %1$s</string>
+    <string name="easter_egg_feedback_subject">Quacky feedback</string>
+    <string name="easter_egg_developer_note_row">Developer\'s note</string>
+
+    <!-- Actions -->
+    <string name="action_copy">Copy</string>
+    <string name="action_share">Share</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_clear">Clear</string>
+    <string name="action_back">Back</string>
+    <string name="action_done">Done</string>
+    <string name="action_next">Next</string>
+    <string name="action_skip">Skip</string>
+    <string name="action_got_it">Got it</string>
+    <string name="action_close">Close</string>
+    <string name="action_pin">Pin</string>
+    <string name="action_unpin">Unpin</string>
+    <string name="action_how_to_use">How to use</string>
+    <string name="action_open">Open</string>
+</resources>
