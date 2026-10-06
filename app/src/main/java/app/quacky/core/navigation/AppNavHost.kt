@@ -8,7 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,10 +30,18 @@ import app.quacky.core.designsystem.theme.QuackyTextSecondary
 import app.quacky.core.registry.ToolCategory
 import app.quacky.core.registry.ToolDefinition
 import app.quacky.core.registry.ToolRegistry
+import app.quacky.core.tips.GuideRegistry
+import app.quacky.core.tips.HowToSheet
 import app.quacky.data.local.preferences.AppPreferences
+import app.quacky.feature.about.EasterEggScreen
 import app.quacky.feature.category.CategoryScreen
+import app.quacky.feature.help.AllGuidesScreen
+import app.quacky.feature.history.GlobalHistoryScreen
+import app.quacky.feature.history.HistoryViewModel
 import app.quacky.feature.home.HomeScreen
 import app.quacky.feature.home.HomeViewModel
+import app.quacky.feature.settings.SettingsScreen
+import app.quacky.feature.settings.SettingsViewModel
 
 @Composable
 fun AppNavHost(
@@ -46,7 +56,8 @@ fun AppNavHost(
     val pinnedToolIds by preferences.pinnedToolIds.collectAsState(initial = emptyList())
     val isRulerCalibrated by preferences.isRulerCalibrated.collectAsState(initial = false)
 
-    // Show bottom bar only on top-level destinations
+    var activeGuideTool by remember { mutableStateOf<ToolDefinition?>(null) }
+
     val isTopLevelDestination = currentRoute in listOf(
         NavRoutes.HOME,
         NavRoutes.HISTORY,
@@ -90,32 +101,50 @@ fun AppNavHost(
                         navController.navigate(NavRoutes.category(category.id))
                     },
                     onOpenHowToUse = { tool ->
-                        // Guide viewer route (wired in Phase 3)
+                        activeGuideTool = tool
                     }
                 )
             }
 
-            // 2. Global History (Stub for Phase 3)
+            // 2. Global History
             composable(NavRoutes.HISTORY) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = "Global History (Phase 3)", color = QuackyTextSecondary)
-                }
+                val historyViewModel: HistoryViewModel = hiltViewModel()
+                GlobalHistoryScreen(
+                    viewModel = historyViewModel,
+                    onNavigateToToolWithEntry = { tool, _ ->
+                        navController.navigate(NavRoutes.tool(tool.id))
+                    }
+                )
             }
 
-            // 3. Settings Screen (Stub for Phase 3)
+            // 3. Settings Screen
             composable(NavRoutes.SETTINGS) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = "Settings (Phase 3)", color = QuackyTextSecondary)
-                }
+                val settingsViewModel: SettingsViewModel = hiltViewModel()
+                SettingsScreen(
+                    viewModel = settingsViewModel,
+                    onNavigateToAllGuides = { navController.navigate(NavRoutes.ALL_GUIDES) },
+                    onNavigateToEasterEgg = { navController.navigate(NavRoutes.EASTER_EGG) }
+                )
             }
 
-            // 4. Category Screen
+            // 4. All Guides Screen
+            composable(NavRoutes.ALL_GUIDES) {
+                AllGuidesScreen(onBack = { navController.popBackStack() })
+            }
+
+            // 5. Easter Egg Screen
+            composable(NavRoutes.EASTER_EGG) {
+                EasterEggScreen(onClose = { navController.popBackStack() })
+            }
+
+            // 6. Category Screen
             composable(
                 route = NavRoutes.CATEGORY_PATTERN,
                 arguments = listOf(navArgument("categoryId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val categoryId = backStackEntry.arguments?.getString("categoryId")
                 val category = ToolCategory.entries.firstOrNull { it.id == categoryId } ?: ToolCategory.SCAN_GENERATE
+                val homeViewModel: HomeViewModel = hiltViewModel()
                 CategoryScreen(
                     category = category,
                     onBack = { navController.popBackStack() },
@@ -123,24 +152,22 @@ fun AppNavHost(
                         navController.navigate(NavRoutes.tool(tool.id))
                     },
                     onOpenHowToUse = { tool ->
-                        // Guide viewer route
+                        activeGuideTool = tool
                     },
                     isToolPinned = { id -> pinnedToolIds.contains(id) },
-                    onTogglePin = { id ->
-                        // toggle pin in preferences
-                    }
+                    onTogglePin = { id -> homeViewModel.togglePin(id) }
                 )
             }
 
-            // 5. Tool Screen with Hardware Capability Honesty Gating (Section 5A)
+            // 7. Tool Screen with Hardware Capability Honesty Gating (Section 5A)
             composable(
                 route = NavRoutes.TOOL_PATTERN,
                 arguments = listOf(navArgument("toolId") { type = NavType.StringType })
             ) { backStackEntry ->
                 val toolId = backStackEntry.arguments?.getString("toolId")
                 val tool = ToolRegistry.getById(toolId ?: "") ?: ToolRegistry.TEXT_COUNTER
+                val homeViewModel: HomeViewModel = hiltViewModel()
 
-                // Gating check: Section 5A
                 val checkResult = remember(tool, isRulerCalibrated) {
                     requirementChecker.check(tool, isRulerCalibrated)
                 }
@@ -150,18 +177,16 @@ fun AppNavHost(
                         MissingRequirementScreen(
                             tool = tool,
                             missingResult = checkResult,
-                            onBack = { navController.popBackStack() },
-                            onArInstallRequested = {
-                                // Hand off to system ARCore install flow
-                            }
+                            onBack = { navController.popBackStack() }
                         )
                     }
                     RequirementResult.Ready -> {
-                        // Tool placeholder content (implemented tool by tool in steps 4-12)
                         ToolScaffold(
                             tool = tool,
                             onBack = { navController.popBackStack() },
-                            isPinned = pinnedToolIds.contains(tool.id)
+                            isPinned = pinnedToolIds.contains(tool.id),
+                            onTogglePin = { homeViewModel.togglePin(tool.id) },
+                            onHelpClick = { activeGuideTool = tool }
                         ) { toolPadding ->
                             Box(
                                 modifier = Modifier
@@ -179,5 +204,13 @@ fun AppNavHost(
                 }
             }
         }
+    }
+
+    activeGuideTool?.let { tool ->
+        val guide = remember(tool) { GuideRegistry.getGuideForTool(tool.id) }
+        HowToSheet(
+            guide = guide,
+            onDismiss = { activeGuideTool = null }
+        )
     }
 }
