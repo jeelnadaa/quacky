@@ -96,6 +96,11 @@ fun TipVisual(
             VisualType.AREA_SHAPE -> drawAreaShapeVisual(progress)
             VisualType.AREA_RESULTS -> drawAreaResultsVisual(progress)
             VisualType.AREA_ESTIMATE -> drawAreaEstimateVisual(progress)
+            VisualType.AR_PLANE -> drawArPlaneVisual(progress)
+            VisualType.AR_POINTS -> drawArPointsVisual(progress)
+            VisualType.AR_MODES -> drawArModesVisual(progress)
+            VisualType.AR_HEIGHT -> drawArHeightVisual(progress)
+            VisualType.AR_ESTIMATE -> drawArEstimateVisual(progress)
             else -> drawGenericTipVisual(progress)
         }
     }
@@ -555,6 +560,164 @@ private fun DrawScope.drawAreaEstimateVisual(progress: Float) {
     // Bucket/number
     drawCircle(QuackyAccent, radius = 10f, center = Offset(cx + 45f, cy))
 }
+
+private fun DrawScope.drawArPlaneVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+
+    // Swaying phone outline
+    val sway = kotlin.math.sin(progress * kotlin.math.PI * 2).toFloat() * 30f
+    drawPhoneOutline(cx + sway, cy - 25f, 60f, 90f)
+
+    // Floor plane dots fading in
+    val dotAlpha = (progress * 1.5f).coerceIn(0.2f, 1f)
+    for (ix in -3..3) {
+        for (iy in 0..2) {
+            val px = cx + (ix * 28f)
+            val py = cy + 30f + (iy * 18f)
+            drawCircle(
+                color = QuackyAccent.copy(alpha = dotAlpha),
+                radius = 2.5f,
+                center = Offset(px, py)
+            )
+        }
+    }
+}
+
+private fun DrawScope.drawArPointsVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+
+    val p1 = Offset(cx - 65f, cy)
+    val p2 = Offset(cx + 65f, cy)
+
+    // Start point
+    drawCircle(QuackyAccent, radius = 6f, center = p1)
+    drawCircle(QuackyTextSecondary, radius = 12f, center = p1, style = Stroke(1.5f))
+
+    // End point appears
+    if (progress > 0.4f) {
+        val lineProgress = ((progress - 0.4f) / 0.4f).coerceIn(0f, 1f)
+        val currX = p1.x + (p2.x - p1.x) * lineProgress
+        drawLine(QuackyAccent, p1, Offset(currX, cy), strokeWidth = 3f)
+
+        if (progress > 0.8f) {
+            drawCircle(QuackyAccent, radius = 6f, center = p2)
+            drawCircle(QuackyTextSecondary, radius = 12f, center = p2, style = Stroke(1.5f))
+
+            // Distance pill at midpoint
+            drawRoundRect(
+                color = QuackySurface,
+                topLeft = Offset(cx - 25f, cy - 14f),
+                size = Size(50f, 28f),
+                cornerRadius = CornerRadius(14f, 14f)
+            )
+            drawRoundRect(
+                color = QuackyOutline,
+                topLeft = Offset(cx - 25f, cy - 14f),
+                size = Size(50f, 28f),
+                cornerRadius = CornerRadius(14f, 14f),
+                style = Stroke(1.5f)
+            )
+            drawCircle(QuackyAccent, radius = 3f, center = Offset(cx, cy))
+        }
+    }
+}
+
+private fun DrawScope.drawArModesVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+
+    val activeIndex = (progress * 4).toInt().coerceIn(0, 3)
+    val startX = cx - 75f
+
+    for (i in 0..3) {
+        val bx = startX + (i * 40f)
+        val isSelected = (i == activeIndex)
+        val bg = if (isSelected) QuackyAccent else QuackySurface
+        val border = if (isSelected) QuackyAccent else QuackyOutline
+
+        drawRoundRect(
+            color = bg,
+            topLeft = Offset(bx, cy - 18f),
+            size = Size(32f, 36f),
+            cornerRadius = CornerRadius(8f, 8f)
+        )
+        drawRoundRect(
+            color = border,
+            topLeft = Offset(bx, cy - 18f),
+            size = Size(32f, 36f),
+            cornerRadius = CornerRadius(8f, 8f),
+            style = Stroke(1.5f)
+        )
+        // Mini icon dot or line
+        val icColor = if (isSelected) QuackySurface else QuackyTextSecondary
+        drawCircle(icColor, radius = 4f, center = Offset(bx + 16f, cy))
+    }
+}
+
+private fun DrawScope.drawArHeightVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+
+    // Floor line
+    drawLine(QuackyTextTertiary, Offset(cx - 80f, cy + 45f), Offset(cx + 80f, cy + 45f), strokeWidth = 2f)
+
+    // Floor tap ring
+    val floorPoint = Offset(cx, cy + 45f)
+    drawCircle(QuackyAccent, radius = 5f, center = floorPoint)
+    drawCircle(QuackyTextSecondary, radius = 10f, center = floorPoint, style = Stroke(1.5f))
+
+    // Vertical line rising up
+    val heightProgress = progress.coerceIn(0f, 1f)
+    val topY = floorPoint.y - (80f * heightProgress)
+    drawLine(QuackyAccent, floorPoint, Offset(cx, topY), strokeWidth = 2.5f)
+
+    if (progress > 0.6f) {
+        drawCircle(QuackyAccent, radius = 5f, center = Offset(cx, topY))
+
+        // Height pill
+        drawRoundRect(
+            color = QuackySurface,
+            topLeft = Offset(cx + 12f, cy - 10f),
+            size = Size(45f, 22f),
+            cornerRadius = CornerRadius(11f, 11f)
+        )
+        drawRoundRect(
+            color = QuackyOutline,
+            topLeft = Offset(cx + 12f, cy - 10f),
+            size = Size(45f, 22f),
+            cornerRadius = CornerRadius(11f, 11f),
+            style = Stroke(1.5f)
+        )
+    }
+}
+
+private fun DrawScope.drawArEstimateVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+
+    // Center pill showing measurement
+    drawRoundRect(
+        color = QuackySurface,
+        topLeft = Offset(cx - 55f, cy - 22f),
+        size = Size(110f, 44f),
+        cornerRadius = CornerRadius(14f, 14f)
+    )
+    drawRoundRect(
+        color = QuackyOutline,
+        topLeft = Offset(cx - 55f, cy - 22f),
+        size = Size(110f, 44f),
+        cornerRadius = CornerRadius(14f, 14f),
+        style = Stroke(1.5f)
+    )
+
+    // Estimate indicator line with +/- wobble
+    val wobble = kotlin.math.sin(progress * kotlin.math.PI * 4).toFloat() * 3f
+    drawLine(QuackyTextSecondary, Offset(cx - 30f + wobble, cy), Offset(cx - 15f + wobble, cy), strokeWidth = 2f)
+    drawLine(QuackyAccent, Offset(cx - 5f, cy), Offset(cx + 35f, cy), strokeWidth = 3f)
+}
+
 
 
 

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.quacky.core.capability.ArCoreStatus
 import app.quacky.core.capability.DeviceCapabilities
+import app.quacky.core.registry.ToolRegistry
 import app.quacky.data.repository.HistoryRepository
 import app.quacky.feature.areavolume.domain.AreaUnit
 import app.quacky.feature.areavolume.domain.AreaVolumeMath
@@ -71,7 +72,8 @@ class AreaVolumeViewModel @Inject constructor(
             val arReady = capabilities.arCoreStatus == ArCoreStatus.SUPPORTED_AND_READY
             if (arReady) {
                 // Check if any AR Ruler measurements exist in history
-                val arHistory = historyRepository.getHistoryForTool("arruler").firstOrNull() ?: emptyList()
+                val arHistory = (historyRepository.getHistoryForTool(ToolRegistry.AR_RULER.id).firstOrNull() ?: emptyList()) +
+                    (historyRepository.getHistoryForTool("arruler").firstOrNull() ?: emptyList())
                 val lengths = mutableListOf<Double>()
                 for (entry in arHistory) {
                     try {

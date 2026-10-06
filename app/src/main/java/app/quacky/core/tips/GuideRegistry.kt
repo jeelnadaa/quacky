@@ -386,6 +386,41 @@ object GuideRegistry {
                     a11yDescription = "Result card showing percentage saved with save and share actions"
                 )
             )
+        ),
+        ToolRegistry.AR_RULER.id to ToolGuide(
+            toolId = ToolRegistry.AR_RULER.id,
+            steps = listOf(
+                TipStep(
+                    visualType = VisualType.AR_PLANE,
+                    title = "Find a surface",
+                    body = "Move your phone slowly over a surface until dots appear. Good light helps.",
+                    a11yDescription = "Phone scanning over surface until plane dots appear"
+                ),
+                TipStep(
+                    visualType = VisualType.AR_POINTS,
+                    title = "Place the points",
+                    body = "Tap where you want to start, then tap where you want to end.",
+                    a11yDescription = "Finger tapping start and end points with distance line"
+                ),
+                TipStep(
+                    visualType = VisualType.AR_MODES,
+                    title = "Pick a mode",
+                    body = "Switch modes at the bottom to measure a path with many points, a height, or an angle.",
+                    a11yDescription = "Segmented mode selector with Distance, Path, Height, Angle"
+                ),
+                TipStep(
+                    visualType = VisualType.AR_HEIGHT,
+                    title = "Measuring height",
+                    body = "For height, tap the floor first, then tap the top.",
+                    a11yDescription = "Measuring height from floor point up to top point"
+                ),
+                TipStep(
+                    visualType = VisualType.AR_ESTIMATE,
+                    title = "Good to know",
+                    body = "AR gives a good estimate, not a perfect measurement. Plain, well-lit, non-shiny surfaces work best.",
+                    a11yDescription = "Phone showing estimate margin of error"
+                )
+            )
         )
     )
 

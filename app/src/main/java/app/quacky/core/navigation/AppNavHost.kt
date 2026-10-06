@@ -174,10 +174,19 @@ fun AppNavHost(
 
                 when (checkResult) {
                     is RequirementResult.Missing -> {
+                        val context = androidx.compose.ui.platform.LocalContext.current
+                        val activity = context as? android.app.Activity
                         MissingRequirementScreen(
                             tool = tool,
                             missingResult = checkResult,
-                            onBack = { navController.popBackStack() }
+                            onBack = { navController.popBackStack() },
+                            onArInstallRequested = if (checkResult.isArSetupRequired && activity != null) {
+                                {
+                                    try {
+                                        com.google.ar.core.ArCoreApk.getInstance().requestInstall(activity, true)
+                                    } catch (_: Exception) {}
+                                }
+                            } else null
                         )
                     }
                     RequirementResult.Ready -> {
@@ -298,6 +307,19 @@ fun AppNavHost(
                                     onOpenHowToUse = { activeGuideTool = tool },
                                     isPinned = pinnedToolIds.contains(tool.id),
                                     onTogglePin = { homeViewModel.togglePin(tool.id) }
+                                )
+                            }
+                            ToolRegistry.AR_RULER.id -> {
+                                val arRulerViewModel: app.quacky.feature.arruler.presentation.ArRulerViewModel = hiltViewModel()
+                                app.quacky.feature.arruler.presentation.ArRulerScreen(
+                                    viewModel = arRulerViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool },
+                                    isPinned = pinnedToolIds.contains(tool.id),
+                                    onTogglePin = { homeViewModel.togglePin(tool.id) },
+                                    onNavigateToAreaVolume = { _ ->
+                                        navController.navigate(NavRoutes.tool(ToolRegistry.AREA_VOLUME.id))
+                                    }
                                 )
                             }
                             else -> {

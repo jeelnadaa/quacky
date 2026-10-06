@@ -31,4 +31,10 @@
 ## ADR 008: Memory-Safe Compression & Binary Search Sizing
 - **Decision:** Target-file-size compression utilizes an iterative binary search on quality, followed by proportional dimension downscaling if needed. PDF compression processes pages sequentially using `PdfRenderer` and `PdfDocument` with immediate bitmap recycling to prevent out-of-memory errors on large documents.
 - **Rationale:** Adheres to Section 5A.5 runtime honesty and prevents OOM crashes on memory-constrained devices.
+## ADR 009: Geometric Solvers & Estimator Modeling
+- **Decision:** Area & Volume Calculator provides pure Kotlin mathematical models for 10 2D shapes (including the Shoelace polygon formula) and 8 3D shapes, coupled with unit conversions across metric and imperial systems and practical material estimators.
+- **Rationale:** Guarantees deterministic geometry and material estimation with input validation (e.g. triangle inequality, positive dimensions) preventing runtime crashes.
 
+## ADR 010: AR Ruler Architecture & 3D Screen Projection
+- **Decision:** Sceneform is deprecated, so AR Ruler couples ARCore plane tracking with an OpenGL ES 2.0 camera background renderer (`ArRenderer`) and a Jetpack Compose overlay. 3D world anchors are projected onto 2D viewport coordinates via pure column-major View-Projection matrix transforms. Floating distance labels automatically face the camera and render in Satoshi typography.
+- **Rationale:** Fulfills Section 7.3 specifications with zero heavy external rendering engines, supports all 4 measurement modes (Distance, Path, Height, Angle), and allows seamless interoperability by sending measured dimensions directly to Area & Volume Calculator.

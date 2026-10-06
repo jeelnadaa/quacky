@@ -35,6 +35,8 @@ class AppPreferences @Inject constructor(
         val KEY_EASTER_EGG_FOUND = booleanPreferencesKey("easter_egg_found")
         val KEY_HISTORY_MAX_ENTRIES = intPreferencesKey("history_max_entries")
         val KEY_HISTORY_RETENTION_DAYS = intPreferencesKey("history_retention_days")
+        val KEY_AR_RULER_UNIT = stringPreferencesKey("ar_ruler_unit")
+        val KEY_AR_RULER_ACCURACY_NOTE_DISMISSED = booleanPreferencesKey("ar_ruler_accuracy_note_dismissed")
     }
 
     // Pinned Tools: stored as comma-separated or JSON list of IDs
@@ -108,6 +110,13 @@ class AppPreferences @Inject constructor(
             it[KEY_RULER_IS_CALIBRATED] = false
         }
     }
+
+    // AR Ruler
+    val arRulerUnit: Flow<String> = dataStore.data.map { it[KEY_AR_RULER_UNIT] ?: "cm" }
+    suspend fun setArRulerUnit(unit: String) = dataStore.edit { it[KEY_AR_RULER_UNIT] = unit }
+
+    val isArAccuracyNoteDismissed: Flow<Boolean> = dataStore.data.map { it[KEY_AR_RULER_ACCURACY_NOTE_DISMISSED] ?: false }
+    suspend fun setArAccuracyNoteDismissed(dismissed: Boolean) = dataStore.edit { it[KEY_AR_RULER_ACCURACY_NOTE_DISMISSED] = dismissed }
 
     // Easter Egg
     val isEasterEggFound: Flow<Boolean> = dataStore.data.map { it[KEY_EASTER_EGG_FOUND] ?: false }
