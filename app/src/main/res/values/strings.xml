@@ -111,4 +111,29 @@
     <string name="action_unpin">Unpin</string>
     <string name="action_how_to_use">How to use</string>
     <string name="action_open">Open</string>
+
+    <!-- Screen Ruler strings (7.4) -->
+    <string name="ruler_calibrated">Calibrated</string>
+    <string name="ruler_not_calibrated">Not calibrated, may be off by a few mm</string>
+    <string name="ruler_calibrate">Calibrate</string>
+    <string name="ruler_calibration_title">Ruler Calibration</string>
+    <string name="ruler_calibration_desc">Ensure 1 cm on screen is exactly 1 cm in real life.</string>
+    <string name="ruler_credit_card_method">Bank card</string>
+    <string name="ruler_known_length_method">Known length</string>
+    <string name="ruler_credit_card_hint">Place any standard payment card over the outline below. Adjust the slider until the outline matches the card edges exactly.</string>
+    <string name="ruler_known_length_hint">Measure the reference line with a physical ruler, then enter the exact measured length in millimetres.</string>
+    <string name="ruler_scale_factor">Scale factor: %1$.3f</string>
+    <string name="ruler_reset_calibration">Reset</string>
+    <string name="ruler_save_calibration">Save calibration</string>
+    <string name="ruler_calibration_badge_tip">Phones report their screen size differently. Calibrating makes sure 1 cm on screen is 1 cm in real life.</string>
+    <string name="ruler_locked_warning">Display scale could not be verified automatically. Ruler is locked until calibrated to prevent inaccurate measurements.</string>
+    <string name="ruler_save_measurement">Save measurement</string>
+    <string name="ruler_measurement_saved">Measurement saved to history</string>
+    <string name="ruler_label_hint">Label (optional, e.g. Bolt width)</string>
+    <string name="ruler_unit_cm">cm</string>
+    <string name="ruler_unit_mm">mm</string>
+    <string name="ruler_unit_inch">in</string>
+    <string name="ruler_grid_toggle">Grid</string>
+    <string name="ruler_flip_toggle">Flip 0</string>
 </resources>
+

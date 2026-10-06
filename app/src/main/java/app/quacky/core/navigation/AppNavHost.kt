@@ -238,6 +238,14 @@ fun AppNavHost(
                                     onOpenHowToUse = { activeGuideTool = tool }
                                 )
                             }
+                            ToolRegistry.SCREEN_RULER.id -> {
+                                val rulerViewModel: app.quacky.feature.screenruler.presentation.ScreenRulerViewModel = hiltViewModel()
+                                app.quacky.feature.screenruler.presentation.ScreenRulerScreen(
+                                    viewModel = rulerViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool }
+                                )
+                            }
                             else -> {
                                 ToolScaffold(
                                     tool = tool,

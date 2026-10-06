@@ -77,6 +77,7 @@ fun TipVisual(
             VisualType.RULER_ALIGN -> drawRulerAlignVisual(progress)
             VisualType.RULER_CALIBRATE -> drawRulerCalibrateVisual(progress)
             VisualType.RULER_MARKERS -> drawRulerMarkersVisual(progress)
+            VisualType.RULER_FLIP -> drawRulerFlipVisual(progress)
             VisualType.COLOR_RETICLE -> drawColorReticleVisual(progress)
             VisualType.COLOR_NUDGE -> drawColorNudgeVisual(progress)
             VisualType.DICE_ROLL -> drawDiceRollVisual(progress)
@@ -299,6 +300,22 @@ private fun DrawScope.drawRulerMarkersVisual(progress: Float) {
     drawLine(QuackyAccent, Offset(cx + markerGap / 2, cy - 35f), Offset(cx + markerGap / 2, cy + 35f), 3f)
     // Distance line
     drawLine(QuackyTextSecondary, Offset(cx - markerGap / 2, cy), Offset(cx + markerGap / 2, cy), 1.5f)
+}
+
+private fun DrawScope.drawRulerFlipVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+    val flip = progress > 0.5f
+    val edgeX = if (flip) cx + 45f else cx - 45f
+    // Vertical line with tick marks
+    drawLine(QuackyTextPrimary, Offset(edgeX, cy - 40f), Offset(edgeX, cy + 40f), 2f)
+    for (i in -4..4) {
+        val y = cy + i * 10f
+        val len = if (i % 2 == 0) 14f else 7f
+        val startX = edgeX
+        val endX = if (flip) edgeX - len else edgeX + len
+        drawLine(QuackyTextSecondary, Offset(startX, y), Offset(endX, y), 1.5f)
+    }
 }
 
 private fun DrawScope.drawColorReticleVisual(progress: Float) {

@@ -83,6 +83,12 @@ object GuideRegistry {
                     title = "Use the markers",
                     body = "Drag the two markers to measure the gap between them.",
                     a11yDescription = "Moving dual distance markers across the ruler"
+                ),
+                TipStep(
+                    visualType = VisualType.RULER_FLIP,
+                    title = "Left-handed?",
+                    body = "Tap the flip icon to move 0 to the other edge.",
+                    a11yDescription = "Ruler flipping edges for left-handed use"
                 )
             )
         ),

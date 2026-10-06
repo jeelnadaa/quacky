@@ -102,6 +102,13 @@ class AppPreferences @Inject constructor(
         }
     }
 
+    suspend fun resetRulerCalibration() {
+        dataStore.edit {
+            it[KEY_RULER_CALIBRATION_FACTOR] = 1.0f
+            it[KEY_RULER_IS_CALIBRATED] = false
+        }
+    }
+
     // Easter Egg
     val isEasterEggFound: Flow<Boolean> = dataStore.data.map { it[KEY_EASTER_EGG_FOUND] ?: false }
     suspend fun setEasterEggFound(value: Boolean) = dataStore.edit { it[KEY_EASTER_EGG_FOUND] = value }
