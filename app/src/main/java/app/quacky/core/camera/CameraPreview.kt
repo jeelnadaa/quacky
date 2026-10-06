@@ -34,6 +34,7 @@ fun CameraPreview(
     zoomRatio: Float = 1.0f,
     onZoomRatioChanged: ((Float) -> Unit)? = null,
     imageAnalyzer: ImageAnalysis.Analyzer? = null,
+    imageCapture: androidx.camera.core.ImageCapture? = null,
     onCameraReady: ((Camera) -> Unit)? = null
 ) {
     val context = LocalContext.current
@@ -101,25 +102,23 @@ fun CameraPreview(
                     try {
                         cameraProvider.unbindAll()
 
-                        val boundCamera = if (imageAnalyzer != null) {
+                        val useCases = mutableListOf<androidx.camera.core.UseCase>(preview)
+                        if (imageAnalyzer != null) {
                             val analysis = ImageAnalysis.Builder()
                                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                                 .build()
                             analysis.setAnalyzer(cameraExecutor, imageAnalyzer)
-
-                            cameraProvider.bindToLifecycle(
-                                lifecycleOwner,
-                                cameraSelector,
-                                preview,
-                                analysis
-                            )
-                        } else {
-                            cameraProvider.bindToLifecycle(
-                                lifecycleOwner,
-                                cameraSelector,
-                                preview
-                            )
+                            useCases.add(analysis)
                         }
+                        if (imageCapture != null) {
+                            useCases.add(imageCapture)
+                        }
+
+                        val boundCamera = cameraProvider.bindToLifecycle(
+                            lifecycleOwner,
+                            cameraSelector,
+                            *useCases.toTypedArray()
+                        )
 
                         camera = boundCamera
                         onCameraReady?.invoke(boundCamera)

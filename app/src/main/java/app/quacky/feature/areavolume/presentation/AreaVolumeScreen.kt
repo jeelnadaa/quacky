@@ -69,6 +69,11 @@ import app.quacky.core.designsystem.theme.QuackySurfaceElevated
 import app.quacky.core.designsystem.theme.QuackyTextPrimary
 import app.quacky.core.designsystem.theme.QuackyTextSecondary
 import app.quacky.core.designsystem.theme.QuackyTextTertiary
+import androidx.compose.material3.AlertDialog
+import app.quacky.core.designsystem.component.QuackyButton
+import app.quacky.core.designsystem.component.QuackyButtonStyle
+import app.quacky.core.designsystem.component.QuackyCard
+import app.quacky.core.designsystem.theme.SatoshiFontFamily
 import app.quacky.core.registry.ToolRegistry
 import app.quacky.feature.areavolume.domain.LengthUnit
 
@@ -232,7 +237,7 @@ fun AreaVolumeScreen(
                         canImportAr = state.canImportAr,
                         onValueChange = { viewModel.updateInput(fieldKey, it) },
                         onUnitChange = { viewModel.updateUnit(fieldKey, it) },
-                        onImportAr = { viewModel.importArMeasurement(fieldKey) }
+                        onImportAr = { viewModel.openArChoiceDialog(fieldKey) }
                     )
                 }
 
@@ -355,6 +360,58 @@ fun AreaVolumeScreen(
                 }
             }
         }
+    }
+
+    state.activeArChoiceField?.let { fieldKey ->
+        AlertDialog(
+            onDismissRequest = { viewModel.closeArChoiceDialog() },
+            containerColor = QuackySurfaceElevated,
+            title = {
+                Text(
+                    text = "Import AR Measurement",
+                    fontFamily = SatoshiFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    color = QuackyTextPrimary
+                )
+            },
+            text = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Select a saved measurement for ${fieldKey.replaceFirstChar { it.uppercase() }}:",
+                        fontFamily = SatoshiFontFamily,
+                        fontSize = 13.sp,
+                        color = QuackyTextSecondary
+                    )
+                    state.availableArChoices.forEach { choice ->
+                        QuackyCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { viewModel.importArMeasurement(fieldKey, choice.lengthMeters) }
+                        ) {
+                            Text(
+                                text = choice.label,
+                                fontFamily = SatoshiFontFamily,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 14.sp,
+                                color = QuackyTextPrimary
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                QuackyButton(
+                    onClick = { viewModel.closeArChoiceDialog() },
+                    style = QuackyButtonStyle.Secondary
+                ) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            }
+        )
     }
 }
 

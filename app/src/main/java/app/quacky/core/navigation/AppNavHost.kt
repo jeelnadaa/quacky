@@ -288,6 +288,16 @@ fun AppNavHost(
                                     onOpenHowToUse = { activeGuideTool = tool }
                                 )
                             }
+                            ToolRegistry.DOCUMENT_SCANNER.id -> {
+                                val docScannerViewModel: app.quacky.feature.documentscanner.presentation.DocumentScannerViewModel = hiltViewModel()
+                                app.quacky.feature.documentscanner.presentation.DocumentScannerScreen(
+                                    viewModel = docScannerViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool },
+                                    isPinned = pinnedToolIds.contains(tool.id),
+                                    onTogglePin = { homeViewModel.togglePin(tool.id) }
+                                )
+                            }
                             ToolRegistry.COLOR_PICKER.id -> {
                                 val colorPickerViewModel: app.quacky.feature.colorpicker.presentation.ColorPickerViewModel = hiltViewModel()
                                 app.quacky.feature.colorpicker.presentation.ColorPickerScreen(

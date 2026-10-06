@@ -63,6 +63,41 @@ object GuideRegistry {
                 )
             )
         ),
+        ToolRegistry.DOCUMENT_SCANNER.id to ToolGuide(
+            toolId = ToolRegistry.DOCUMENT_SCANNER.id,
+            steps = listOf(
+                TipStep(
+                    visualType = VisualType.DOC_ALIGN,
+                    title = "Capture or import",
+                    body = "Point your camera at a document on a contrasting surface, or select photos from your gallery.",
+                    a11yDescription = "Camera viewfinder capturing a document"
+                ),
+                TipStep(
+                    visualType = VisualType.DOC_QUAD_CROP,
+                    title = "Adjust corners",
+                    body = "Drag the 4 corner handles to align with the document edges. The app straightens perspective automatically.",
+                    a11yDescription = "Dragging 4 corner quad handles to fit document edges"
+                ),
+                TipStep(
+                    visualType = VisualType.DOC_ENHANCE_FILTER,
+                    title = "Enhance readability",
+                    body = "Choose Magic Color to remove shadows, or B&W for crisp high-contrast text on clean white paper.",
+                    a11yDescription = "Magic Color and Black and White document enhancement filters"
+                ),
+                TipStep(
+                    visualType = VisualType.DOC_PAGES_REORDER,
+                    title = "Multi-page documents",
+                    body = "Take multiple photos to build a multi-page document. Reorder, rotate, or re-crop any page at any time.",
+                    a11yDescription = "Multi-page carousel strip and reordering"
+                ),
+                TipStep(
+                    visualType = VisualType.DOC_PDF_EXPORT,
+                    title = "Create & share PDF",
+                    body = "Compile your pages into a clean, compact PDF. Completely offline—nothing ever leaves your device.",
+                    a11yDescription = "Exporting and sharing multi-page PDF document"
+                )
+            )
+        ),
         ToolRegistry.SCREEN_RULER.id to ToolGuide(
             toolId = ToolRegistry.SCREEN_RULER.id,
             steps = listOf(

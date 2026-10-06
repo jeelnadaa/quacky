@@ -70,7 +70,12 @@ enum class VisualType {
     TEAM_SPLIT,
     TEAM_SHUFFLE,
     TEAM_CONSTRAINTS,
-    TEAM_SHARE
+    TEAM_SHARE,
+    DOC_ALIGN,
+    DOC_QUAD_CROP,
+    DOC_ENHANCE_FILTER,
+    DOC_PAGES_REORDER,
+    DOC_PDF_EXPORT
 }
 
 data class TipStep(

@@ -33,6 +33,8 @@
     <string name="tool_qr_scanner_desc">Scan QR codes and common barcodes offline</string>
     <string name="tool_qr_generator_name">QR &amp; Barcode Generator</string>
     <string name="tool_qr_generator_desc">Generate QR codes and barcodes in multiple formats</string>
+    <string name="tool_doc_scanner_name">Document Scanner</string>
+    <string name="tool_doc_scanner_desc">Convert photos to clean documents and multi-page PDFs</string>
     <string name="tool_ar_ruler_name">AR Ruler</string>
     <string name="tool_ar_ruler_desc">Measure real-world distances and heights with AR</string>
     <string name="tool_screen_ruler_name">On-Screen Ruler</string>
@@ -107,6 +109,7 @@
     <string name="action_skip">Skip</string>
     <string name="action_got_it">Got it</string>
     <string name="action_close">Close</string>
+    <string name="action_cancel">Cancel</string>
     <string name="action_pin">Pin</string>
     <string name="action_unpin">Unpin</string>
     <string name="action_how_to_use">How to use</string>

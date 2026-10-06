@@ -11,6 +11,7 @@ import androidx.compose.material.icons.rounded.MonetizationOn
 import androidx.compose.material.icons.rounded.Numbers
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.PhotoCamera
+import androidx.compose.material.icons.rounded.PictureAsPdf
 import androidx.compose.material.icons.rounded.PieChart
 import androidx.compose.material.icons.rounded.Pin
 import androidx.compose.material.icons.rounded.QrCode
@@ -42,6 +43,17 @@ object ToolRegistry {
         keywords = listOf("qr", "barcode", "generate", "creator", "make", "wifi", "upi", "vcard"),
         route = "tool/qr_generator",
         requirements = emptySet()
+    )
+
+    val DOCUMENT_SCANNER = ToolDefinition(
+        id = "doc_scanner",
+        nameRes = R.string.tool_doc_scanner_name,
+        descriptionRes = R.string.tool_doc_scanner_desc,
+        category = ToolCategory.SCAN_GENERATE,
+        icon = Icons.Rounded.PictureAsPdf,
+        keywords = listOf("document", "scanner", "lens", "pdf", "crop", "enhance", "camera", "page", "scan"),
+        route = "tool/doc_scanner",
+        requirements = setOf(ToolRequirement.BACK_CAMERA)
     )
 
     val AR_RULER = ToolDefinition(
@@ -190,6 +202,7 @@ object ToolRegistry {
     val allTools: List<ToolDefinition> = listOf(
         QR_SCANNER,
         QR_GENERATOR,
+        DOCUMENT_SCANNER,
         AR_RULER,
         SCREEN_RULER,
         AREA_VOLUME,

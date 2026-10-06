@@ -28,12 +28,13 @@
 | 8 | **On-Screen Ruler** | Calibrated millimeter & inch ruler with dual calipers, calibration wizard against credit card or physical coin. |
 | 9 | **QR & Barcode Scanner** | Offline ML Kit bundled model, instant format parsing (URL, Wi-Fi, vCard, Email, SMS, UPI, Geo), flash toggle, clipboard copy. |
 | 10 | **Barcode Generator** | Generate QR, EAN-13, EAN-8, UPC-A, Code 128, Code 39, Aztec, Data Matrix, PDF417. Export to PNG/SVG with custom padding. |
-| 11 | **Color Picker & Palette Studio** | Camera eyedropper with crosshair, image picker, HEX/RGB/HSL sliders, WCAG contrast validator, 5-shade palette export. |
-| 12 | **Photo Metadata Viewer & Stripper** | EXIF/XMP/IPTC inspection, GPS map preview, lossless byte-level marker stripping without re-encoding DCT coefficients. |
-| 13 | **Image Compressor** | Target file size or percentage slider, iterative binary search sizing, format conversion (JPEG, WebP, PNG). |
-| 14 | **PDF Compressor** | Sequential page downscaling and compression via native `PdfRenderer` and `PdfDocument` with immediate memory recycling. |
-| 15 | **Area & Volume Calculator** | 10 2D shapes (with Shoelace polygon coordinate solver), 8 3D shapes, metric/imperial unit converter, paint/flooring/concrete material estimators. |
-| 16 | **AR Ruler** | ARCore plane tracking, OpenGL ES 2.0 camera renderer, 3D point projection. Distance, Path, Height, Angle modes. Export directly to Area & Volume. |
+| 11 | **Document Scanner** | Microsoft Lens-style offline document scanner with 4-corner perspective quad cropping, Magic Color / B&W / Grayscale enhancement filters, multi-page scanning, and native PDF generation. |
+| 12 | **Color Picker & Palette Studio** | Camera eyedropper with crosshair, image picker, HEX/RGB/HSL sliders, WCAG contrast validator, 5-shade palette export. |
+| 13 | **Photo Metadata Viewer & Stripper** | EXIF/XMP/IPTC inspection, GPS map preview, lossless byte-level marker stripping without re-encoding DCT coefficients. |
+| 14 | **Image Compressor** | Target file size or percentage slider, iterative binary search sizing, format conversion (JPEG, WebP, PNG). |
+| 15 | **PDF Compressor** | Sequential page downscaling and compression via native `PdfRenderer` and `PdfDocument` with immediate memory recycling. |
+| 16 | **Area & Volume Calculator** | 10 2D shapes (with Shoelace polygon coordinate solver), 8 3D shapes, metric/imperial unit converter, paint/flooring/concrete material estimators. Pulls dimensions directly from AR Ruler sessions. |
+| 17 | **AR Ruler** | Multi-measurement AR sessions (up to 20 per session, e.g. M1, M2). Numbered chips with distinct gray tones, per-measurement mode (Distance, Path, Height, Angle), tick finish, auto-finish setting, expandable bottom sheet with copy-all/multi-delete, grouped history sessions, and direct export to Area & Volume. |
 
 ---
 

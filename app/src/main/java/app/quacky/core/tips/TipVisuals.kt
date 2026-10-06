@@ -25,6 +25,7 @@ import androidx.compose.ui.semantics.semantics
 import app.quacky.core.designsystem.theme.QuackyAccent
 import app.quacky.core.designsystem.theme.QuackyOutline
 import app.quacky.core.designsystem.theme.QuackySurface
+import app.quacky.core.designsystem.theme.QuackySurfaceElevated
 import app.quacky.core.designsystem.theme.QuackyTextPrimary
 import app.quacky.core.designsystem.theme.QuackyTextSecondary
 import app.quacky.core.designsystem.theme.QuackyTextTertiary
@@ -101,6 +102,11 @@ fun TipVisual(
             VisualType.AR_MODES -> drawArModesVisual(progress)
             VisualType.AR_HEIGHT -> drawArHeightVisual(progress)
             VisualType.AR_ESTIMATE -> drawArEstimateVisual(progress)
+            VisualType.DOC_ALIGN -> drawDocAlignVisual(progress)
+            VisualType.DOC_QUAD_CROP -> drawDocQuadCropVisual(progress)
+            VisualType.DOC_ENHANCE_FILTER -> drawDocEnhanceFilterVisual(progress)
+            VisualType.DOC_PAGES_REORDER -> drawDocPagesReorderVisual(progress)
+            VisualType.DOC_PDF_EXPORT -> drawDocPdfExportVisual(progress)
             else -> drawGenericTipVisual(progress)
         }
     }
@@ -717,6 +723,159 @@ private fun DrawScope.drawArEstimateVisual(progress: Float) {
     drawLine(QuackyTextSecondary, Offset(cx - 30f + wobble, cy), Offset(cx - 15f + wobble, cy), strokeWidth = 2f)
     drawLine(QuackyAccent, Offset(cx - 5f, cy), Offset(cx + 35f, cy), strokeWidth = 3f)
 }
+
+private fun DrawScope.drawDocAlignVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+
+    // Tilted paper sheet
+    val paperPath = Path().apply {
+        moveTo(cx - 60f, cy - 35f)
+        lineTo(cx + 45f, cy - 50f)
+        lineTo(cx + 65f, cy + 40f)
+        lineTo(cx - 40f, cy + 55f)
+        close()
+    }
+    drawPath(paperPath, QuackySurface)
+    drawPath(paperPath, QuackyOutline, style = Stroke(2f))
+
+    // Aligning viewfinder brackets moving slightly
+    val offset = kotlin.math.sin(progress * kotlin.math.PI * 2).toFloat() * 4f
+    val bracketSize = 30f
+    val w = 150f + offset
+    val h = 120f + offset
+
+    // Top-left bracket
+    drawLine(QuackyAccent, Offset(cx - w / 2, cy - h / 2), Offset(cx - w / 2 + bracketSize, cy - h / 2), 3f)
+    drawLine(QuackyAccent, Offset(cx - w / 2, cy - h / 2), Offset(cx - w / 2, cy - h / 2 + bracketSize), 3f)
+
+    // Bottom-right bracket
+    drawLine(QuackyAccent, Offset(cx + w / 2, cy + h / 2), Offset(cx + w / 2 - bracketSize, cy + h / 2), 3f)
+    drawLine(QuackyAccent, Offset(cx + w / 2, cy + h / 2), Offset(cx + w / 2, cy + h / 2 - bracketSize), 3f)
+}
+
+private fun DrawScope.drawDocQuadCropVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+
+    // Draggable corner quad
+    val dragDelta = kotlin.math.sin(progress * kotlin.math.PI * 2).toFloat() * 10f
+    val pTL = Offset(cx - 60f + dragDelta, cy - 45f)
+    val pTR = Offset(cx + 55f, cy - 40f)
+    val pBR = Offset(cx + 65f, cy + 45f)
+    val pBL = Offset(cx - 50f, cy + 50f)
+
+    val quad = Path().apply {
+        moveTo(pTL.x, pTL.y)
+        lineTo(pTR.x, pTR.y)
+        lineTo(pBR.x, pBR.y)
+        lineTo(pBL.x, pBL.y)
+        close()
+    }
+    drawPath(quad, QuackyAccent.copy(alpha = 0.15f))
+    drawPath(quad, QuackyAccent, style = Stroke(2.5f))
+
+    // 4 circular corner handles
+    listOf(pTL, pTR, pBR, pBL).forEach { pt ->
+        drawCircle(QuackyAccent, radius = 7f, center = pt)
+        drawCircle(Color.White, radius = 4f, center = pt)
+    }
+}
+
+private fun DrawScope.drawDocEnhanceFilterVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+
+    // Split page comparison: Left dark/shadow, Right crisp white
+    val w = 120f
+    val h = 90f
+
+    // Left half (Original dim paper)
+    drawRect(
+        color = Color(0xFF1E1E1E),
+        topLeft = Offset(cx - w / 2, cy - h / 2),
+        size = Size(w / 2, h)
+    )
+    // Right half (Enhanced bright white paper)
+    drawRect(
+        color = Color(0xFFF0F0F0),
+        topLeft = Offset(cx, cy - h / 2),
+        size = Size(w / 2, h)
+    )
+    drawRect(
+        color = QuackyOutline,
+        topLeft = Offset(cx - w / 2, cy - h / 2),
+        size = Size(w, h),
+        style = Stroke(2f)
+    )
+
+    // Center divider bar
+    drawLine(QuackyAccent, Offset(cx, cy - h / 2 - 6f), Offset(cx, cy + h / 2 + 6f), strokeWidth = 2.5f)
+}
+
+private fun DrawScope.drawDocPagesReorderVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+
+    // 3 mini page thumbnails
+    val pageW = 34f
+    val pageH = 48f
+    val spacing = 46f
+
+    for (i in -1..1) {
+        val x = cx + i * spacing
+        val isCenter = (i == 0)
+        drawRoundRect(
+            color = if (isCenter) QuackySurfaceElevated else QuackySurface,
+            topLeft = Offset(x - pageW / 2, cy - pageH / 2),
+            size = Size(pageW, pageH),
+            cornerRadius = CornerRadius(6f, 6f)
+        )
+        drawRoundRect(
+            color = if (isCenter) QuackyAccent else QuackyOutline,
+            topLeft = Offset(x - pageW / 2, cy - pageH / 2),
+            size = Size(pageW, pageH),
+            cornerRadius = CornerRadius(6f, 6f),
+            style = Stroke(1.5f)
+        )
+    }
+
+    // Horizontal reorder arrows
+    val arrowX = cx + kotlin.math.sin(progress * kotlin.math.PI * 2).toFloat() * 12f
+    drawCircle(QuackyAccent, radius = 5f, center = Offset(arrowX, cy + 34f))
+}
+
+private fun DrawScope.drawDocPdfExportVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+
+    // PDF Sheet outline
+    val sheetW = 70f
+    val sheetH = 90f
+    drawRoundRect(
+        color = QuackySurface,
+        topLeft = Offset(cx - sheetW / 2, cy - sheetH / 2),
+        size = Size(sheetW, sheetH),
+        cornerRadius = CornerRadius(8f, 8f)
+    )
+    drawRoundRect(
+        color = QuackyAccent,
+        topLeft = Offset(cx - sheetW / 2, cy - sheetH / 2),
+        size = Size(sheetW, sheetH),
+        cornerRadius = CornerRadius(8f, 8f),
+        style = Stroke(2f)
+    )
+
+    // PDF text lines
+    drawLine(QuackyTextSecondary, Offset(cx - 20f, cy - 20f), Offset(cx + 20f, cy - 20f), strokeWidth = 2.5f)
+    drawLine(QuackyTextTertiary, Offset(cx - 20f, cy - 10f), Offset(cx + 10f, cy - 10f), strokeWidth = 2f)
+    drawLine(QuackyTextTertiary, Offset(cx - 20f, cy), Offset(cx + 15f, cy), strokeWidth = 2f)
+
+    // Export badge
+    val badgeY = cy + 22f + kotlin.math.sin(progress * kotlin.math.PI * 2).toFloat() * 3f
+    drawCircle(QuackyAccent, radius = 10f, center = Offset(cx, badgeY))
+}
+
 
 
 

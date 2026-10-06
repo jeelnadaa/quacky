@@ -37,6 +37,7 @@ class AppPreferences @Inject constructor(
         val KEY_HISTORY_RETENTION_DAYS = intPreferencesKey("history_retention_days")
         val KEY_AR_RULER_UNIT = stringPreferencesKey("ar_ruler_unit")
         val KEY_AR_RULER_ACCURACY_NOTE_DISMISSED = booleanPreferencesKey("ar_ruler_accuracy_note_dismissed")
+        val KEY_AR_AUTO_FINISH = booleanPreferencesKey("ar_auto_finish")
     }
 
     // Pinned Tools: stored as comma-separated or JSON list of IDs
@@ -121,6 +122,17 @@ class AppPreferences @Inject constructor(
     // Easter Egg
     val isEasterEggFound: Flow<Boolean> = dataStore.data.map { it[KEY_EASTER_EGG_FOUND] ?: false }
     suspend fun setEasterEggFound(value: Boolean) = dataStore.edit { it[KEY_EASTER_EGG_FOUND] = value }
+
+    // AR Ruler Auto-Finish
+    val isArAutoFinishEnabled: Flow<Boolean> = dataStore.data.map { prefs ->
+        prefs[KEY_AR_AUTO_FINISH] ?: true // on by default
+    }
+
+    suspend fun setArAutoFinishEnabled(enabled: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[KEY_AR_AUTO_FINISH] = enabled
+        }
+    }
 
     // Tips Seen per tool
     fun isTipSeen(toolId: String): Flow<Boolean> {

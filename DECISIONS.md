@@ -46,3 +46,11 @@
 ## ADR 012: Offline Integrity & Automated Manifest Verification
 - **Decision:** Automated JVM unit test (`OfflineManifestTest`) inspects `AndroidManifest.xml` during every test run to guarantee zero declarations of `android.permission.INTERNET`, `ACCESS_NETWORK_STATE`, or related network permissions.
 - **Rationale:** Guarantees regression-free adherence to the 100% offline privacy guarantee.
+
+## ADR 013: Multi-Measurement AR Ruler Sessions
+- **Decision:** Support concurrent in-session measurements (up to 20 measurements per session) with independent modes (Distance, Path, Height, Angle). Distinguish finished measurements using numbered chips and a calibrated 5-tone gray palette, with active/selected measurements drawn in solid white. Support tick finish and auto-finish settings, expandable session drawer with copy-all/multi-delete, and cross-tool dimension export into Area & Volume Calculator.
+- **Rationale:** Greatly enhances real-world measurement workflows (e.g. measuring entire rooms) while keeping memory within strict mobile constraints.
+
+## ADR 014: Document Scanner & Perspective Quad Rectification
+- **Decision:** Document Scanner operates 100% on-device using native Android 2D graphics matrices (`Matrix.setPolyToPoly`) to perform perspective homography without external OpenCV binaries. Implements Microsoft Lens-inspired document enhancement filters (Magic Color, B&W binarization, Grayscale) via `ColorMatrix`, multi-page sequencing, and native A4 PDF generation via `PdfDocument`.
+- **Rationale:** Delivers high-performance, lightweight document scanning with zero cloud dependencies and zero privacy risk.

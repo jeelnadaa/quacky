@@ -33,6 +33,12 @@ data class CalculationResult(
     val errorMessage: String? = null
 )
 
+data class ArMeasurementChoice(
+    val label: String,
+    val lengthMeters: Double,
+    val formatted: String
+)
+
 data class AreaVolumeUiState(
     val activeTab: Int = 0, // 0 = Area, 1 = Volume, 2 = Estimate
     val activeShape: String = "rectangle",
@@ -50,6 +56,8 @@ data class AreaVolumeUiState(
     val showAllUnits: Boolean = false,
     val canImportAr: Boolean = false,
     val availableArLengths: List<Double> = emptyList(),
+    val availableArChoices: List<ArMeasurementChoice> = emptyList(),
+    val activeArChoiceField: String? = null,
     val result: CalculationResult = CalculationResult()
 )
 
@@ -74,19 +82,35 @@ class AreaVolumeViewModel @Inject constructor(
                 // Check if any AR Ruler measurements exist in history
                 val arHistory = (historyRepository.getHistoryForTool(ToolRegistry.AR_RULER.id).firstOrNull() ?: emptyList()) +
                     (historyRepository.getHistoryForTool("arruler").firstOrNull() ?: emptyList())
-                val lengths = mutableListOf<Double>()
+                val choices = mutableListOf<ArMeasurementChoice>()
                 for (entry in arHistory) {
                     try {
                         val json = JSONObject(entry.payloadJson)
-                        if (json.has("valueMeters")) {
-                            lengths.add(json.getDouble("valueMeters"))
+                        if (json.has("measurements")) {
+                            val arr = json.getJSONArray("measurements")
+                            for (i in 0 until arr.length()) {
+                                val m = arr.getJSONObject(i)
+                                val mVal = m.optDouble("valueMeters", 0.0)
+                                if (mVal > 0.0) {
+                                    val mName = m.optString("name", "M${i + 1}")
+                                    val mFmt = m.optString("formattedValue", "%.2f m".format(mVal))
+                                    choices.add(ArMeasurementChoice("${entry.title}: $mName ($mFmt)", mVal, mFmt))
+                                }
+                            }
+                        } else if (json.has("valueMeters")) {
+                            val v = json.getDouble("valueMeters")
+                            if (v > 0.0) {
+                                val fmt = json.optString("formattedValue", "%.2f m".format(v))
+                                choices.add(ArMeasurementChoice("${entry.title} ($fmt)", v, fmt))
+                            }
                         }
                     } catch (_: Exception) {}
                 }
                 _uiState.update {
                     it.copy(
-                        canImportAr = lengths.isNotEmpty(),
-                        availableArLengths = lengths
+                        canImportAr = choices.isNotEmpty(),
+                        availableArLengths = choices.map { c -> c.lengthMeters },
+                        availableArChoices = choices
                     )
                 }
             } else {
@@ -151,14 +175,25 @@ class AreaVolumeViewModel @Inject constructor(
         recalculate()
     }
 
-    fun importArMeasurement(fieldKey: String) {
-        val lengths = _uiState.value.availableArLengths
-        if (lengths.isNotEmpty()) {
-            val lengthM = lengths.first()
-            val unit = _uiState.value.units[fieldKey] ?: LengthUnit.M
-            val converted = AreaVolumeMath.fromMeters(lengthM, unit)
-            updateInput(fieldKey, "%.2f".format(converted))
+    fun openArChoiceDialog(fieldKey: String) {
+        val choices = _uiState.value.availableArChoices
+        if (choices.size == 1) {
+            importArMeasurement(fieldKey, choices.first().lengthMeters)
+        } else if (choices.size > 1) {
+            _uiState.update { it.copy(activeArChoiceField = fieldKey) }
         }
+    }
+
+    fun closeArChoiceDialog() {
+        _uiState.update { it.copy(activeArChoiceField = null) }
+    }
+
+    fun importArMeasurement(fieldKey: String, lengthM: Double? = null) {
+        val selectedM = lengthM ?: _uiState.value.availableArLengths.firstOrNull() ?: return
+        val unit = _uiState.value.units[fieldKey] ?: LengthUnit.M
+        val converted = AreaVolumeMath.fromMeters(selectedM, unit)
+        updateInput(fieldKey, "%.2f".format(converted))
+        closeArChoiceDialog()
     }
 
     fun saveCalculation() {
