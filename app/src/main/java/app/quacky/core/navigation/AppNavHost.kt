@@ -246,6 +246,22 @@ fun AppNavHost(
                                     onOpenHowToUse = { activeGuideTool = tool }
                                 )
                             }
+                            ToolRegistry.QR_SCANNER.id -> {
+                                val scannerViewModel: app.quacky.feature.qrscanner.presentation.QrScannerViewModel = hiltViewModel()
+                                app.quacky.feature.qrscanner.presentation.QrScannerScreen(
+                                    viewModel = scannerViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool }
+                                )
+                            }
+                            ToolRegistry.QR_GENERATOR.id -> {
+                                val generatorViewModel: app.quacky.feature.qrgenerator.presentation.QrGeneratorViewModel = hiltViewModel()
+                                app.quacky.feature.qrgenerator.presentation.QrGeneratorScreen(
+                                    viewModel = generatorViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool }
+                                )
+                            }
                             else -> {
                                 ToolScaffold(
                                     tool = tool,
