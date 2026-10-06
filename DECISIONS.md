@@ -38,3 +38,11 @@
 ## ADR 010: AR Ruler Architecture & 3D Screen Projection
 - **Decision:** Sceneform is deprecated, so AR Ruler couples ARCore plane tracking with an OpenGL ES 2.0 camera background renderer (`ArRenderer`) and a Jetpack Compose overlay. 3D world anchors are projected onto 2D viewport coordinates via pure column-major View-Projection matrix transforms. Floating distance labels automatically face the camera and render in Satoshi typography.
 - **Rationale:** Fulfills Section 7.3 specifications with zero heavy external rendering engines, supports all 4 measurement modes (Distance, Path, Height, Angle), and allows seamless interoperability by sending measured dimensions directly to Area & Volume Calculator.
+
+## ADR 011: App Shortcuts & External Intent Ingestion
+- **Decision:** Declare static launcher shortcuts for frequently accessed tools (Barcode Scanner, Screen Ruler, Color Picker, Image Compressor) in `shortcuts.xml` and support runtime launch intents in `MainActivity` with `initialToolId`.
+- **Rationale:** Minimizes friction for time-sensitive utilities while keeping the single-activity architecture clean.
+
+## ADR 012: Offline Integrity & Automated Manifest Verification
+- **Decision:** Automated JVM unit test (`OfflineManifestTest`) inspects `AndroidManifest.xml` during every test run to guarantee zero declarations of `android.permission.INTERNET`, `ACCESS_NETWORK_STATE`, or related network permissions.
+- **Rationale:** Guarantees regression-free adherence to the 100% offline privacy guarantee.

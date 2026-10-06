@@ -48,6 +48,7 @@ fun AppNavHost(
     navController: NavHostController = rememberNavController(),
     requirementChecker: RequirementChecker,
     preferences: AppPreferences,
+    initialToolId: String? = null,
     modifier: Modifier = Modifier
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -57,6 +58,12 @@ fun AppNavHost(
     val isRulerCalibrated by preferences.isRulerCalibrated.collectAsState(initial = false)
 
     var activeGuideTool by remember { mutableStateOf<ToolDefinition?>(null) }
+
+    androidx.compose.runtime.LaunchedEffect(initialToolId) {
+        if (!initialToolId.isNullOrBlank()) {
+            navController.navigate(NavRoutes.tool(initialToolId))
+        }
+    }
 
     val isTopLevelDestination = currentRoute in listOf(
         NavRoutes.HOME,

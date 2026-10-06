@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="qr_scanner"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/tool_qr_scanner_name"
+        android:shortcutLongLabel="@string/tool_qr_scanner_name">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="app.quacky"
+            android:targetClass="app.quacky.MainActivity">
+            <extra android:name="tool_id" android:value="qr_scanner" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="screen_ruler"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/tool_screen_ruler_name"
+        android:shortcutLongLabel="@string/tool_screen_ruler_name">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="app.quacky"
+            android:targetClass="app.quacky.MainActivity">
+            <extra android:name="tool_id" android:value="screen_ruler" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="color_picker"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/tool_color_picker_name"
+        android:shortcutLongLabel="@string/tool_color_picker_name">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="app.quacky"
+            android:targetClass="app.quacky.MainActivity">
+            <extra android:name="tool_id" android:value="color_picker" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="compressor"
+        android:enabled="true"
+        android:icon="@mipmap/ic_launcher"
+        android:shortcutShortLabel="@string/tool_compressor_name"
+        android:shortcutLongLabel="@string/tool_compressor_name">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="app.quacky"
+            android:targetClass="app.quacky.MainActivity">
+            <extra android:name="tool_id" android:value="compressor" />
+        </intent>
+    </shortcut>
+</shortcuts>

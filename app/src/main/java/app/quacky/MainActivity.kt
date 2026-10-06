@@ -27,11 +27,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        val initialToolId = intent?.getStringExtra("tool_id")
+
         setContent {
             QuackyTheme {
                 AppNavHost(
                     requirementChecker = requirementChecker,
-                    preferences = preferences
+                    preferences = preferences,
+                    initialToolId = initialToolId
                 )
             }
         }

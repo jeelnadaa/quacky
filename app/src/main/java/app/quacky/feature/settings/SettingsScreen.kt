@@ -3,7 +3,10 @@ package app.quacky.feature.settings
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -60,7 +63,7 @@ import app.quacky.core.designsystem.theme.QuackyTextSecondary
 import app.quacky.core.designsystem.theme.QuackyTextTertiary
 import app.quacky.core.designsystem.theme.SatoshiFontFamily
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel,
@@ -180,7 +183,17 @@ fun SettingsScreen(
                     ) {
                         QuackyMark(
                             size = 48.dp,
-                            tint = QuackyTextPrimary
+                            tint = QuackyTextPrimary,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .combinedClickable(
+                                    onClick = {},
+                                    onLongClick = {
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        viewModel.onEasterEggUnlocked()
+                                        onNavigateToEasterEgg()
+                                    }
+                                )
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         Text(
