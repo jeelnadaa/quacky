@@ -83,7 +83,11 @@ object SurferCanvasRenderer {
         drawHeroDuck(scope, state, width, horizonY, groundBottomY, trackWidthHorizon, trackWidthBottom)
 
         // 5. Dynamic Sparks, Feathers & Dust Particles
-        drawParticles(scope, state.particles, width, groundBottomY, trackWidthBottom)
+        val playerDepth = 0.86f
+        val playerGroundY = horizonY + playerDepth * (groundBottomY - horizonY) - 8f
+        val playerTrackW = trackWidthHorizon + playerDepth * (trackWidthBottom - trackWidthHorizon)
+        val playerLaneW = playerTrackW / 3f
+        drawParticles(scope, state.particles, width, playerGroundY, playerLaneW)
     }
 
     private sealed class RenderItem(val z: Float) {
@@ -594,186 +598,428 @@ object SurferCanvasRenderer {
         trackWidthBottom: Float
     ) {
         val centerX = width / 2f
-        val currentTrackW = trackWidthBottom
+        val playerDepth = 0.86f
+        val playerGroundY = horizonY + playerDepth * (groundBottomY - horizonY)
+        val currentTrackW = trackWidthHorizon + playerDepth * (trackWidthBottom - trackWidthHorizon)
         val laneWidth = currentTrackW / 3f
 
         val playerX = centerX + (state.lanePositionFloat * laneWidth)
-        val groundY = groundBottomY - 12f
+        val groundY = playerGroundY - 8f
 
         // Jump Arc (Parabolic trajectory)
         val jumpHeight = if (state.isJumping) {
-            sin((state.jumpProgress * PI).toDouble()).toFloat() * (laneWidth * 0.95f)
+            sin((state.jumpProgress * PI).toDouble()).toFloat() * (laneWidth * 1.15f)
         } else {
             0f
         }
 
-        // Heroic Mascot Dimensions
-        val duckW = laneWidth * 0.65f
-        val duckH = duckW * 0.88f
-        val duckCenterY = groundY - duckH * 0.55f - jumpHeight
+        // Heroic Mascot Scale
+        val duckW = laneWidth * 0.62f
+        val duckH = duckW * 0.92f
+        val duckCenterY = groundY - duckH * 0.58f - jumpHeight
 
-        // 1. Ground Shadow (stays on track when jumping, shrinks with altitude)
-        val shadowW = (duckW * 0.95f - jumpHeight * 0.25f).coerceAtLeast(duckW * 0.35f)
-        val shadowH = (duckW * 0.28f - jumpHeight * 0.08f).coerceAtLeast(duckW * 0.10f)
+        // 1. Dynamic Ground Shadow (Radial gradient, shrinks with jump altitude)
+        val shadowW = (duckW * 0.92f - jumpHeight * 0.30f).coerceAtLeast(duckW * 0.28f)
+        val shadowH = (duckW * 0.28f - jumpHeight * 0.10f).coerceAtLeast(duckW * 0.08f)
         scope.drawOval(
-            color = Color(0x88000000),
+            brush = Brush.radialGradient(
+                colors = listOf(Color(0x99000000), Color(0x33000000), Color.Transparent),
+                center = Offset(playerX, groundY),
+                radius = shadowW / 2f
+            ),
             topLeft = Offset(playerX - shadowW / 2f, groundY - shadowH / 2f),
             size = Size(shadowW, shadowH)
         )
 
-        // 2. Active Run Cycle & Waddling Animation
+        // 2. Active Run Cycle, Waddling, & Leaning
         val stepAngle = state.runCycleProgress * 2 * PI.toFloat()
         val runBob = if (!state.isJumping && !state.isSliding) {
             abs(sin(stepAngle)) * 8f
         } else 0f
 
-        // Duck forward lean increases as speed accelerates!
-        val forwardTilt = if (!state.isJumping && !state.isSliding) {
-            10f + (state.speed / 0.38f) * 12f
+        val waddleAngle = if (!state.isJumping && !state.isSliding) {
+            sin(stepAngle) * 6f
+        } else 0f
+
+        val forwardLean = if (!state.isJumping && !state.isSliding) {
+            8f + (state.speed / 0.38f) * 12f
         } else if (state.isJumping) {
-            -10f // Nose up in the air
+            -10f // Nose up soaring
         } else {
-            35f // Flat on belly during slide
+            25f // Belly slide
         }
 
         val animatedDuckY = duckCenterY + runBob
 
-        // 3. Super Quack Dash Sonic Trail
+        // 3. Super Dash Trail / Rocket Flames
         if (state.activePowerUp == CollectibleType.DASH_BOOST) {
             scope.drawCircle(
-                color = Color(0x66FF6D00),
-                radius = duckW * 0.90f,
+                color = Color(0x44FF6D00),
+                radius = duckW * 0.95f,
                 center = Offset(playerX, animatedDuckY)
             )
-            // Exhaust rocket flames
+            scope.drawCircle(
+                color = Color(0x66FFAB00),
+                radius = duckW * 0.80f,
+                center = Offset(playerX, animatedDuckY),
+                style = Stroke(width = 3f)
+            )
             scope.drawLine(
-                color = Color(0xFFFF9100),
-                start = Offset(playerX, animatedDuckY + duckH * 0.35f),
-                end = Offset(playerX, groundY + 16f),
-                strokeWidth = 14f,
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color(0xFFFFD600), Color(0xFFFF6D00), Color.Transparent),
+                    startY = animatedDuckY + duckH * 0.25f,
+                    endY = groundY + 20f
+                ),
+                start = Offset(playerX, animatedDuckY + duckH * 0.25f),
+                end = Offset(playerX, groundY + 20f),
+                strokeWidth = 16f,
                 cap = StrokeCap.Round
             )
         }
 
-        // 4. Shield Energy Bubble
+        // 4. Shield Energy Sphere
         if (state.hasShield) {
             scope.drawCircle(
-                color = Color(0x3300E676),
-                radius = duckW * 0.82f,
+                brush = Brush.radialGradient(
+                    colors = listOf(Color(0x3300E676), Color(0x1100E676), Color.Transparent),
+                    center = Offset(playerX, animatedDuckY),
+                    radius = duckW * 0.95f
+                ),
+                radius = duckW * 0.95f,
                 center = Offset(playerX, animatedDuckY)
             )
             scope.drawCircle(
                 color = Color(0xFF00E676),
-                radius = duckW * 0.82f,
+                radius = duckW * 0.95f,
                 center = Offset(playerX, animatedDuckY),
                 style = Stroke(width = 3.5f)
             )
         }
 
-        // 5. Draw Running Webbed Feet (Only when on ground or jumping)
-        if (!state.isSliding) {
-            val footR = duckW * 0.14f
-            val legStroke = 4f
-            val footY = groundY - 4f
-
-            // Left Leg Cycle
-            val leftLegPhase = sin(stepAngle)
-            val leftFootX = playerX - duckW * 0.22f + leftLegPhase * (duckW * 0.25f)
-            val leftFootY = if (state.isJumping) duckCenterY + duckH * 0.40f else footY - (leftLegPhase.coerceAtLeast(0f) * 14f)
-
-            // Right Leg Cycle (opposite phase)
-            val rightLegPhase = sin(stepAngle + PI.toFloat())
-            val rightFootX = playerX + duckW * 0.12f + rightLegPhase * (duckW * 0.25f)
-            val rightFootY = if (state.isJumping) duckCenterY + duckH * 0.40f else footY - (rightLegPhase.coerceAtLeast(0f) * 14f)
-
-            // Draw Orange Webbed Feet
-            listOf(Pair(leftFootX, leftFootY), Pair(rightFootX, rightFootY)).forEach { (fx, fy) ->
-                // Leg bone
-                scope.drawLine(
-                    color = Color(0xFFFF9800),
-                    start = Offset(fx, animatedDuckY + duckH * 0.30f),
-                    end = Offset(fx, fy),
-                    strokeWidth = legStroke,
-                    cap = StrokeCap.Round
-                )
-                // Webbed Foot Paddle
-                scope.drawOval(
-                    color = Color(0xFFFF9800),
-                    topLeft = Offset(fx - footR, fy - footR * 0.5f),
-                    size = Size(footR * 2f, footR)
-                )
-            }
+        // 5. High-speed Wind Streaks
+        if (state.speed > 0.22f && !state.isJumping) {
+            val streakAlpha = ((state.speed - 0.22f) / 0.16f).coerceIn(0f, 0.45f)
+            val streakY1 = animatedDuckY - duckH * 0.2f
+            val streakY2 = animatedDuckY + duckH * 0.1f
+            scope.drawLine(
+                color = Color.White.copy(alpha = streakAlpha),
+                start = Offset(playerX - duckW * 0.70f, streakY1),
+                end = Offset(playerX - duckW * 0.70f, streakY1 + duckH * 0.5f),
+                strokeWidth = 2f,
+                cap = StrokeCap.Round
+            )
+            scope.drawLine(
+                color = Color.White.copy(alpha = streakAlpha),
+                start = Offset(playerX + duckW * 0.70f, streakY2),
+                end = Offset(playerX + duckW * 0.70f, streakY2 + duckH * 0.5f),
+                strokeWidth = 2f,
+                cap = StrokeCap.Round
+            )
         }
 
-        // 6. Draw Heroic Vector Duck Body with Forward Lean
+        // Slide adjustments
         val scaleX = if (state.isSliding) 1.35f else 1.0f
-        val scaleY = if (state.isSliding) 0.45f else 1.0f
+        val scaleY = if (state.isSliding) 0.50f else 1.0f
 
         scope.translate(playerX, animatedDuckY) {
-            scope.rotate(degrees = if (state.isSliding) 0f else (sin(stepAngle) * 5f + forwardTilt * 0.35f)) {
-                scope.scale(scaleX = scaleX, scaleY = scaleY) {
-                    val s = duckW / 512f
-                    scope.scale(scale = s, pivot = Offset(256f, 256f)) {
-                        scope.translate(-256f, -256f) {
-                            // Geometric Quacky vector body
-                            val bodyPath = Path().apply {
-                                moveTo(120f, 280f)
-                                cubicTo(100f, 245f, 140f, 220f, 180f, 235f)
-                                cubicTo(215f, 248f, 245f, 220f, 275f, 180f)
-                                cubicTo(290f, 160f, 305f, 130f, 340f, 130f)
-                                cubicTo(385f, 130f, 415f, 165f, 415f, 205f)
-                                cubicTo(415f, 210f, 414f, 216f, 412f, 222f)
-                                lineTo(470f, 236f)
-                                cubicTo(478f, 238f, 480f, 248f, 474f, 254f)
-                                lineTo(412f, 282f)
-                                cubicTo(395f, 330f, 345f, 365f, 290f, 370f)
-                                cubicTo(210f, 375f, 135f, 340f, 120f, 280f)
-                                close()
-                            }
+            scope.rotate(degrees = waddleAngle) {
+                scope.scale(scaleX = scaleX, scaleY = scaleY, pivot = Offset.Zero) {
 
-                            // Body color: Gold during Dash, Crisp White normally
-                            scope.drawPath(
-                                path = bodyPath,
-                                color = if (state.activePowerUp == CollectibleType.DASH_BOOST) Color(0xFFFFD54F) else QuackyTextPrimary
-                            )
+                    // 6. Running Legs & Webbed Feet (Connected directly to bottom of body!)
+                    if (!state.isSliding) {
+                        val hipY = duckH * 0.25f
+                        val hipSpacing = duckW * 0.22f
+                        val leftHipX = -hipSpacing
+                        val rightHipX = hipSpacing
 
-                            // Beak Seam
+                        val leftPhase = sin(stepAngle)
+                        val rightPhase = sin(stepAngle + PI.toFloat())
+
+                        val legStroke = 5.5f
+                        val footW = duckW * 0.24f
+                        val footH = duckW * 0.13f
+
+                        val maxFootDrop = (groundY - animatedDuckY).coerceAtLeast(duckH * 0.45f)
+
+                        val leftFootX = leftHipX + leftPhase * (duckW * 0.18f)
+                        val leftFootY = if (state.isJumping) {
+                            hipY + duckH * 0.18f
+                        } else {
+                            maxFootDrop - (leftPhase.coerceAtLeast(0f) * 14f)
+                        }
+
+                        val rightFootX = rightHipX + rightPhase * (duckW * 0.18f)
+                        val rightFootY = if (state.isJumping) {
+                            hipY + duckH * 0.18f
+                        } else {
+                            maxFootDrop - (rightPhase.coerceAtLeast(0f) * 14f)
+                        }
+
+                        listOf(
+                            Triple(leftHipX, leftFootX, leftFootY),
+                            Triple(rightHipX, rightFootX, rightFootY)
+                        ).forEach { (hx, fx, fy) ->
                             scope.drawLine(
-                                color = QuackyBackground,
-                                start = Offset(412f, 248f),
-                                end = Offset(460f, 245f),
-                                strokeWidth = 5f,
+                                color = Color(0xFFF57C00),
+                                start = Offset(hx, hipY),
+                                end = Offset(fx, fy),
+                                strokeWidth = legStroke,
                                 cap = StrokeCap.Round
                             )
-
-                            // Expressive Duck Eye
-                            scope.drawOval(
-                                color = QuackyBackground,
-                                topLeft = Offset(360f - 14f, 190f - 14f),
-                                size = Size(28f, 28f)
-                            )
                             scope.drawCircle(
-                                color = if (state.activePowerUp == CollectibleType.DASH_BOOST) Color(0xFFFFD54F) else QuackyTextPrimary,
-                                radius = 5.5f,
-                                center = Offset(364f, 186f)
+                                color = Color(0xFFFFA726),
+                                radius = legStroke * 0.7f,
+                                center = Offset((hx + fx) / 2f, (hipY + fy) / 2f)
                             )
-
-                            // Wing Flapping Overlay
-                            val wingAngle = sin(stepAngle * 2) * 22f
-                            scope.rotate(degrees = wingAngle, pivot = Offset(210f, 280f)) {
-                                val wingPath = Path().apply {
-                                    moveTo(190f, 275f)
-                                    cubicTo(160f, 305f, 220f, 335f, 270f, 300f)
-                                    cubicTo(290f, 285f, 260f, 260f, 210f, 265f)
-                                    close()
-                                }
-                                scope.drawPath(
-                                    path = wingPath,
-                                    color = if (state.activePowerUp == CollectibleType.DASH_BOOST) Color(0xFFFFCA28) else Color(0xFFE0E0E0)
-                                )
+                            val footPath = Path().apply {
+                                moveTo(fx, fy - footH * 0.2f)
+                                lineTo(fx + footW * 0.5f, fy + footH * 0.8f)
+                                lineTo(fx + footW * 0.2f, fy + footH * 0.5f)
+                                lineTo(fx, fy + footH * 0.9f)
+                                lineTo(fx - footW * 0.2f, fy + footH * 0.5f)
+                                lineTo(fx - footW * 0.5f, fy + footH * 0.8f)
+                                close()
                             }
+                            scope.drawPath(
+                                path = footPath,
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(Color(0xFFFFA726), Color(0xFFE65100)),
+                                    startY = fy - footH * 0.2f,
+                                    endY = fy + footH * 0.9f
+                                )
+                            )
                         }
                     }
+
+                    // 7. Cute Wagging Tail Feathers
+                    val tailWag = -sin(stepAngle) * 5f
+                    scope.rotate(degrees = tailWag, pivot = Offset(0f, duckH * 0.10f)) {
+                        val tailPath = Path().apply {
+                            moveTo(-duckW * 0.16f, duckH * 0.10f)
+                            cubicTo(-duckW * 0.20f, -duckH * 0.15f, -duckW * 0.05f, -duckH * 0.28f, 0f, -duckH * 0.35f)
+                            cubicTo(duckW * 0.05f, -duckH * 0.28f, duckW * 0.20f, -duckH * 0.15f, duckW * 0.16f, duckH * 0.10f)
+                            close()
+                        }
+                        scope.drawPath(
+                            path = tailPath,
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color(0xFFFFFFFF), Color(0xFFECEFF1), Color(0xFFCFD8DC)),
+                                startY = -duckH * 0.35f,
+                                endY = duckH * 0.10f
+                            )
+                        )
+                    }
+
+                    // 8. Volumetric 3D Duck Torso
+                    val bodyW = duckW * 0.82f
+                    val bodyH = duckH * 0.72f
+                    val bodyCenter = Offset(0f, duckH * 0.05f)
+
+                    scope.drawOval(
+                        color = Color(0x33000000),
+                        topLeft = Offset(bodyCenter.x - bodyW * 0.52f, bodyCenter.y - bodyH * 0.40f + 6f),
+                        size = Size(bodyW * 1.04f, bodyH * 0.92f)
+                    )
+
+                    val bodyColorTop = if (state.activePowerUp == CollectibleType.DASH_BOOST) Color(0xFFFFF176) else Color(0xFFFFFFFF)
+                    val bodyColorBottom = if (state.activePowerUp == CollectibleType.DASH_BOOST) Color(0xFFFFB300) else Color(0xFFCFD8DC)
+
+                    scope.drawOval(
+                        brush = Brush.radialGradient(
+                            colors = listOf(bodyColorTop, Color(0xFFECEFF1), bodyColorBottom),
+                            center = Offset(bodyCenter.x, bodyCenter.y - bodyH * 0.15f),
+                            radius = bodyW * 0.65f
+                        ),
+                        topLeft = Offset(bodyCenter.x - bodyW * 0.50f, bodyCenter.y - bodyH * 0.46f),
+                        size = Size(bodyW, bodyH)
+                    )
+
+                    scope.drawOval(
+                        color = Color(0x18000000),
+                        topLeft = Offset(bodyCenter.x - bodyW * 0.25f, bodyCenter.y - bodyH * 0.25f),
+                        size = Size(bodyW * 0.50f, bodyH * 0.45f),
+                        style = Stroke(width = 1.8f)
+                    )
+
+                    // 9. Volumetric 3D Wings (Left & Right Flanks)
+                    val wingW = duckW * 0.32f
+                    val wingH = duckH * 0.52f
+
+                    val leftWingAngle = if (state.isJumping) {
+                        -32f
+                    } else if (state.isSliding) {
+                        -8f
+                    } else {
+                        sin(stepAngle) * 22f - 10f
+                    }
+
+                    scope.rotate(degrees = leftWingAngle, pivot = Offset(-bodyW * 0.38f, bodyCenter.y - wingH * 0.2f)) {
+                        val leftWingPath = Path().apply {
+                            val startX = -bodyW * 0.36f
+                            val startY = bodyCenter.y - wingH * 0.2f
+                            moveTo(startX, startY)
+                            cubicTo(startX - wingW * 1.2f, startY + wingH * 0.2f, startX - wingW * 0.9f, startY + wingH * 0.9f, startX - wingW * 0.2f, startY + wingH)
+                            cubicTo(startX + wingW * 0.1f, startY + wingH * 0.6f, startX + wingW * 0.1f, startY + wingH * 0.2f, startX, startY)
+                            close()
+                        }
+                        scope.drawPath(
+                            path = leftWingPath,
+                            brush = Brush.linearGradient(
+                                colors = listOf(bodyColorTop, Color(0xFFECEFF1), bodyColorBottom),
+                                start = Offset(-bodyW * 0.36f, bodyCenter.y),
+                                end = Offset(-bodyW * 0.36f - wingW, bodyCenter.y + wingH)
+                            )
+                        )
+                        scope.drawPath(
+                            path = leftWingPath,
+                            color = Color(0x22000000),
+                            style = Stroke(width = 1.5f)
+                        )
+                    }
+
+                    val rightWingAngle = if (state.isJumping) {
+                        32f
+                    } else if (state.isSliding) {
+                        8f
+                    } else {
+                        sin(stepAngle + PI.toFloat()) * 22f + 10f
+                    }
+
+                    scope.rotate(degrees = rightWingAngle, pivot = Offset(bodyW * 0.38f, bodyCenter.y - wingH * 0.2f)) {
+                        val rightWingPath = Path().apply {
+                            val startX = bodyW * 0.36f
+                            val startY = bodyCenter.y - wingH * 0.2f
+                            moveTo(startX, startY)
+                            cubicTo(startX + wingW * 1.2f, startY + wingH * 0.2f, startX + wingW * 0.9f, startY + wingH * 0.9f, startX + wingW * 0.2f, startY + wingH)
+                            cubicTo(startX - wingW * 0.1f, startY + wingH * 0.6f, startX - wingW * 0.1f, startY + wingH * 0.2f, startX, startY)
+                            close()
+                        }
+                        scope.drawPath(
+                            path = rightWingPath,
+                            brush = Brush.linearGradient(
+                                colors = listOf(bodyColorTop, Color(0xFFECEFF1), bodyColorBottom),
+                                start = Offset(bodyW * 0.36f, bodyCenter.y),
+                                end = Offset(bodyW * 0.36f + wingW, bodyCenter.y + wingH)
+                            )
+                        )
+                        scope.drawPath(
+                            path = rightWingPath,
+                            color = Color(0x22000000),
+                            style = Stroke(width = 1.5f)
+                        )
+                    }
+
+                    // 10. Volumetric 3D Duck Head & Neck
+                    val headR = duckW * 0.32f
+                    val headCenterY = bodyCenter.y - bodyH * 0.44f
+
+                    scope.drawCircle(
+                        color = Color(0x22000000),
+                        radius = headR * 0.92f,
+                        center = Offset(0f, headCenterY + 4f)
+                    )
+
+                    scope.drawCircle(
+                        brush = Brush.radialGradient(
+                            colors = listOf(bodyColorTop, Color(0xFFECEFF1), bodyColorBottom),
+                            center = Offset(0f, headCenterY - headR * 0.25f),
+                            radius = headR * 1.1f
+                        ),
+                        radius = headR,
+                        center = Offset(0f, headCenterY)
+                    )
+
+                    // 11. 3/4 Beak pointing forward into distance
+                    val beakW = duckW * 0.36f
+                    val beakH = duckH * 0.18f
+                    val beakY = headCenterY - headR * 0.35f
+                    val beakPath = Path().apply {
+                        moveTo(-beakW * 0.35f, beakY)
+                        cubicTo(-beakW * 0.30f, beakY - beakH * 1.1f, beakW * 0.30f, beakY - beakH * 1.1f, beakW * 0.35f, beakY)
+                        cubicTo(beakW * 0.20f, beakY + beakH * 0.3f, -beakW * 0.20f, beakY + beakH * 0.3f, -beakW * 0.35f, beakY)
+                        close()
+                    }
+                    scope.drawPath(
+                        path = beakPath,
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Color(0xFFFFB74D), Color(0xFFFF9800), Color(0xFFF57C00)),
+                            startY = beakY - beakH * 1.1f,
+                            endY = beakY + beakH * 0.3f
+                        )
+                    )
+                    scope.drawLine(
+                        color = Color(0xFFE65100),
+                        start = Offset(0f, beakY - beakH * 0.9f),
+                        end = Offset(0f, beakY),
+                        strokeWidth = 2f,
+                        cap = StrokeCap.Round
+                    )
+                    scope.drawCircle(color = Color(0xFFE65100), radius = 1.6f, center = Offset(-beakW * 0.12f, beakY - beakH * 0.45f))
+                    scope.drawCircle(color = Color(0xFFE65100), radius = 1.6f, center = Offset(beakW * 0.12f, beakY - beakH * 0.45f))
+
+                    // 12. Expressive Eyes
+                    listOf(-1f, 1f).forEach { side ->
+                        val eyeX = side * (headR * 0.58f)
+                        val eyeY = headCenterY - headR * 0.15f
+                        val eyeR = headR * 0.22f
+
+                        scope.drawOval(
+                            color = Color(0xFF1E1E24),
+                            topLeft = Offset(eyeX - eyeR, eyeY - eyeR * 1.1f),
+                            size = Size(eyeR * 2f, eyeR * 2.2f)
+                        )
+                        scope.drawOval(
+                            color = Color(0xFF0A0A0E),
+                            topLeft = Offset(eyeX - eyeR * 0.8f, eyeY - eyeR * 0.9f),
+                            size = Size(eyeR * 1.6f, eyeR * 1.8f)
+                        )
+                        if (state.duckBlink < 0.5f) {
+                            scope.drawCircle(
+                                color = Color.White,
+                                radius = eyeR * 0.45f,
+                                center = Offset(eyeX + side * eyeR * 0.25f, eyeY - eyeR * 0.35f)
+                            )
+                        }
+                    }
+
+                    // 13. Surfer Athletic Headband & Flowing Ribbon Tails
+                    val headbandY = headCenterY - headR * 0.05f
+                    val headbandH = headR * 0.32f
+                    scope.drawOval(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(Color(0xFF00B0FF), Color(0xFF00E5FF), Color(0xFF00B0FF))
+                        ),
+                        topLeft = Offset(-headR * 0.98f, headbandY - headbandH * 0.5f),
+                        size = Size(headR * 1.96f, headbandH)
+                    )
+                    scope.drawCircle(
+                        color = Color(0xFFFFD54F),
+                        radius = headbandH * 0.42f,
+                        center = Offset(0f, headbandY)
+                    )
+                    scope.drawCircle(
+                        color = Color(0xFFFFA000),
+                        radius = headbandH * 0.42f,
+                        center = Offset(0f, headbandY),
+                        style = Stroke(width = 1.5f)
+                    )
+
+                    val ribbonWave = sin(stepAngle * 2) * 12f
+                    val ribbonPath = Path().apply {
+                        val rx = headR * 0.85f
+                        val ry = headbandY
+                        moveTo(rx, ry)
+                        cubicTo(rx + 14f, ry - 6f + ribbonWave, rx + 28f, ry + 12f - ribbonWave, rx + 38f, ry + 18f)
+                        lineTo(rx + 34f, ry + 25f)
+                        cubicTo(rx + 24f, ry + 18f - ribbonWave, rx + 12f, ry + 4f + ribbonWave, rx, ry + headbandH * 0.4f)
+                        close()
+                    }
+                    scope.drawPath(
+                        path = ribbonPath,
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(Color(0xFF00E5FF), Color(0xFF00B0FF))
+                        )
+                    )
                 }
             }
         }
@@ -783,16 +1029,14 @@ object SurferCanvasRenderer {
         scope: DrawScope,
         particles: List<SurferParticle>,
         width: Float,
-        groundBottomY: Float,
-        trackWidthBottom: Float
+        groundY: Float,
+        laneWidth: Float
     ) {
         val centerX = width / 2f
-        val laneWidth = trackWidthBottom / 3f
-        val groundY = groundBottomY - 14f
 
         for (p in particles) {
             val px = centerX + (p.x * laneWidth) + (p.vx * 20f)
-            val py = groundY - 28f + (p.y * 36f)
+            val py = groundY - 20f + (p.y * 36f)
             scope.drawCircle(
                 color = p.color.copy(alpha = p.alpha),
                 radius = p.size,
