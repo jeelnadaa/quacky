@@ -10,11 +10,13 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,24 +24,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Backspace
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.SwapVert
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +51,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import app.quacky.R
 import app.quacky.core.components.ToolScaffold
 import app.quacky.core.designsystem.theme.QuackyBackground
@@ -63,9 +67,12 @@ import app.quacky.core.haptics.rememberQuackyHaptics
 import app.quacky.core.registry.ToolRegistry
 import app.quacky.feature.converter.model.UnitCategory
 import app.quacky.feature.converter.model.UnitItem
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+private enum class UnitPickerTarget {
+    FROM,
+    TO
+}
+
 @Composable
 fun UnitConverterScreen(
     viewModel: UnitConverterViewModel,
@@ -77,11 +84,8 @@ fun UnitConverterScreen(
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     val haptics = rememberQuackyHaptics()
-    val scope = rememberCoroutineScope()
 
-    var showFromPicker by remember { mutableStateOf(false) }
-    var showToPicker by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState()
+    var activePickerTarget by remember { mutableStateOf<UnitPickerTarget?>(null) }
 
     fun copyToClipboard(text: String) {
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -133,7 +137,7 @@ fun UnitConverterScreen(
                         isInput = true,
                         onUnitClick = {
                             haptics.click()
-                            showFromPicker = true
+                            activePickerTarget = UnitPickerTarget.FROM
                         }
                     )
                 }
@@ -168,7 +172,7 @@ fun UnitConverterScreen(
                         isInput = false,
                         onUnitClick = {
                             haptics.click()
-                            showToPicker = true
+                            activePickerTarget = UnitPickerTarget.TO
                         },
                         onCopyClick = {
                             copyToClipboard(state.outputString)
@@ -238,45 +242,27 @@ fun UnitConverterScreen(
         }
     }
 
-    // Modal Sheet for Unit Selection
-    if (showFromPicker) {
-        ModalBottomSheet(
-            onDismissRequest = { showFromPicker = false },
-            sheetState = sheetState,
-            containerColor = QuackySurface
-        ) {
-            UnitPickerSheetContent(
-                title = "Select Source Unit",
-                units = state.availableUnits,
-                selectedUnit = state.fromUnit,
-                onSelect = { unit ->
+    // Custom Modal Dialog for Unit Selection
+    activePickerTarget?.let { target ->
+        val isFrom = target == UnitPickerTarget.FROM
+        UnitPickerModal(
+            title = if (isFrom) "Select Source Unit" else "Select Target Unit",
+            categoryName = stringResource(state.category.titleRes),
+            units = state.availableUnits,
+            selectedUnit = if (isFrom) state.fromUnit else state.toUnit,
+            onSelect = { unit ->
+                haptics.click()
+                if (isFrom) {
                     viewModel.selectFromUnit(unit)
-                    scope.launch { sheetState.hide() }.invokeOnCompletion {
-                        showFromPicker = false
-                    }
-                }
-            )
-        }
-    }
-
-    if (showToPicker) {
-        ModalBottomSheet(
-            onDismissRequest = { showToPicker = false },
-            sheetState = sheetState,
-            containerColor = QuackySurface
-        ) {
-            UnitPickerSheetContent(
-                title = "Select Target Unit",
-                units = state.availableUnits,
-                selectedUnit = state.toUnit,
-                onSelect = { unit ->
+                } else {
                     viewModel.selectToUnit(unit)
-                    scope.launch { sheetState.hide() }.invokeOnCompletion {
-                        showToPicker = false
-                    }
                 }
-            )
-        }
+                activePickerTarget = null
+            },
+            onDismiss = {
+                activePickerTarget = null
+            }
+        )
     }
 }
 
@@ -594,66 +580,151 @@ private fun BreakdownRow(
 }
 
 @Composable
-private fun UnitPickerSheetContent(
+private fun UnitPickerModal(
     title: String,
+    categoryName: String,
     units: List<UnitItem>,
     selectedUnit: UnitItem,
-    onSelect: (UnitItem) -> Unit
+    onSelect: (UnitItem) -> Unit,
+    onDismiss: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 12.dp)
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        Text(
-            text = title,
-            fontFamily = SatoshiFontFamily,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            color = QuackyTextPrimary,
-            modifier = Modifier.padding(bottom = 12.dp)
-        )
-
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth()
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = QuackySurface,
+            border = BorderStroke(1.dp, QuackyOutline),
+            modifier = Modifier
+                .fillMaxWidth(0.92f)
+                .heightIn(max = 520.dp)
         ) {
-            items(units) { unit ->
-                val isSelected = unit.id == selectedUnit.id
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Fixed Header Bar - Protected from round corner clipping
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(
-                            if (isSelected) QuackySurfaceElevated else Color.Transparent,
-                            RoundedCornerShape(10.dp)
-                        )
-                        .clickable { onSelect(unit) }
-                        .padding(horizontal = 14.dp, vertical = 12.dp),
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
+                        Box(
+                            modifier = Modifier
+                                .background(QuackySurfaceElevated, RoundedCornerShape(6.dp))
+                                .border(1.dp, QuackyOutline, RoundedCornerShape(6.dp))
+                                .padding(horizontal = 7.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = categoryName.uppercase(),
+                                fontFamily = SatoshiFontFamily,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = QuackyTextTertiary,
+                                letterSpacing = 0.5.sp
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = unit.name,
+                            text = title,
                             fontFamily = SatoshiFontFamily,
-                            fontSize = 14.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Bold,
                             color = QuackyTextPrimary
-                        )
-                        Text(
-                            text = unit.symbol,
-                            fontFamily = SatoshiFontFamily,
-                            fontSize = 12.sp,
-                            color = QuackyTextTertiary
                         )
                     }
 
-                    if (isSelected) {
+                    // Dismiss Close Button
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .background(QuackySurfaceElevated, CircleShape)
+                            .border(1.dp, QuackyOutline, CircleShape)
+                            .clickable { onDismiss() },
+                        contentAlignment = Alignment.Center
+                    ) {
                         Icon(
-                            imageVector = Icons.Rounded.Check,
-                            contentDescription = "Selected",
-                            tint = Color(0xFF00E676),
-                            modifier = Modifier.size(20.dp)
+                            imageVector = Icons.Rounded.Close,
+                            contentDescription = "Close",
+                            tint = QuackyTextSecondary,
+                            modifier = Modifier.size(18.dp)
                         )
+                    }
+                }
+
+                HorizontalDivider(color = QuackyOutline, thickness = 1.dp)
+
+                // Scrollable Units List with generous inner padding
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f, fill = false),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(units) { unit ->
+                        val isSelected = unit.id == selectedUnit.id
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    if (isSelected) QuackySurfaceElevated else Color.Transparent,
+                                    RoundedCornerShape(12.dp)
+                                )
+                                .border(
+                                    width = 1.dp,
+                                    color = if (isSelected) Color(0xFF00E676) else QuackyOutline,
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                .clickable { onSelect(unit) }
+                                .padding(horizontal = 14.dp, vertical = 12.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                // Symbol Pill
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            if (isSelected) Color(0x1F00E676) else QuackySurfaceElevated,
+                                            RoundedCornerShape(8.dp)
+                                        )
+                                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = unit.symbol,
+                                        fontFamily = SatoshiFontFamily,
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (isSelected) Color(0xFF00E676) else QuackyTextPrimary
+                                    )
+                                }
+
+                                Text(
+                                    text = unit.name,
+                                    fontFamily = SatoshiFontFamily,
+                                    fontSize = 14.sp,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                    color = QuackyTextPrimary
+                                )
+                            }
+
+                            if (isSelected) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Check,
+                                    contentDescription = "Selected",
+                                    tint = Color(0xFF00E676),
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
                     }
                 }
             }
