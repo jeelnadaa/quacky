@@ -2,10 +2,9 @@ package app.quacky.feature.surfer.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.quacky.core.registry.ToolRegistry
 import app.quacky.data.local.preferences.AppPreferences
-import app.quacky.feature.surfer.domain.SurferEngine
-import app.quacky.feature.surfer.model.GameStatus
-import app.quacky.feature.surfer.model.SurferGameState
+import app.quacky.data.repository.HistoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,151 +15,234 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
+
+enum class SurferUiStatus {
+    READY,
+    COUNTDOWN,
+    RUNNING,
+    PAUSED,
+    CRASHED,
+    GAME_OVER
+}
+
+data class SurferUiState(
+    val status: SurferUiStatus = SurferUiStatus.READY,
+    val countdown: Int = 3,
+    val score: Int = 0,
+    val breadcrumbs: Int = 0,
+    val distanceMeters: Float = 0f,
+    val highScore: Int = 0,
+    val totalCoins: Int = 0,
+    val maxDistance: Int = 0,
+    val isNewHighScore: Boolean = false,
+    val crashReason: String = "",
+    val soundEnabled: Boolean = true,
+    val hapticsEnabled: Boolean = true,
+    val showSwipeHints: Boolean = true,
+    val isEngineSupported: Boolean = true,
+    val isReadOnlyResult: Boolean = false
+)
+
+sealed interface SurferGameHapticEvent {
+    object Tick : SurferGameHapticEvent
+    object Click : SurferGameHapticEvent
+    object Heavy : SurferGameHapticEvent
+}
 
 @HiltViewModel
 class QuackySurferViewModel @Inject constructor(
-    private val preferences: AppPreferences
+    private val preferences: AppPreferences,
+    private val historyRepository: HistoryRepository
 ) : ViewModel() {
 
-    private val engine = SurferEngine()
+    private val _state = MutableStateFlow(SurferUiState())
+    val state: StateFlow<SurferUiState> = _state.asStateFlow()
 
-    private val _state = MutableStateFlow(SurferGameState())
-    val state: StateFlow<SurferGameState> = _state.asStateFlow()
+    private val _hapticEvents = MutableSharedFlow<SurferGameHapticEvent>(extraBufferCapacity = 16)
+    val hapticEvents: SharedFlow<SurferGameHapticEvent> = _hapticEvents.asSharedFlow()
 
-    private val _events = MutableSharedFlow<SurferEngine.GameEvent>(extraBufferCapacity = 16)
-    val events: SharedFlow<SurferEngine.GameEvent> = _events.asSharedFlow()
-
-    private var gameLoopJob: Job? = null
+    private var countdownJob: Job? = null
+    private var crashJob: Job? = null
 
     init {
         viewModelScope.launch {
             val high = preferences.surferHighScore.first()
             val totalCoins = preferences.surferTotalCoins.first()
+            val maxDist = preferences.surferMaxDistance.first()
+            val sound = preferences.isSoundEnabled.first()
+            val haptic = preferences.isHapticsEnabled.first()
+
             _state.value = _state.value.copy(
                 highScore = high,
-                totalCoins = totalCoins
+                totalCoins = totalCoins,
+                maxDistance = maxDist,
+                soundEnabled = sound,
+                hapticsEnabled = haptic
             )
         }
     }
 
-    fun startGame() {
-        gameLoopJob?.cancel()
-        val currentHigh = _state.value.highScore
-        val currentCoins = _state.value.totalCoins
-        val newState = engine.startNewGame(currentHigh, currentCoins)
-        _state.value = newState
+    fun startCountdown(onCountdownComplete: () -> Unit) {
+        if (_state.value.status != SurferUiStatus.READY) return
+        countdownJob?.cancel()
+        _state.value = _state.value.copy(
+            status = SurferUiStatus.COUNTDOWN,
+            countdown = 3
+        )
 
-        launchGameLoop()
-    }
-
-    fun switchLeft() {
-        val (updated, changed) = engine.switchLane(_state.value, toRight = false)
-        _state.value = updated
-        if (changed) {
-            _events.tryEmit(SurferEngine.GameEvent.LANE_SWITCH)
+        countdownJob = viewModelScope.launch {
+            for (i in 3 downTo 1) {
+                _state.value = _state.value.copy(countdown = i)
+                if (_state.value.hapticsEnabled) {
+                    _hapticEvents.tryEmit(SurferGameHapticEvent.Tick)
+                }
+                delay(1000L)
+            }
+            _state.value = _state.value.copy(status = SurferUiStatus.RUNNING)
+            onCountdownComplete()
         }
     }
 
-    fun switchRight() {
-        val (updated, changed) = engine.switchLane(_state.value, toRight = true)
-        _state.value = updated
-        if (changed) {
-            _events.tryEmit(SurferEngine.GameEvent.LANE_SWITCH)
+    fun onStatsUpdate(distance: Float, breadcrumbs: Int, score: Int) {
+        if (_state.value.status == SurferUiStatus.RUNNING) {
+            _state.value = _state.value.copy(
+                distanceMeters = distance,
+                breadcrumbs = breadcrumbs,
+                score = score
+            )
         }
     }
 
-    fun jump() {
-        val (updated, jumped) = engine.jump(_state.value)
-        _state.value = updated
-        if (jumped) {
-            _events.tryEmit(SurferEngine.GameEvent.JUMP)
+    fun onBreadcrumbCollected(count: Int) {
+        if (_state.value.hapticsEnabled) {
+            _hapticEvents.tryEmit(SurferGameHapticEvent.Tick)
         }
     }
 
-    fun slide() {
-        val (updated, slided) = engine.slide(_state.value)
-        _state.value = updated
-        if (slided) {
-            _events.tryEmit(SurferEngine.GameEvent.SLIDE)
-        }
-    }
+    fun onCrash(reason: String, distance: Float, breadcrumbs: Int, score: Int) {
+        if (_state.value.status == SurferUiStatus.CRASHED || _state.value.status == SurferUiStatus.GAME_OVER) return
 
-    fun activateHoverboard() {
-        val (updated, activated) = engine.activateHoverboard(_state.value)
-        _state.value = updated
-        if (activated) {
-            _events.tryEmit(SurferEngine.GameEvent.HOVERBOARD_ACTIVATE)
+        _state.value = _state.value.copy(
+            status = SurferUiStatus.CRASHED,
+            crashReason = reason,
+            distanceMeters = distance,
+            breadcrumbs = breadcrumbs,
+            score = score
+        )
+
+        if (_state.value.hapticsEnabled) {
+            _hapticEvents.tryEmit(SurferGameHapticEvent.Heavy)
+        }
+
+        crashJob?.cancel()
+        crashJob = viewModelScope.launch {
+            // Wait 0.9s for crash tumble animation to finish
+            delay(900L)
+
+            val isNewRecord = preferences.recordSurferGameResult(
+                score = score,
+                coins = breadcrumbs,
+                distance = distance.toInt()
+            )
+
+            val updatedHigh = preferences.surferHighScore.first()
+            val updatedCoins = preferences.surferTotalCoins.first()
+            val updatedMaxDist = preferences.surferMaxDistance.first()
+
+            // Save to Quacky History
+            val dateStr = SimpleDateFormat("MMM d, HH:mm", Locale.getDefault()).format(Date())
+            historyRepository.addEntry(
+                toolId = ToolRegistry.QUACKY_SURFER.id,
+                type = "surfer_run",
+                title = "Run · ${distance.toInt()} m · $score pts",
+                subtitle = "$breadcrumbs breadcrumbs · $dateStr",
+                payloadJson = JSONObject().apply {
+                    put("score", score)
+                    put("distance", distance.toInt())
+                    put("breadcrumbs", breadcrumbs)
+                }.toString()
+            )
+
+            _state.value = _state.value.copy(
+                status = SurferUiStatus.GAME_OVER,
+                isNewHighScore = isNewRecord,
+                highScore = updatedHigh,
+                totalCoins = updatedCoins,
+                maxDistance = updatedMaxDist
+            )
         }
     }
 
     fun pause() {
-        if (_state.value.status == GameStatus.PLAYING) {
-            gameLoopJob?.cancel()
-            _state.value = _state.value.copy(status = GameStatus.PAUSED)
+        if (_state.value.status == SurferUiStatus.RUNNING) {
+            _state.value = _state.value.copy(status = SurferUiStatus.PAUSED)
         }
     }
 
     fun resume() {
-        if (_state.value.status == GameStatus.PAUSED) {
-            _state.value = _state.value.copy(status = GameStatus.PLAYING)
-            launchGameLoop()
+        if (_state.value.status == SurferUiStatus.PAUSED) {
+            _state.value = _state.value.copy(status = SurferUiStatus.RUNNING)
         }
     }
 
-    fun restart() {
-        startGame()
+    fun playAgain(resetRenderer: () -> Unit) {
+        countdownJob?.cancel()
+        crashJob?.cancel()
+        resetRenderer()
+        _state.value = _state.value.copy(
+            status = SurferUiStatus.READY,
+            countdown = 3,
+            score = 0,
+            breadcrumbs = 0,
+            distanceMeters = 0f,
+            isNewHighScore = false,
+            crashReason = ""
+        )
     }
 
-    private fun launchGameLoop() {
-        gameLoopJob?.cancel()
-        gameLoopJob = viewModelScope.launch {
-            var lastTimeNs = System.nanoTime()
-
-            while (isActive && _state.value.status == GameStatus.PLAYING) {
-                val now = System.nanoTime()
-                val deltaMs = ((now - lastTimeNs) / 1_000_000L).coerceIn(4L, 50L)
-                lastTimeNs = now
-
-                val step = engine.tick(_state.value, deltaMs)
-                _state.value = step.state
-
-                for (event in step.events) {
-                    _events.tryEmit(event)
-                }
-
-                if (step.state.status == GameStatus.GAME_OVER) {
-                    onGameOver(step.state)
-                    break
-                }
-
-                delay(16) // ~60 FPS
-            }
-        }
-    }
-
-    private fun onGameOver(finalState: SurferGameState) {
+    fun toggleSound() {
         viewModelScope.launch {
-            val isNewRecord = preferences.recordSurferGameResult(
-                score = finalState.score,
-                coins = finalState.coins,
-                distance = finalState.distanceMeters.toInt()
-            )
-            val updatedHigh = preferences.surferHighScore.first()
-            val updatedCoins = preferences.surferTotalCoins.first()
+            val next = !_state.value.soundEnabled
+            preferences.setSoundEnabled(next)
+            _state.value = _state.value.copy(soundEnabled = next)
+        }
+    }
 
+    fun toggleHaptics() {
+        viewModelScope.launch {
+            val next = !_state.value.hapticsEnabled
+            preferences.setHapticsEnabled(next)
+            _state.value = _state.value.copy(hapticsEnabled = next)
+        }
+    }
+
+    fun toggleSwipeHints() {
+        _state.value = _state.value.copy(showSwipeHints = !_state.value.showSwipeHints)
+    }
+
+    fun resetHighScore() {
+        viewModelScope.launch {
+            preferences.resetSurferHighScore()
             _state.value = _state.value.copy(
-                isNewHighScore = isNewRecord,
-                highScore = updatedHigh,
-                totalCoins = updatedCoins
+                highScore = 0,
+                maxDistance = 0
             )
         }
+    }
+
+    fun setEngineSupported(supported: Boolean) {
+        _state.value = _state.value.copy(isEngineSupported = supported)
     }
 
     override fun onCleared() {
         super.onCleared()
-        gameLoopJob?.cancel()
+        countdownJob?.cancel()
+        crashJob?.cancel()
     }
 }

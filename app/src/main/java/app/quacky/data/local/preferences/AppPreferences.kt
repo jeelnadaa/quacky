@@ -31,6 +31,7 @@ class AppPreferences @Inject constructor(
         val KEY_FLAT_GRID_HOME = booleanPreferencesKey("flat_grid_home")
         val KEY_SHOW_RECENTS = booleanPreferencesKey("show_recents")
         val KEY_HAPTICS_ENABLED = booleanPreferencesKey("haptics_enabled")
+        val KEY_SOUND_ENABLED = booleanPreferencesKey("sound_enabled")
         val KEY_TIPS_ON_FIRST_OPEN = booleanPreferencesKey("tips_on_first_open")
         val KEY_RULER_CALIBRATION_FACTOR = floatPreferencesKey("ruler_calibration_factor")
         val KEY_RULER_IS_CALIBRATED = booleanPreferencesKey("ruler_is_calibrated")
@@ -97,6 +98,9 @@ class AppPreferences @Inject constructor(
 
     val isHapticsEnabled: Flow<Boolean> = dataStore.data.map { it[KEY_HAPTICS_ENABLED] ?: true }
     suspend fun setHapticsEnabled(value: Boolean) = dataStore.edit { it[KEY_HAPTICS_ENABLED] = value }
+
+    val isSoundEnabled: Flow<Boolean> = dataStore.data.map { it[KEY_SOUND_ENABLED] ?: true }
+    suspend fun setSoundEnabled(value: Boolean) = dataStore.edit { it[KEY_SOUND_ENABLED] = value }
 
     val isTipsOnFirstOpen: Flow<Boolean> = dataStore.data.map { it[KEY_TIPS_ON_FIRST_OPEN] ?: true }
     suspend fun setTipsOnFirstOpen(value: Boolean) = dataStore.edit { it[KEY_TIPS_ON_FIRST_OPEN] = value }
@@ -191,5 +195,12 @@ class AppPreferences @Inject constructor(
             }
         }
         return isNewHighScore
+    }
+
+    suspend fun resetSurferHighScore() {
+        dataStore.edit { prefs ->
+            prefs[KEY_SURFER_HIGH_SCORE] = 0
+            prefs[KEY_SURFER_MAX_DISTANCE] = 0
+        }
     }
 }

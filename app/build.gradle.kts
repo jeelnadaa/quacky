@@ -55,6 +55,12 @@ android {
         buildConfig = true
     }
 
+    sourceSets {
+        getByName("main") {
+            assets.setSrcDirs(listOf("src/main/assets_game"))
+        }
+    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -122,6 +128,11 @@ dependencies {
     // Serialization & Coroutines
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
+
+    // Filament (3D Engine)
+    implementation("com.google.android.filament:filament-android:1.56.0")
+    implementation("com.google.android.filament:gltfio-android:1.56.0")
+    implementation("com.google.android.filament:filament-utils-android:1.56.0")
 
     // Testing
     testImplementation(libs.junit)
