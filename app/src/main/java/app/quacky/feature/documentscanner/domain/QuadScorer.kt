@@ -111,8 +111,8 @@ class QuadScorer {
                 val outX = (sx + nx * 5.0).toInt().coerceIn(0, w - 1)
                 val outY = (sy + ny * 5.0).toInt().coerceIn(0, h - 1)
 
-                val valIn = gray.get(inY, inX)[0]
-                val valOut = gray.get(outY, outX)[0]
+                val valIn = gray.get(inY, inX)?.getOrNull(0) ?: 0.0
+                val valOut = gray.get(outY, outX)?.getOrNull(0) ?: 0.0
                 val diff = valIn - valOut
 
                 if (abs(diff) > 20.0) sideHits++

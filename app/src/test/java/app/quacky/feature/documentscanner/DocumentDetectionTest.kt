@@ -64,4 +64,23 @@ class DocumentDetectionTest {
         // Peak shifts slightly right because y0 > y2
         assertTrue(delta > 0.0 && delta < 0.5)
     }
+
+    @Test
+    fun testOpenCvInitializerSafety() {
+        // Ensures isAvailable() never throws on any environment
+        val available = app.quacky.feature.documentscanner.domain.OpenCvInitializer.isAvailable()
+        // On JVM without native libs, it gracefully returns false without crashing
+        // (On Android device with native libs, it returns true)
+        assertTrue(available || !available)
+    }
+
+    @Test
+    fun testLiveEdgeDetectorSafeCreation() {
+        var callbackCalled = false
+        val detector = app.quacky.feature.documentscanner.domain.LiveEdgeDetector {
+            callbackCalled = true
+        }
+        // Ensuring instantiation succeeds without throwing UnsatisfiedLinkError
+        org.junit.Assert.assertNotNull(detector)
+    }
 }

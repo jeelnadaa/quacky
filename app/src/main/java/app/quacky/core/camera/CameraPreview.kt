@@ -92,44 +92,71 @@ fun CameraPreview(
 
                 val cameraProviderFuture = ProcessCameraProvider.getInstance(ctx)
                 cameraProviderFuture.addListener({
-                    val cameraProvider = cameraProviderFuture.get()
-                    val resSelector = androidx.camera.core.resolutionselector.ResolutionSelector.Builder()
-                        .setAspectRatioStrategy(androidx.camera.core.resolutionselector.AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY)
-                        .build()
-
-                    val preview = Preview.Builder()
-                        .setResolutionSelector(resSelector)
-                        .build().also {
-                            it.surfaceProvider = previewView.surfaceProvider
-                        }
-
-                    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
                     try {
+                        val cameraProvider = cameraProviderFuture.get()
+                        val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
                         cameraProvider.unbindAll()
 
-                        val useCases = mutableListOf<androidx.camera.core.UseCase>(preview)
-                        if (imageAnalyzer != null) {
-                            val analysis = ImageAnalysis.Builder()
-                                .setResolutionSelector(resSelector)
-                                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                        try {
+                            val resSelector = androidx.camera.core.resolutionselector.ResolutionSelector.Builder()
+                                .setAspectRatioStrategy(androidx.camera.core.resolutionselector.AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY)
                                 .build()
-                            analysis.setAnalyzer(cameraExecutor, imageAnalyzer)
-                            useCases.add(analysis)
-                        }
-                        if (imageCapture != null) {
-                            useCases.add(imageCapture)
-                        }
 
-                        val boundCamera = cameraProvider.bindToLifecycle(
-                            lifecycleOwner,
-                            cameraSelector,
-                            *useCases.toTypedArray()
-                        )
+                            val preview = Preview.Builder()
+                                .setResolutionSelector(resSelector)
+                                .build().also {
+                                    it.surfaceProvider = previewView.surfaceProvider
+                                }
 
-                        camera = boundCamera
-                        onCameraReady?.invoke(boundCamera)
-                    } catch (e: Exception) {
+                            val useCases = mutableListOf<androidx.camera.core.UseCase>(preview)
+                            if (imageAnalyzer != null) {
+                                val analysis = ImageAnalysis.Builder()
+                                    .setResolutionSelector(resSelector)
+                                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                                    .build()
+                                analysis.setAnalyzer(cameraExecutor, imageAnalyzer)
+                                useCases.add(analysis)
+                            }
+                            if (imageCapture != null) {
+                                useCases.add(imageCapture)
+                            }
+
+                            val boundCamera = cameraProvider.bindToLifecycle(
+                                lifecycleOwner,
+                                cameraSelector,
+                                *useCases.toTypedArray()
+                            )
+
+                            camera = boundCamera
+                            onCameraReady?.invoke(boundCamera)
+                        } catch (_: Throwable) {
+                            // Fallback to standard preview & analysis if ResolutionSelector combination fails on this device
+                            val fallbackPreview = Preview.Builder().build().also {
+                                it.surfaceProvider = previewView.surfaceProvider
+                            }
+                            val fallbackCases = mutableListOf<androidx.camera.core.UseCase>(fallbackPreview)
+                            if (imageAnalyzer != null) {
+                                val fallbackAnalysis = ImageAnalysis.Builder()
+                                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                                    .build()
+                                fallbackAnalysis.setAnalyzer(cameraExecutor, imageAnalyzer)
+                                fallbackCases.add(fallbackAnalysis)
+                            }
+                            if (imageCapture != null) {
+                                fallbackCases.add(imageCapture)
+                            }
+
+                            val boundCamera = cameraProvider.bindToLifecycle(
+                                lifecycleOwner,
+                                cameraSelector,
+                                *fallbackCases.toTypedArray()
+                            )
+
+                            camera = boundCamera
+                            onCameraReady?.invoke(boundCamera)
+                        }
+                    } catch (e: Throwable) {
                         e.printStackTrace()
                     }
                 }, ContextCompat.getMainExecutor(ctx))

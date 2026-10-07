@@ -59,7 +59,7 @@ class SubPixelRefiner {
                 for (k in -windowW..windowW) {
                     val px = (cx + nx * k).toInt().coerceIn(0, w - 1)
                     val py = (cy + ny * k).toInt().coerceIn(0, h - 1)
-                    profile[k + windowW] = gray.get(py, px)[0]
+                    profile[k + windowW] = gray.get(py, px)?.getOrNull(0) ?: 0.0
                 }
 
                 // Smooth lightly with [1, 2, 1] Gaussian kernel

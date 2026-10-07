@@ -404,11 +404,7 @@ private fun CameraCaptureView(
 ) {
     val context = LocalContext.current
     val imageCapture = remember {
-        val resSelector = androidx.camera.core.resolutionselector.ResolutionSelector.Builder()
-            .setAspectRatioStrategy(androidx.camera.core.resolutionselector.AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY)
-            .build()
         ImageCapture.Builder()
-            .setResolutionSelector(resSelector)
             .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
             .build()
     }

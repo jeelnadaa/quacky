@@ -18,6 +18,7 @@ object DocumentProcessor {
      * Re-detects and performs full-resolution sub-pixel edge refinement on the captured still.
      */
     fun refineCapturedCorners(stillBitmap: Bitmap, initialQuad: DocumentQuad?): DocumentQuad {
+        if (!OpenCvInitializer.isAvailable()) return initialQuad ?: DocumentQuad()
         try {
             val w = stillBitmap.width
             val h = stillBitmap.height
@@ -62,7 +63,7 @@ object DocumentProcessor {
                 )
             }
             grayMat.release()
-        } catch (_: Exception) {}
+        } catch (_: Throwable) {}
         return initialQuad ?: DocumentQuad()
     }
 
