@@ -93,9 +93,15 @@ fun CameraPreview(
                 val cameraProviderFuture = ProcessCameraProvider.getInstance(ctx)
                 cameraProviderFuture.addListener({
                     val cameraProvider = cameraProviderFuture.get()
-                    val preview = Preview.Builder().build().also {
-                        it.surfaceProvider = previewView.surfaceProvider
-                    }
+                    val resSelector = androidx.camera.core.resolutionselector.ResolutionSelector.Builder()
+                        .setAspectRatioStrategy(androidx.camera.core.resolutionselector.AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY)
+                        .build()
+
+                    val preview = Preview.Builder()
+                        .setResolutionSelector(resSelector)
+                        .build().also {
+                            it.surfaceProvider = previewView.surfaceProvider
+                        }
 
                     val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
@@ -105,6 +111,7 @@ fun CameraPreview(
                         val useCases = mutableListOf<androidx.camera.core.UseCase>(preview)
                         if (imageAnalyzer != null) {
                             val analysis = ImageAnalysis.Builder()
+                                .setResolutionSelector(resSelector)
                                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                                 .build()
                             analysis.setAnalyzer(cameraExecutor, imageAnalyzer)

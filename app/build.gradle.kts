@@ -113,6 +113,9 @@ dependencies {
     // ExifInterface
     implementation(libs.androidx.exifinterface)
 
+    // OpenCV
+    implementation(libs.opencv)
+
     // Coil
     implementation(libs.coil.compose)
 

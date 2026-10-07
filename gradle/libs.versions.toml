@@ -24,6 +24,7 @@ splashscreen = "1.0.1"
 kotlinxSerialization = "1.7.3"
 coroutines = "1.9.0"
 turbine = "1.2.0"
+opencv = "4.10.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -75,6 +76,9 @@ androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterfa
 
 # Coil
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+
+# OpenCV
+opencv = { group = "org.opencv", name = "opencv", version.ref = "opencv" }
 
 # Serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }

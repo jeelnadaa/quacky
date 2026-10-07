@@ -19,7 +19,10 @@ data class DocumentQuad(
     val topLeft: CornerPoint = CornerPoint(0.08f, 0.08f),
     val topRight: CornerPoint = CornerPoint(0.92f, 0.08f),
     val bottomRight: CornerPoint = CornerPoint(0.92f, 0.92f),
-    val bottomLeft: CornerPoint = CornerPoint(0.08f, 0.92f)
+    val bottomLeft: CornerPoint = CornerPoint(0.08f, 0.92f),
+    val score: Float = 0f,
+    val isLocked: Boolean = false,
+    val isFrameLimited: Boolean = false
 )
 
 data class ScannedPage(

@@ -71,7 +71,7 @@ class DocumentScannerViewModel @Inject constructor(
 
     fun onPhotoCaptured(bitmap: Bitmap, initialQuad: DocumentQuad? = null) {
         val nextIndex = _uiState.value.pages.size
-        val quadToUse = initialQuad ?: if (_uiState.value.isAutoCropEnabled && _uiState.value.liveDetectedQuad != null) {
+        val baseQuad = initialQuad ?: if (_uiState.value.isAutoCropEnabled && _uiState.value.liveDetectedQuad != null) {
             _uiState.value.liveDetectedQuad!!
         } else {
             DocumentQuad(
@@ -81,6 +81,10 @@ class DocumentScannerViewModel @Inject constructor(
                 bottomLeft = CornerPoint(0f, 1f)
             )
         }
+
+        val quadToUse = if (_uiState.value.isAutoCropEnabled) {
+            DocumentProcessor.refineCapturedCorners(bitmap, baseQuad)
+        } else baseQuad
 
         val newPage = ScannedPage(
             id = UUID.randomUUID().toString(),

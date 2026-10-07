@@ -58,7 +58,15 @@ data class ArUiState(
     val activeHistoryEntries: List<HistoryEntryEntity> = emptyList(),
     val viewingSessionDetail: ArSessionDetail? = null,
     val snackbarMessage: String? = null,
-    val sendToAreaVolumeValue: Double? = null
+    val sendToAreaVolumeValue: Double? = null,
+    val liveFrameState: app.quacky.feature.arruler.engine.LiveFrameState? = null,
+    val latestConfidence: app.quacky.feature.arruler.engine.PointConfidence? = null,
+    val scaleFactor: Double = 1.0,
+    val isAccuracyLabOpen: Boolean = false,
+    val isConfidenceSheetOpen: Boolean = false,
+    val isScaleCheckOpen: Boolean = false,
+    val isSnappingEnabled: Boolean = true,
+    val scaleCalibratedNote: String? = null
 ) {
     val totalMeasurementsCount: Int
         get() = finishedMeasurements.size + (if (activeMeasurement != null) 1 else 0)
@@ -338,6 +346,58 @@ class ArRulerViewModel @Inject constructor(
                 surfaceFeaturePoints = projectedFeatures
             )
         }
+    }
+
+    fun onEngineFrame(
+        state: app.quacky.feature.arruler.engine.LiveFrameState,
+        hit: app.quacky.feature.arruler.engine.SurfaceHit?,
+        confidence: app.quacky.feature.arruler.engine.PointConfidence?,
+        scale: Double
+    ) {
+        val trackingState = if (state.canPlace) ArTrackingStatus.SURFACE_FOUND else ArTrackingStatus.SEARCHING_SURFACE
+        val reticleHitVec = hit?.worldPoint?.let { Vector3(it.x.toFloat(), it.y.toFloat(), it.z.toFloat()) }
+        _uiState.update { current ->
+            current.copy(
+                liveFrameState = state,
+                latestConfidence = confidence,
+                scaleFactor = scale,
+                trackingStatus = trackingState,
+                reticleHit = reticleHitVec,
+                reticleDistanceMeters = hit?.distanceFromCamera
+            )
+        }
+    }
+
+    fun toggleSnapping() {
+        _uiState.update { it.copy(isSnappingEnabled = !it.isSnappingEnabled) }
+    }
+
+    fun openAccuracyLab() {
+        _uiState.update { it.copy(isAccuracyLabOpen = true) }
+    }
+
+    fun closeAccuracyLab() {
+        _uiState.update { it.copy(isAccuracyLabOpen = false) }
+    }
+
+    fun openConfidenceSheet() {
+        _uiState.update { it.copy(isConfidenceSheetOpen = true) }
+    }
+
+    fun closeConfidenceSheet() {
+        _uiState.update { it.copy(isConfidenceSheetOpen = false) }
+    }
+
+    fun openScaleCheck() {
+        _uiState.update { it.copy(isScaleCheckOpen = true) }
+    }
+
+    fun closeScaleCheck() {
+        _uiState.update { it.copy(isScaleCheckOpen = false) }
+    }
+
+    fun onScaleCalibrated(message: String) {
+        _uiState.update { it.copy(scaleCalibratedNote = message, snackbarMessage = message) }
     }
 
     private fun updateMeasurementProjections(

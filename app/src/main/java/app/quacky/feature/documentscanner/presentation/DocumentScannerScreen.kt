@@ -404,7 +404,11 @@ private fun CameraCaptureView(
 ) {
     val context = LocalContext.current
     val imageCapture = remember {
+        val resSelector = androidx.camera.core.resolutionselector.ResolutionSelector.Builder()
+            .setAspectRatioStrategy(androidx.camera.core.resolutionselector.AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY)
+            .build()
         ImageCapture.Builder()
+            .setResolutionSelector(resSelector)
             .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
             .build()
     }
@@ -452,6 +456,24 @@ private fun CameraCaptureView(
                     drawCircle(color = Color(0xFF00E5FF), radius = 6.dp.toPx(), center = pt)
                     drawCircle(color = Color.White, radius = 3.dp.toPx(), center = pt)
                 }
+            }
+        }
+
+        // Frame-limited warning
+        if (autoCropEnabled && liveDetectedQuad?.isFrameLimited == true) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 70.dp)
+                    .background(Color.Black.copy(alpha = 0.8f), RoundedCornerShape(12.dp))
+                    .padding(horizontal = 14.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = "Document is partly out of view, move back",
+                    fontFamily = SatoshiFontFamily,
+                    fontSize = 12.sp,
+                    color = Color(0xFFFFB74D)
+                )
             }
         }
 

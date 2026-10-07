@@ -6,10 +6,65 @@ import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Matrix
 import android.graphics.Paint
+import org.opencv.core.Mat
+import org.opencv.core.Point
+import org.opencv.imgproc.Imgproc
 import kotlin.math.hypot
 import kotlin.math.max
 
 object DocumentProcessor {
+
+    /**
+     * Re-detects and performs full-resolution sub-pixel edge refinement on the captured still.
+     */
+    fun refineCapturedCorners(stillBitmap: Bitmap, initialQuad: DocumentQuad?): DocumentQuad {
+        try {
+            val w = stillBitmap.width
+            val h = stillBitmap.height
+            if (w <= 0 || h <= 0) return initialQuad ?: DocumentQuad()
+
+            val srcMat = Mat()
+            org.opencv.android.Utils.bitmapToMat(stillBitmap, srcMat)
+            val grayMat = Mat()
+            Imgproc.cvtColor(srcMat, grayMat, Imgproc.COLOR_BGR2GRAY)
+            srcMat.release()
+
+            val detector = CandidateDetector()
+            val scorer = QuadScorer()
+            val refiner = SubPixelRefiner()
+
+            // Candidates from still
+            val candidates = detector.detectCandidates(grayMat, targetLongEdge = 1280).toMutableList()
+
+            // Include initial live quad if available
+            if (initialQuad != null) {
+                val livePoints = listOf(
+                    Point(initialQuad.topLeft.x.toDouble() * w, initialQuad.topLeft.y.toDouble() * h),
+                    Point(initialQuad.topRight.x.toDouble() * w, initialQuad.topRight.y.toDouble() * h),
+                    Point(initialQuad.bottomRight.x.toDouble() * w, initialQuad.bottomRight.y.toDouble() * h),
+                    Point(initialQuad.bottomLeft.x.toDouble() * w, initialQuad.bottomLeft.y.toDouble() * h)
+                )
+                candidates.add(CandidateDetector.RawQuad(livePoints, "Live-Mapped"))
+            }
+
+            val best = scorer.scoreAndSelectBest(candidates, grayMat)
+            if (best != null) {
+                val refined = refiner.refineQuad(best.corners, grayMat)
+                grayMat.release()
+                return DocumentQuad(
+                    topLeft = CornerPoint((refined[0].x / w).toFloat().coerceIn(0f, 1f), (refined[0].y / h).toFloat().coerceIn(0f, 1f)),
+                    topRight = CornerPoint((refined[1].x / w).toFloat().coerceIn(0f, 1f), (refined[1].y / h).toFloat().coerceIn(0f, 1f)),
+                    bottomRight = CornerPoint((refined[2].x / w).toFloat().coerceIn(0f, 1f), (refined[2].y / h).toFloat().coerceIn(0f, 1f)),
+                    bottomLeft = CornerPoint((refined[3].x / w).toFloat().coerceIn(0f, 1f), (refined[3].y / h).toFloat().coerceIn(0f, 1f)),
+                    score = best.score,
+                    isLocked = true,
+                    isFrameLimited = best.isFrameLimited
+                )
+            }
+            grayMat.release()
+        } catch (_: Exception) {}
+        return initialQuad ?: DocumentQuad()
+    }
 
     /**
      * Warps an arbitrary quadrilateral region on [src] to a rectangular page.

@@ -48,11 +48,16 @@ import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.FormatListBulleted
 import androidx.compose.material.icons.rounded.Place
 import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.Science
+import androidx.compose.material.icons.rounded.Straighten
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -62,6 +67,13 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.ui.graphics.PathEffect
+import app.quacky.feature.arruler.engine.ConfidenceLevel
+import app.quacky.feature.arruler.engine.MeasurementMode
+import app.quacky.feature.arruler.engine.RulerUnit
+import app.quacky.feature.arruler.engine.ReferenceItem
+import app.quacky.feature.arruler.engine.ReticleState
+import app.quacky.feature.arruler.presentation.AccuracyLabScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -154,6 +166,13 @@ private fun ArRulerContent(
     var selectedForDelete by remember { mutableStateOf<Set<String>>(emptySet()) }
     var isMultiDeleteMode by remember { mutableStateOf(false) }
 
+    if (state.isAccuracyLabOpen) {
+        AccuracyLabScreen(onNavigateBack = { viewModel.closeAccuracyLab() })
+        return
+    }
+
+    var isMenuExpanded by remember { mutableStateOf(false) }
+
     // Show toast for snackbar messages
     state.snackbarMessage?.let { msg ->
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
@@ -175,9 +194,35 @@ private fun ArRulerContent(
         onHelpClick = onOpenHowToUse,
         onResetClick = { viewModel.clearAllMeasurements() },
         additionalActions = {
+            // Confidence indicator chip
+            val confLevel = state.latestConfidence?.level ?: ConfidenceLevel.LOW
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(QuackySurfaceElevated)
+                    .border(1.dp, QuackyOutline, RoundedCornerShape(8.dp))
+                    .clickable { viewModel.openConfidenceSheet() }
+                    .padding(horizontal = 8.dp, vertical = 6.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = when (confLevel) {
+                        ConfidenceLevel.HIGH -> "●●● High"
+                        ConfidenceLevel.MEDIUM -> "●●○ Med"
+                        ConfidenceLevel.LOW -> "●○○ Low"
+                    },
+                    fontFamily = SatoshiFontFamily,
+                    fontSize = 11.sp,
+                    color = QuackyTextPrimary
+                )
+            }
+
             // Undo button
             IconButton(
-                onClick = { viewModel.undoLastPoint() },
+                onClick = {
+                    arSurfaceViewRef?.undoPoint()
+                    viewModel.undoLastPoint()
+                },
                 enabled = (state.activeMeasurement?.points?.isNotEmpty() == true) || state.finishedMeasurements.isNotEmpty()
             ) {
                 Icon(
@@ -188,6 +233,51 @@ private fun ArRulerContent(
                     } else QuackyTextTertiary
                 )
             }
+
+            // More / Tools Overflow Menu
+            Box {
+                IconButton(onClick = { isMenuExpanded = true }) {
+                    Icon(
+                        imageVector = Icons.Rounded.MoreVert,
+                        contentDescription = "Options",
+                        tint = QuackyTextPrimary
+                    )
+                }
+                DropdownMenu(
+                    expanded = isMenuExpanded,
+                    onDismissRequest = { isMenuExpanded = false },
+                    modifier = Modifier.background(QuackySurfaceElevated)
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Check Scale", color = QuackyTextPrimary) },
+                        leadingIcon = { Icon(Icons.Rounded.Straighten, contentDescription = null, tint = QuackyAccent) },
+                        onClick = {
+                            isMenuExpanded = false
+                            viewModel.openScaleCheck()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Accuracy Lab", color = QuackyTextPrimary) },
+                        leadingIcon = { Icon(Icons.Rounded.Science, contentDescription = null, tint = QuackyAccent) },
+                        onClick = {
+                            isMenuExpanded = false
+                            viewModel.openAccuracyLab()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = if (state.isSnappingEnabled) "Snap to Edges: ON" else "Snap to Edges: OFF",
+                                color = QuackyTextPrimary
+                            )
+                        },
+                        onClick = {
+                            viewModel.toggleSnapping()
+                        }
+                    )
+                }
+            }
+
             // List / Sheet button
             IconButton(
                 onClick = { viewModel.openManageSheet() },
@@ -197,19 +287,6 @@ private fun ArRulerContent(
                     imageVector = Icons.AutoMirrored.Rounded.FormatListBulleted,
                     contentDescription = "Session list",
                     tint = if (state.finishedMeasurements.isNotEmpty()) QuackyTextPrimary else QuackyTextTertiary
-                )
-            }
-            // Clear all button
-            IconButton(
-                onClick = { viewModel.clearAllMeasurements() },
-                enabled = state.finishedMeasurements.isNotEmpty() || state.activeMeasurement != null
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.DeleteOutline,
-                    contentDescription = stringResource(R.string.ar_action_clear),
-                    tint = if (state.finishedMeasurements.isNotEmpty() || state.activeMeasurement != null) {
-                        QuackyTextPrimary
-                    } else QuackyTextTertiary
                 )
             }
         }
@@ -226,27 +303,42 @@ private fun ArRulerContent(
                 factory = { ctx ->
                     ArSurfaceView(
                         context = ctx,
-                        onFrameUpdated = { _, _, viewMatrix, projMatrix, hasSurface, reticleHit, featurePoints, width, height ->
-                            viewModel.onFrameUpdated(
-                                viewMatrix = viewMatrix,
-                                projMatrix = projMatrix,
-                                hasSurface = hasSurface,
-                                reticleHit = reticleHit,
-                                featurePoints = featurePoints,
-                                viewportWidth = width,
-                                viewportHeight = height
-                            )
-                        },
-                        onTap = { worldPos, screenX, screenY ->
-                            viewModel.onPointPlaced(worldPos, screenX, screenY)
+                        onFrameStateUpdated = { frameState, hit, conf, scale ->
+                            viewModel.onEngineFrame(frameState, hit, conf, scale)
                         }
                     ).also { surfaceView ->
+                        surfaceView.currentMode = when (state.mode) {
+                            ArRulerMode.DISTANCE -> MeasurementMode.DISTANCE
+                            ArRulerMode.HEIGHT -> MeasurementMode.HEIGHT
+                            ArRulerMode.ANGLE -> MeasurementMode.ANGLE
+                            ArRulerMode.PATH -> MeasurementMode.PATH
+                        }
+                        surfaceView.currentUnit = when (state.unit) {
+                            ArUnit.CM, ArUnit.MM -> RulerUnit.CENTIMETERS
+                            ArUnit.M -> RulerUnit.METERS
+                            ArUnit.IN -> RulerUnit.INCHES
+                            ArUnit.FT_IN -> RulerUnit.FEET_INCHES
+                        }
+                        surfaceView.isSnappingEnabled = state.isSnappingEnabled
                         surfaceView.initSession()
                         surfaceView.resumeSession()
                         arSurfaceViewRef = surfaceView
                     }
                 },
                 update = { surfaceView ->
+                    surfaceView.currentMode = when (state.mode) {
+                        ArRulerMode.DISTANCE -> MeasurementMode.DISTANCE
+                        ArRulerMode.HEIGHT -> MeasurementMode.HEIGHT
+                        ArRulerMode.ANGLE -> MeasurementMode.ANGLE
+                        ArRulerMode.PATH -> MeasurementMode.PATH
+                    }
+                    surfaceView.currentUnit = when (state.unit) {
+                        ArUnit.CM, ArUnit.MM -> RulerUnit.CENTIMETERS
+                        ArUnit.M -> RulerUnit.METERS
+                        ArUnit.IN -> RulerUnit.INCHES
+                        ArUnit.FT_IN -> RulerUnit.FEET_INCHES
+                    }
+                    surfaceView.isSnappingEnabled = state.isSnappingEnabled
                     arSurfaceViewRef = surfaceView
                 }
             )
@@ -258,131 +350,130 @@ private fun ArRulerContent(
                 }
             }
 
-            // Measurement Overlay Canvas (Segments & Points for All Measurements)
+            // Measurement Overlay Canvas (World-anchored dots, segments, live line)
             Canvas(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .pointerInput(Unit) {
-                        detectTapGestures { offset ->
-                            val hit = arSurfaceViewRef?.performHitTest(offset.x, offset.y)
-                            if (hit != null) {
-                                viewModel.onPointPlaced(hit, offset.x, offset.y)
-                            }
-                        }
-                    }
+                modifier = Modifier.fillMaxSize()
             ) {
+                val liveState = state.liveFrameState
                 val cx = size.width / 2f
                 val cy = size.height / 2f
 
-                // Draw Detected Surface Feature Tracking Dots (visual feedback of 3D geometry)
-                state.surfaceFeaturePoints.forEach { pt ->
-                    drawCircle(
-                        color = QuackyAccent.copy(alpha = 0.6f),
-                        radius = 2.5.dp.toPx(),
-                        center = Offset(pt.x, pt.y)
-                    )
-                }
-
-                // Draw Center Reticle Ring & Precision Indicator
-                val isSurfaceFound = state.trackingStatus == ArTrackingStatus.SURFACE_FOUND
-                val reticleColor = if (isSurfaceFound) QuackyAccent else Color.White.copy(alpha = 0.4f)
-                val reticleRadius = 24.dp.toPx()
-
-                drawCircle(
-                    color = reticleColor,
-                    radius = reticleRadius,
-                    center = Offset(cx, cy),
-                    style = Stroke(width = if (isSurfaceFound) 2.5.dp.toPx() else 1.5.dp.toPx())
-                )
-                if (isSurfaceFound) {
-                    drawCircle(
-                        color = QuackyAccent,
-                        radius = 3.5.dp.toPx(),
-                        center = Offset(cx, cy)
-                    )
-                    // Precision crosshair tick marks
-                    val tickLen = 6.dp.toPx()
-                    val tickOffset = reticleRadius + 4.dp.toPx()
-                    drawLine(QuackyAccent, Offset(cx, cy - tickOffset), Offset(cx, cy - tickOffset - tickLen), strokeWidth = 2.dp.toPx())
-                    drawLine(QuackyAccent, Offset(cx, cy + tickOffset), Offset(cx, cy + tickOffset + tickLen), strokeWidth = 2.dp.toPx())
-                    drawLine(QuackyAccent, Offset(cx - tickOffset, cy), Offset(cx - tickOffset - tickLen, cy), strokeWidth = 2.dp.toPx())
-                    drawLine(QuackyAccent, Offset(cx + tickOffset, cy), Offset(cx + tickOffset + tickLen, cy), strokeWidth = 2.dp.toPx())
-                }
-
-                // 1. Draw Finished Measurements
-                state.finishedMeasurements.forEach { measurement ->
-                    val isSelected = (measurement.id == state.selectedMeasurementId)
-                    val toneColor = if (isSelected) Color.White else MeasurementTones[measurement.colorToneIndex % MeasurementTones.size]
-                    val strokeW = if (isSelected) 3.dp.toPx() else 2.dp.toPx()
-
-                    // Draw segments
-                    measurement.segments.forEach { seg ->
-                        val p1 = seg.from.screenPoint
-                        val p2 = seg.to.screenPoint
-                        if (p1 != null && p2 != null) {
-                            drawLine(
-                                color = toneColor,
-                                start = Offset(p1.x, p1.y),
-                                end = Offset(p2.x, p2.y),
-                                strokeWidth = strokeW,
-                                cap = StrokeCap.Round
-                            )
-                        }
+                if (liveState != null) {
+                    // 1. Placed solid segments
+                    liveState.solidSegments.forEach { seg ->
+                        drawLine(
+                            color = Color.White,
+                            start = Offset(seg.startScreenX, seg.startScreenY),
+                            end = Offset(seg.endScreenX, seg.endScreenY),
+                            strokeWidth = 2.dp.toPx(),
+                            cap = StrokeCap.Round
+                        )
                     }
 
-                    // Draw points
-                    measurement.points.forEach { pt ->
-                        val sp = pt.screenPoint
-                        if (sp != null) {
-                            val center = Offset(sp.x, sp.y)
-                            drawCircle(color = toneColor, radius = 5.dp.toPx(), center = center)
+                    // 2. Live measuring line (dashed rubber-band)
+                    liveState.liveSegment?.let { liveSeg ->
+                        val pathEffect = PathEffect.dashPathEffect(floatArrayOf(12f, 10f), 0f)
+                        drawLine(
+                            color = Color.White.copy(alpha = 0.85f),
+                            start = Offset(liveSeg.startScreenX, liveSeg.startScreenY),
+                            end = Offset(liveSeg.endScreenX, liveSeg.endScreenY),
+                            strokeWidth = 2.dp.toPx(),
+                            pathEffect = pathEffect,
+                            cap = StrokeCap.Round
+                        )
+                    }
+
+                    // 3. Fixed placed dots
+                    liveState.dots.forEach { dot ->
+                        if (dot.isVisible) {
                             drawCircle(
-                                color = toneColor.copy(alpha = if (isSelected) 0.8f else 0.4f),
-                                radius = 12.dp.toPx(),
-                                center = center,
-                                style = Stroke(width = 1.5.dp.toPx())
+                                color = Color.Black,
+                                radius = 6.dp.toPx(),
+                                center = Offset(dot.screenX, dot.screenY)
                             )
-                        }
-                    }
-                }
-
-                // 2. Draw Active Measurement (Current in-progress)
-                state.activeMeasurement?.let { active ->
-                    active.segments.forEach { seg ->
-                        val p1 = seg.from.screenPoint
-                        val p2 = seg.to.screenPoint
-                        if (p1 != null && p2 != null) {
-                            drawLine(
-                                color = Color.White,
-                                start = Offset(p1.x, p1.y),
-                                end = Offset(p2.x, p2.y),
-                                strokeWidth = 3.dp.toPx(),
-                                cap = StrokeCap.Round
-                            )
-                        }
-                    }
-
-                    active.points.forEach { pt ->
-                        val sp = pt.screenPoint
-                        if (sp != null) {
-                            val center = Offset(sp.x, sp.y)
-                            drawCircle(color = Color.White, radius = 6.dp.toPx(), center = center)
                             drawCircle(
-                                color = Color.White.copy(alpha = 0.7f),
-                                radius = 14.dp.toPx(),
-                                center = center,
-                                style = Stroke(width = 2.dp.toPx())
+                                color = if (dot.isTracking) Color.White else Color.Gray,
+                                radius = 5.dp.toPx(),
+                                center = Offset(dot.screenX, dot.screenY)
                             )
-                            if (pt.isFloorAnchor) {
+                            if (dot.isPulsing) {
                                 drawCircle(
-                                    color = Color.White.copy(alpha = 0.35f),
-                                    radius = 22.dp.toPx(),
-                                    center = center,
-                                    style = Stroke(width = 1.dp.toPx())
+                                    color = Color.White.copy(alpha = 0.4f),
+                                    radius = 12.dp.toPx(),
+                                    center = Offset(dot.screenX, dot.screenY),
+                                    style = Stroke(width = 1.5.dp.toPx())
                                 )
                             }
+                        } else if (dot.offScreenArrowAngleRad != null) {
+                            drawCircle(
+                                color = Color.White.copy(alpha = 0.7f),
+                                radius = 8.dp.toPx(),
+                                center = Offset(dot.offScreenClampedX, dot.offScreenClampedY)
+                            )
                         }
                     }
+
+                    // 4. Center Reticle
+                    val reticleRadius = 24.dp.toPx()
+                    val reticleColor = when (liveState.reticleState) {
+                        ReticleState.LOCKED -> Color.White
+                        ReticleState.TRACKING -> Color.White.copy(alpha = 0.75f)
+                        ReticleState.SEARCHING -> Color.White.copy(alpha = 0.30f)
+                    }
+                    val strokeW = if (liveState.reticleState == ReticleState.LOCKED) 2.5.dp.toPx() else 1.5.dp.toPx()
+
+                    drawCircle(
+                        color = reticleColor,
+                        radius = reticleRadius,
+                        center = Offset(cx, cy),
+                        style = Stroke(width = strokeW)
+                    )
+                    if (liveState.reticleState != ReticleState.SEARCHING) {
+                        drawCircle(
+                            color = reticleColor,
+                            radius = 3.dp.toPx(),
+                            center = Offset(cx, cy)
+                        )
+                    }
+
+                    // 5. Snap indicator
+                    if (liveState.isSnapActive) {
+                        drawRect(
+                            color = Color.White,
+                            topLeft = Offset(cx - 5.dp.toPx(), cy - 5.dp.toPx()),
+                            size = androidx.compose.ui.geometry.Size(10.dp.toPx(), 10.dp.toPx()),
+                            style = Stroke(width = 2.dp.toPx())
+                        )
+                    }
+                }
+            }
+
+            // Surface Kind & Level Chip below Center Reticle
+            val liveState = state.liveFrameState
+            if (liveState != null && liveState.surfaceKind != null) {
+                val chipText = buildString {
+                    append(liveState.surfaceKind.label)
+                    liveState.levelPlumbHint?.let { append(" · $it") }
+                    if (liveState.isSnapActive && liveState.snapLabel != null) {
+                        append(" · ${liveState.snapLabel}")
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .offset(y = 38.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xE6141414))
+                        .border(1.dp, Color(0xFF333333), RoundedCornerShape(12.dp))
+                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = chipText,
+                        fontFamily = SatoshiFontFamily,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 11.sp,
+                        color = Color.White
+                    )
                 }
             }
 
@@ -570,57 +661,7 @@ private fun ArRulerContent(
                     .navigationBarsPadding()
                     .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
-                // Mark Point Button (Start point / End point / Next point)
-                val activePointsCount = state.activeMeasurement?.points?.size ?: 0
-                val markButtonLabel = when {
-                    activePointsCount == 0 -> "Mark Start Point"
-                    activePointsCount == 1 -> "Mark End Point"
-                    else -> "Mark Next Point"
-                }
-                val isSurfaceFound = state.trackingStatus == ArTrackingStatus.SURFACE_FOUND
 
-                if (isSurfaceFound) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 12.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Button(
-                        onClick = {
-                            val viewW = view.width.toFloat().takeIf { it > 0 } ?: 1080f
-                            val viewH = view.height.toFloat().takeIf { it > 0 } ?: 1920f
-                            val hit = state.reticleHit ?: arSurfaceViewRef?.performHitTest(viewW / 2f, viewH / 2f)
-                            if (hit != null) {
-                                viewModel.onPointPlaced(hit, viewW / 2f, viewH / 2f)
-                            } else {
-                                Toast.makeText(context, "Aim at a detected surface to mark point", Toast.LENGTH_SHORT).show()
-                            }
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isSurfaceFound) QuackyAccent else QuackySurfaceElevated,
-                            contentColor = if (isSurfaceFound) QuackyBackground else QuackyTextPrimary
-                        ),
-                        shape = RoundedCornerShape(24.dp),
-                        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
-                        border = BorderStroke(1.dp, if (isSurfaceFound) QuackyAccent else QuackyOutline)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Place,
-                            contentDescription = markButtonLabel,
-                            tint = if (isSurfaceFound) QuackyBackground else QuackyTextPrimary,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = markButtonLabel,
-                            fontFamily = SatoshiFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
-                        )
-                    }
-                }
-            }
 
                 // Bottom Strip: Horizontal Scrollable List of Measurements
                 if (state.finishedMeasurements.isNotEmpty() || state.activeMeasurement != null) {
@@ -766,14 +807,24 @@ private fun ArRulerContent(
                                 color = QuackyTextSecondary,
                                 letterSpacing = 1.sp
                             )
-                            Spacer(modifier = Modifier.height(2.dp))
+                            val liveVal = state.liveFrameState?.primaryReadoutText ?: displayVal
+                            val secondaryVal = state.liveFrameState?.secondaryReadoutText
+
                             Text(
-                                text = displayVal,
+                                text = liveVal,
                                 fontFamily = SatoshiFontFamily,
-                                fontSize = 30.sp,
+                                fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = QuackyTextPrimary
                             )
+                            if (secondaryVal != null) {
+                                Text(
+                                    text = secondaryVal,
+                                    fontFamily = SatoshiFontFamily,
+                                    fontSize = 12.sp,
+                                    color = QuackyTextSecondary
+                                )
+                            }
                         }
 
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -814,7 +865,7 @@ private fun ArRulerContent(
                                 )
                             }
 
-                            // Screenshot Button
+                            // Screenshot Button (captures only the clean camera feed + measurement lines, never black screen or buttons)
                             IconButton(
                                 onClick = {
                                     val surfaceView = arSurfaceViewRef
@@ -831,14 +882,7 @@ private fun ArRulerContent(
                                             viewModel.captureScreenshot(annotatedBitmap, context)
                                         }
                                     } else {
-                                        val bitmap = Bitmap.createBitmap(
-                                            view.width.coerceAtLeast(1),
-                                            view.height.coerceAtLeast(1),
-                                            Bitmap.Config.ARGB_8888
-                                        )
-                                        val canvas = android.graphics.Canvas(bitmap)
-                                        view.draw(canvas)
-                                        viewModel.captureScreenshot(bitmap, context)
+                                        Toast.makeText(context, "Camera feed not ready", Toast.LENGTH_SHORT).show()
                                     }
                                 },
                                 modifier = Modifier
@@ -852,6 +896,60 @@ private fun ArRulerContent(
                                     tint = QuackyTextPrimary,
                                     modifier = Modifier.size(20.dp)
                                 )
+                            }
+                        }
+                    }
+
+                    // Large Aim-and-Place Button at bottom of screen
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Button(
+                            onClick = {
+                                val success = arSurfaceViewRef?.placePoint() == true
+                                if (success) {
+                                    val pt = state.reticleHit ?: app.quacky.feature.arruler.domain.Vector3(0f, 0f, -1f)
+                                    viewModel.onPointPlaced(pt, state.liveFrameState?.reticleScreenX ?: 0f, state.liveFrameState?.reticleScreenY ?: 0f)
+                                }
+                            },
+                            enabled = state.liveFrameState?.canPlace == true,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.White,
+                                disabledContainerColor = Color(0xFF262626),
+                                contentColor = Color.Black,
+                                disabledContentColor = Color.Gray
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(48.dp)
+                        ) {
+                            Text(
+                                text = if (state.mode == ArRulerMode.PATH && (state.liveFrameState?.dots?.size ?: 0) >= 1) {
+                                    if (state.liveFrameState?.isCloseShapeSnap == true) "Close Shape" else "Place Next Point"
+                                } else "Place Point",
+                                fontFamily = SatoshiFontFamily,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 15.sp
+                            )
+                        }
+
+                        if (state.mode == ArRulerMode.PATH && (state.liveFrameState?.dots?.size ?: 0) >= 2) {
+                            Button(
+                                onClick = { viewModel.finishActiveMeasurement() },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = QuackyAccent,
+                                    contentColor = QuackyBackground
+                                ),
+                                shape = RoundedCornerShape(12.dp),
+                                modifier = Modifier.height(48.dp)
+                            ) {
+                                Icon(Icons.Rounded.Check, contentDescription = "Done")
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("Done", fontFamily = SatoshiFontFamily, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -1415,6 +1513,123 @@ private fun ArRulerContent(
                             }
                         }
                     }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+        }
+    }
+
+    // "Why this confidence?" Bottom Sheet
+    if (state.isConfidenceSheetOpen) {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        ModalBottomSheet(
+            onDismissRequest = { viewModel.closeConfidenceSheet() },
+            sheetState = sheetState,
+            containerColor = QuackySurfaceElevated
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 12.dp)
+            ) {
+                Text(
+                    text = "Why this confidence?",
+                    fontFamily = SatoshiFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = QuackyTextPrimary
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                val conf = state.latestConfidence
+                val reasons = conf?.weakestReasons ?: emptyList()
+                if (reasons.isEmpty()) {
+                    Text(
+                        text = "Optimal conditions: tracking is steady, good depth data, and surface is textured.",
+                        fontFamily = SatoshiFontFamily,
+                        color = QuackyTextSecondary,
+                        fontSize = 14.sp
+                    )
+                } else {
+                    reasons.forEach { reason ->
+                        Row(
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "• ${reason.userMessage}",
+                                fontFamily = SatoshiFontFamily,
+                                color = QuackyTextSecondary,
+                                fontSize = 14.sp
+                            )
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                QuackyButton(
+                    onClick = { viewModel.closeConfidenceSheet() },
+                    style = QuackyButtonStyle.Secondary,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Got it")
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
+
+    // "Check Scale" Bottom Sheet
+    if (state.isScaleCheckOpen) {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        ModalBottomSheet(
+            onDismissRequest = { viewModel.closeScaleCheck() },
+            sheetState = sheetState,
+            containerColor = QuackySurfaceElevated
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 12.dp)
+            ) {
+                Text(
+                    text = "Check Scale",
+                    fontFamily = SatoshiFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = QuackyTextPrimary
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Measure a known reference object to calibrate overall tracking scale for this session.",
+                    fontFamily = SatoshiFontFamily,
+                    color = QuackyTextSecondary,
+                    fontSize = 13.sp
+                )
+                Spacer(modifier = Modifier.height(14.dp))
+                listOf(
+                    ReferenceItem.BANK_CARD,
+                    ReferenceItem.A4_LONG,
+                    ReferenceItem.A4_SHORT,
+                    ReferenceItem.US_LETTER_LONG
+                ).forEach { item ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable {
+                                val res = arSurfaceViewRef?.calibrateScale(item)
+                                if (res != null) {
+                                    viewModel.onScaleCalibrated(res.message)
+                                }
+                                viewModel.closeScaleCheck()
+                            }
+                            .padding(vertical = 12.dp, horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(item.label, color = QuackyTextPrimary, fontSize = 14.sp, fontFamily = SatoshiFontFamily)
+                        Text("Calibrate", color = QuackyAccent, fontWeight = FontWeight.Bold, fontSize = 13.sp, fontFamily = SatoshiFontFamily)
+                    }
+                    HorizontalDivider(color = QuackyOutline, thickness = 0.5.dp)
                 }
                 Spacer(modifier = Modifier.height(24.dp))
             }
