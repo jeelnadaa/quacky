@@ -29,24 +29,27 @@ enum class SurferLane(val index: Int, val xOffsetFactor: Float) {
 }
 
 enum class ObstacleType {
-    LOW_BARRIER,   // Ground roadblock: player must JUMP or dodge
-    HIGH_BARRIER,  // Overhead pipe/beam: player must SLIDE/DUCK or dodge
-    TALL_TRAIN     // Subway car: solid obstacle, player must CHANGE LANES
+    LOW_BARRIER,   // Ground construction roadblock: player must JUMP or dodge
+    HIGH_BARRIER,  // Overhead pipe/gantry beam: player must SLIDE/DUCK or dodge
+    TALL_TRAIN     // Realistic commuter train carriage: solid obstacle, player must CHANGE LANES
 }
 
 data class Obstacle(
     val id: Long,
     val lane: SurferLane,
     val type: ObstacleType,
-    val z: Float // 1.0f at horizon, 0.0f at player, <0 behind player
+    val z: Float, // 1.0f at horizon, 0.0f at player, <0 behind player
+    val trainLength: Float = 0.45f,
+    val hasRamp: Boolean = false
 )
 
 enum class CollectibleType {
-    COIN,          // Golden breadcrumb: +10 pts, +1 coin
-    MAGNET,        // Pulls all nearby coins towards player (8s)
-    DASH_BOOST,    // Invincible supersonic quack dash destroying obstacles (6s)
-    SHIELD,        // Absorbs 1 collision
-    MULTIPLIER_2X  // 2x score multiplier (10s)
+    COIN,               // Golden coin: +20 pts, +1 coin
+    MAGNET,             // Pulls all nearby coins towards player (8s)
+    DASH_BOOST,         // Invincible supersonic quack dash destroying obstacles (6s)
+    SHIELD,             // Absorbs 1 collision
+    MULTIPLIER_2X,      // 2x score multiplier (10s)
+    HOVERBOARD_PICKUP   // +1 Hoverboard inventory
 }
 
 data class Collectible(
@@ -77,6 +80,17 @@ data class SurferParticle(
     val maxLife: Float
 )
 
+data class ScorePopup(
+    val id: Long,
+    val text: String,
+    val laneIndex: Int, // 0 = Left, 1 = Center, 2 = Right
+    val color: Color,
+    val yOffset: Float = 0f,
+    val alpha: Float = 1.0f,
+    val ageMs: Long = 0L,
+    val maxAgeMs: Long = 850L
+)
+
 data class SurferGameState(
     val status: GameStatus = GameStatus.READY,
     val currentLane: SurferLane = SurferLane.CENTER,
@@ -95,12 +109,18 @@ data class SurferGameState(
     val powerUpRemainingMs: Long = 0L,
     val powerUpTotalMs: Long = 0L,
     val isInvincible: Boolean = false,
+    val hasHoverboard: Boolean = false,
+    val hoverboardRemainingMs: Long = 0L,
+    val hoverboardTotalMs: Long = 20_000L,
+    val hoverboardsInventory: Int = 3,
+    val cameraRollDegrees: Float = 0f,
     val isNewHighScore: Boolean = false,
     val highScore: Int = 0,
     val totalCoins: Int = 0,
     val obstacles: List<Obstacle> = emptyList(),
     val collectibles: List<Collectible> = emptyList(),
     val particles: List<SurferParticle> = emptyList(),
+    val popups: List<ScorePopup> = emptyList(),
     val duckBlink: Float = 0f,
     val runCycleProgress: Float = 0f,
     val trackScrollOffset: Float = 0f,
@@ -108,6 +128,12 @@ data class SurferGameState(
 ) {
     val powerUpFraction: Float
         get() = if (powerUpTotalMs > 0) (powerUpRemainingMs.toFloat() / powerUpTotalMs.toFloat()).coerceIn(0f, 1f) else 0f
+
+    val hoverboardFraction: Float
+        get() = if (hoverboardTotalMs > 0) (hoverboardRemainingMs.toFloat() / hoverboardTotalMs.toFloat()).coerceIn(0f, 1f) else 0f
+
+    val isHoverboardActive: Boolean
+        get() = hasHoverboard && hoverboardRemainingMs > 0L
 
     val scoreMultiplier: Int
         get() = if (activePowerUp == CollectibleType.MULTIPLIER_2X) 2 else 1

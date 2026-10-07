@@ -88,6 +88,14 @@ class QuackySurferViewModel @Inject constructor(
         }
     }
 
+    fun activateHoverboard() {
+        val (updated, activated) = engine.activateHoverboard(_state.value)
+        _state.value = updated
+        if (activated) {
+            _events.tryEmit(SurferEngine.GameEvent.HOVERBOARD_ACTIVATE)
+        }
+    }
+
     fun pause() {
         if (_state.value.status == GameStatus.PLAYING) {
             gameLoopJob?.cancel()

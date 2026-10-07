@@ -200,4 +200,37 @@ class SurferEngineTest {
         assertTrue(result.state.score > 100)
         assertTrue(result.events.contains(SurferEngine.GameEvent.COIN_PICKUP))
     }
+
+    @Test
+    fun `activateHoverboard deploys hoverboard when inventory available`() {
+        val state = engine.startNewGame(0, 0)
+        assertEquals(3, state.hoverboardsInventory)
+        assertFalse(state.isHoverboardActive)
+
+        val (activated, success) = engine.activateHoverboard(state)
+        assertTrue(success)
+        assertTrue(activated.isHoverboardActive)
+        assertEquals(2, activated.hoverboardsInventory)
+        assertEquals(20_000L, activated.hoverboardRemainingMs)
+    }
+
+    @Test
+    fun `hoverboard absorbs collision and prevents crash`() {
+        val obstacle = Obstacle(id = 1L, lane = SurferLane.CENTER, type = ObstacleType.TALL_TRAIN, z = 0.02f)
+        val state = SurferGameState(
+            status = GameStatus.PLAYING,
+            currentLane = SurferLane.CENTER,
+            targetLane = SurferLane.CENTER,
+            lanePositionFloat = 0.0f,
+            hasHoverboard = true,
+            hoverboardRemainingMs = 15_000L,
+            obstacles = listOf(obstacle)
+        )
+
+        val result = engine.tick(state, 16L)
+        assertEquals(GameStatus.PLAYING, result.state.status)
+        assertFalse(result.state.hasHoverboard)
+        assertTrue(result.events.contains(SurferEngine.GameEvent.HOVERBOARD_BREAK))
+        assertFalse(result.events.contains(SurferEngine.GameEvent.CRASH))
+    }
 }

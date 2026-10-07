@@ -6,6 +6,7 @@ import app.quacky.feature.surfer.model.CollectibleType
 import app.quacky.feature.surfer.model.GameStatus
 import app.quacky.feature.surfer.model.Obstacle
 import app.quacky.feature.surfer.model.ObstacleType
+import app.quacky.feature.surfer.model.ScorePopup
 import app.quacky.feature.surfer.model.SurferGameState
 import app.quacky.feature.surfer.model.SurferLane
 import app.quacky.feature.surfer.model.SurferParticle
@@ -21,7 +22,7 @@ class SurferEngine(
 ) {
     private var nextEntityId = 1L
     private var nextSpawnZ = 1.0f
-    private var nextPowerUpDistance = 60f
+    private var nextPowerUpDistance = 50f
 
     enum class GameEvent {
         LANE_SWITCH,
@@ -29,6 +30,8 @@ class SurferEngine(
         SLIDE,
         COIN_PICKUP,
         POWERUP_PICKUP,
+        HOVERBOARD_ACTIVATE,
+        HOVERBOARD_BREAK,
         SHIELD_BREAK,
         OBSTACLE_SMASHED,
         CRASH
@@ -42,7 +45,7 @@ class SurferEngine(
     fun startNewGame(highScore: Int, totalCoins: Int): SurferGameState {
         nextEntityId = 1L
         nextSpawnZ = 1.0f
-        nextPowerUpDistance = 50f
+        nextPowerUpDistance = 45f
 
         val initialObstacles = mutableListOf<Obstacle>()
         val initialCoins = mutableListOf<Collectible>()
@@ -63,6 +66,7 @@ class SurferEngine(
             highScore = highScore,
             totalCoins = totalCoins,
             speed = 0.40f,
+            hoverboardsInventory = 3,
             obstacles = initialObstacles,
             collectibles = initialCoins
         )
@@ -74,12 +78,33 @@ class SurferEngine(
         val nextLane = if (toRight) currentState.targetLane.right() else currentState.targetLane.left()
         if (nextLane == currentState.targetLane) return Pair(currentState, false)
 
+        val roll = if (toRight) 9.0f else -9.0f
         return Pair(
             currentState.copy(
-                targetLane = nextLane
+                targetLane = nextLane,
+                cameraRollDegrees = roll
             ),
             true
         )
+    }
+
+    fun activateHoverboard(currentState: SurferGameState): Pair<SurferGameState, Boolean> {
+        if (currentState.status != GameStatus.PLAYING) return Pair(currentState, false)
+        if (currentState.isHoverboardActive) return Pair(currentState, false)
+        if (currentState.hoverboardsInventory <= 0) return Pair(currentState, false)
+
+        val updated = currentState.copy(
+            hasHoverboard = true,
+            hoverboardRemainingMs = 20_000L,
+            hoverboardsInventory = currentState.hoverboardsInventory - 1,
+            popups = currentState.popups + ScorePopup(
+                id = nextEntityId++,
+                text = "🛹 HOVERBOARD!",
+                laneIndex = currentState.targetLane.index,
+                color = Color(0xFF00E5FF)
+            )
+        )
+        return Pair(updated, true)
     }
 
     fun jump(currentState: SurferGameState): Pair<SurferGameState, Boolean> {
@@ -177,9 +202,21 @@ class SurferEngine(
         // 6. Move obstacles & check collisions
         val survivingObstacles = mutableListOf<Obstacle>()
         var hasShield = currentState.hasShield
+        var hasHoverboard = currentState.hasHoverboard
+        var hoverboardRemainingMs = currentState.hoverboardRemainingMs
+        var hoverboardsInventory = currentState.hoverboardsInventory
         var isGameOver = false
         var crashReason: String? = null
         val newParticles = currentState.particles.toMutableList()
+        val newPopups = mutableListOf<ScorePopup>()
+
+        if (hasHoverboard) {
+            hoverboardRemainingMs -= deltaMs
+            if (hoverboardRemainingMs <= 0L) {
+                hasHoverboard = false
+                hoverboardRemainingMs = 0L
+            }
+        }
 
         val isMagnetActive = activePowerUp == CollectibleType.MAGNET
 
@@ -195,6 +232,7 @@ class SurferEngine(
                     // Dash smash! Destroy obstacle
                     events.add(GameEvent.OBSTACLE_SMASHED)
                     spawnExplosionParticles(newParticles, obs.lane.xOffsetFactor, 0.0f, Color(0xFFFFA000))
+                    newPopups.add(ScorePopup(nextEntityId++, "SMASHED!", obs.lane.index, Color(0xFFFF9800)))
                     continue // Removed
                 }
 
@@ -207,11 +245,18 @@ class SurferEngine(
                     survivingObstacles.add(obs.copy(z = nextZ))
                 } else {
                     // Hit!
-                    if (hasShield) {
+                    if (hasHoverboard) {
+                        hasHoverboard = false
+                        hoverboardRemainingMs = 0L
+                        events.add(GameEvent.HOVERBOARD_BREAK)
+                        spawnExplosionParticles(newParticles, obs.lane.xOffsetFactor, 0.0f, Color(0xFF00E5FF))
+                        newPopups.add(ScorePopup(nextEntityId++, "SAVED!", obs.lane.index, Color(0xFF00E5FF)))
+                        continue
+                    } else if (hasShield) {
                         hasShield = false
                         events.add(GameEvent.SHIELD_BREAK)
                         spawnExplosionParticles(newParticles, obs.lane.xOffsetFactor, 0.0f, Color(0xFF00E5FF))
-                        // Discard obstacle so player does not hit it again
+                        newPopups.add(ScorePopup(nextEntityId++, "SHIELD BROKE", obs.lane.index, Color(0xFF00E5FF)))
                         continue
                     } else {
                         // Crash game over
@@ -219,7 +264,7 @@ class SurferEngine(
                         crashReason = when (obs.type) {
                             ObstacleType.LOW_BARRIER -> "Tripped over hurdle! Jump to clear low barriers."
                             ObstacleType.HIGH_BARRIER -> "Hit overhead duct! Duck to slide underneath."
-                            ObstacleType.TALL_TRAIN -> "Crashed into subway car! Switch lanes to avoid trains."
+                            ObstacleType.TALL_TRAIN -> "Crashed into commuter train! Switch lanes to avoid trains."
                         }
                         events.add(GameEvent.CRASH)
                         spawnCrashFeathers(newParticles, newLaneFloat)
@@ -263,28 +308,45 @@ class SurferEngine(
                         newScoreAfterPickups += 20 * currentState.scoreMultiplier
                         events.add(GameEvent.COIN_PICKUP)
                         spawnCoinSparks(newParticles, colLane.xOffsetFactor)
+                        newPopups.add(
+                            ScorePopup(
+                                id = nextEntityId++,
+                                text = "+${20 * currentState.scoreMultiplier}",
+                                laneIndex = colLane.index,
+                                color = Color(0xFFFFD54F)
+                            )
+                        )
                     }
                     CollectibleType.MAGNET -> {
                         activePowerUp = CollectibleType.MAGNET
                         powerUpRemainingMs = 8_000L
                         powerUpTotalMs = 8_000L
                         events.add(GameEvent.POWERUP_PICKUP)
+                        newPopups.add(ScorePopup(nextEntityId++, "MAGNET!", colLane.index, Color(0xFF00E5FF)))
                     }
                     CollectibleType.DASH_BOOST -> {
                         activePowerUp = CollectibleType.DASH_BOOST
                         powerUpRemainingMs = 6_000L
                         powerUpTotalMs = 6_000L
                         events.add(GameEvent.POWERUP_PICKUP)
+                        newPopups.add(ScorePopup(nextEntityId++, "SUPER DASH!", colLane.index, Color(0xFFFF5722)))
                     }
                     CollectibleType.SHIELD -> {
                         hasShield = true
                         events.add(GameEvent.POWERUP_PICKUP)
+                        newPopups.add(ScorePopup(nextEntityId++, "SHIELD UP!", colLane.index, Color(0xFF00E676)))
                     }
                     CollectibleType.MULTIPLIER_2X -> {
                         activePowerUp = CollectibleType.MULTIPLIER_2X
                         powerUpRemainingMs = 10_000L
                         powerUpTotalMs = 10_000L
                         events.add(GameEvent.POWERUP_PICKUP)
+                        newPopups.add(ScorePopup(nextEntityId++, "2X SCORE!", colLane.index, Color(0xFFFF4081)))
+                    }
+                    CollectibleType.HOVERBOARD_PICKUP -> {
+                        hoverboardsInventory += 1
+                        events.add(GameEvent.POWERUP_PICKUP)
+                        newPopups.add(ScorePopup(nextEntityId++, "+1 HOVERBOARD", colLane.index, Color(0xFF00E5FF)))
                     }
                 }
             } else if (colZ > -0.2f) {
@@ -300,8 +362,21 @@ class SurferEngine(
         }
         nextSpawnZ = currentSpawnZ
 
-        // 9. Update particles
+        // 9. Update particles & floating popups
         val updatedParticles = updateParticles(newParticles, dtSec)
+        val updatedPopups = currentState.popups.mapNotNull { popup ->
+            val newAge = popup.ageMs + deltaMs
+            if (newAge < popup.maxAgeMs) {
+                popup.copy(
+                    ageMs = newAge,
+                    yOffset = popup.yOffset - dtSec * 35f,
+                    alpha = (1f - (newAge.toFloat() / popup.maxAgeMs.toFloat())).coerceIn(0f, 1f)
+                )
+            } else null
+        } + newPopups
+
+        // Decay camera banking roll angle
+        val newCameraRoll = currentState.cameraRollDegrees * (1f - min(1f, dtSec * 6.5f))
 
         // 10. Run cycle animation (accelerates noticeably as player/track speeds up)
         val runCycleRate = 2.4f + (currentSpeed / 0.38f) * 3.8f
@@ -362,6 +437,10 @@ class SurferEngine(
             coins = newCoins,
             speed = currentSpeed,
             hasShield = hasShield,
+            hasHoverboard = hasHoverboard,
+            hoverboardRemainingMs = hoverboardRemainingMs,
+            hoverboardsInventory = hoverboardsInventory,
+            cameraRollDegrees = newCameraRoll,
             activePowerUp = activePowerUp,
             powerUpRemainingMs = powerUpRemainingMs,
             powerUpTotalMs = powerUpTotalMs,
@@ -369,6 +448,7 @@ class SurferEngine(
             obstacles = survivingObstacles,
             collectibles = survivingCollectibles,
             particles = updatedParticles,
+            popups = updatedPopups,
             runCycleProgress = runCycle,
             trackScrollOffset = trackScroll,
             lastCrashReason = crashReason ?: currentState.lastCrashReason
@@ -386,7 +466,7 @@ class SurferEngine(
         val pattern = random.nextInt(6)
         when (pattern) {
             0 -> {
-                // Single low barrier with arching coins above (jump challenge)
+                // Single low barrier with parabolic arch of coins above (jump challenge)
                 val lane = SurferLane.fromIndex(random.nextInt(3))
                 obstacles.add(Obstacle(nextEntityId++, lane, ObstacleType.LOW_BARRIER, z))
                 collectibles.add(Collectible(nextEntityId++, lane, CollectibleType.COIN, z, isElevated = true))
@@ -394,18 +474,19 @@ class SurferEngine(
                 collectibles.add(Collectible(nextEntityId++, lane, CollectibleType.COIN, z + 0.08f, isElevated = false))
             }
             1 -> {
-                // High barrier with sliding coins
+                // Overhead clearance barrier with low sliding coins
                 val lane = SurferLane.fromIndex(random.nextInt(3))
                 obstacles.add(Obstacle(nextEntityId++, lane, ObstacleType.HIGH_BARRIER, z))
                 collectibles.add(Collectible(nextEntityId++, lane, CollectibleType.COIN, z, isElevated = false))
                 collectibles.add(Collectible(nextEntityId++, lane, CollectibleType.COIN, z + 0.07f, isElevated = false))
             }
             2 -> {
-                // Tall train car on one lane, coins on another lane
+                // Realistic commuter passenger train car on one lane
                 val trainLane = SurferLane.fromIndex(random.nextInt(3))
                 val coinLane = SurferLane.fromIndex((trainLane.index + 1) % 3)
-                obstacles.add(Obstacle(nextEntityId++, trainLane, ObstacleType.TALL_TRAIN, z))
-                repeat(3) { i ->
+                val hasRamp = random.nextFloat() < 0.35f
+                obstacles.add(Obstacle(nextEntityId++, trainLane, ObstacleType.TALL_TRAIN, z, trainLength = 0.50f, hasRamp = hasRamp))
+                repeat(4) { i ->
                     collectibles.add(
                         Collectible(nextEntityId++, coinLane, CollectibleType.COIN, z + (i * 0.06f), isElevated = false)
                     )
@@ -416,8 +497,8 @@ class SurferEngine(
                 val openLaneIndex = random.nextInt(3)
                 for (i in 0..2) {
                     if (i != openLaneIndex) {
-                        val type = if (random.nextBoolean()) ObstacleType.LOW_BARRIER else ObstacleType.HIGH_BARRIER
-                        obstacles.add(Obstacle(nextEntityId++, SurferLane.fromIndex(i), type, z))
+                        val type = if (random.nextBoolean()) ObstacleType.TALL_TRAIN else ObstacleType.LOW_BARRIER
+                        obstacles.add(Obstacle(nextEntityId++, SurferLane.fromIndex(i), type, z, trainLength = 0.45f))
                     }
                 }
                 // Reward on open lane
@@ -425,16 +506,16 @@ class SurferEngine(
                 collectibles.add(Collectible(nextEntityId++, SurferLane.fromIndex(openLaneIndex), rewardType, z))
             }
             4 -> {
-                // Clean coin ribbon across a lane
+                // Long ribbon of gold coins along a lane
                 val lane = SurferLane.fromIndex(random.nextInt(3))
-                repeat(4) { i ->
+                repeat(5) { i ->
                     collectibles.add(
                         Collectible(nextEntityId++, lane, CollectibleType.COIN, z + (i * 0.07f), isElevated = false)
                     )
                 }
             }
             5 -> {
-                // Power-up crate
+                // Power-up or hoverboard crate
                 val lane = SurferLane.fromIndex(random.nextInt(3))
                 val powerUp = checkPowerUpSpawn(distanceMeters)
                 collectibles.add(Collectible(nextEntityId++, lane, powerUp, z))
@@ -445,10 +526,11 @@ class SurferEngine(
     private fun checkPowerUpSpawn(distanceMeters: Float): CollectibleType {
         if (distanceMeters >= nextPowerUpDistance) {
             nextPowerUpDistance = distanceMeters + random.nextInt(35, 60)
-            return when (random.nextInt(4)) {
+            return when (random.nextInt(5)) {
                 0 -> CollectibleType.MAGNET
                 1 -> CollectibleType.DASH_BOOST
                 2 -> CollectibleType.SHIELD
+                3 -> CollectibleType.HOVERBOARD_PICKUP
                 else -> CollectibleType.MULTIPLIER_2X
             }
         }

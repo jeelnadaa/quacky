@@ -5,7 +5,10 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -93,6 +96,8 @@ fun QuackySurferScreen(
                 SurferEngine.GameEvent.SLIDE -> haptics.click()
                 SurferEngine.GameEvent.COIN_PICKUP -> haptics.tick()
                 SurferEngine.GameEvent.POWERUP_PICKUP -> haptics.heavy()
+                SurferEngine.GameEvent.HOVERBOARD_ACTIVATE -> haptics.heavy()
+                SurferEngine.GameEvent.HOVERBOARD_BREAK -> haptics.heavy()
                 SurferEngine.GameEvent.SHIELD_BREAK -> haptics.heavy()
                 SurferEngine.GameEvent.OBSTACLE_SMASHED -> haptics.heavy()
                 SurferEngine.GameEvent.CRASH -> haptics.heavy()
@@ -121,11 +126,21 @@ fun QuackySurferScreen(
             var dragDistanceX by remember { mutableFloatStateOf(0f) }
             var dragDistanceY by remember { mutableFloatStateOf(0f) }
             var hasSwipedInGesture by remember { mutableStateOf(false) }
-            val swipeThreshold = 70f
+            val swipeThreshold = 50f
 
             Canvas(
                 modifier = Modifier
                     .fillMaxSize()
+                    .pointerInput(state.status) {
+                        if (state.status == GameStatus.PLAYING) {
+                            detectTapGestures(
+                                onDoubleTap = {
+                                    haptics.heavy()
+                                    viewModel.activateHoverboard()
+                                }
+                            )
+                        }
+                    }
                     .pointerInput(state.status) {
                         if (state.status == GameStatus.PLAYING) {
                             detectDragGestures(
@@ -145,17 +160,21 @@ fun QuackySurferScreen(
                                     dragDistanceY = 0f
                                 },
                                 onDrag = { change, dragAmount ->
-                                    change.consume()
                                     if (hasSwipedInGesture) return@detectDragGestures
 
                                     dragDistanceX += dragAmount.x
                                     dragDistanceY += dragAmount.y
 
-                                    if (abs(dragDistanceX) > abs(dragDistanceY) && abs(dragDistanceX) > swipeThreshold) {
+                                    val absX = abs(dragDistanceX)
+                                    val absY = abs(dragDistanceY)
+
+                                    if (absX > swipeThreshold && absX > absY * 1.2f) {
                                         hasSwipedInGesture = true
+                                        change.consume()
                                         if (dragDistanceX > 0) viewModel.switchRight() else viewModel.switchLeft()
-                                    } else if (abs(dragDistanceY) > abs(dragDistanceX) && abs(dragDistanceY) > swipeThreshold) {
+                                    } else if (absY > swipeThreshold && absY > absX * 1.2f) {
                                         hasSwipedInGesture = true
+                                        change.consume()
                                         if (dragDistanceY < 0) viewModel.jump() else viewModel.slide()
                                     }
                                 }
@@ -175,6 +194,8 @@ fun QuackySurferScreen(
                     scoreMultiplier = state.scoreMultiplier,
                     activePowerUp = state.activePowerUp,
                     powerUpFraction = state.powerUpFraction,
+                    isHoverboardActive = state.isHoverboardActive,
+                    hoverboardFraction = state.hoverboardFraction,
                     isPaused = state.status == GameStatus.PAUSED,
                     showControls = showOnScreenControls,
                     onToggleControls = { showOnScreenControls = !showOnScreenControls },
@@ -182,6 +203,22 @@ fun QuackySurferScreen(
                         haptics.click()
                         viewModel.pause()
                     }
+                )
+            }
+
+            // Quick-Deploy Hoverboard Floating Action Button
+            if (state.status == GameStatus.PLAYING) {
+                FloatingHoverboardButton(
+                    inventory = state.hoverboardsInventory,
+                    isActive = state.isHoverboardActive,
+                    fraction = state.hoverboardFraction,
+                    onClick = {
+                        haptics.heavy()
+                        viewModel.activateHoverboard()
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(end = 16.dp, bottom = if (showOnScreenControls) 118.dp else 24.dp)
                 )
             }
 
@@ -252,6 +289,8 @@ private fun GameHudOverlay(
     scoreMultiplier: Int,
     activePowerUp: CollectibleType?,
     powerUpFraction: Float,
+    isHoverboardActive: Boolean,
+    hoverboardFraction: Float,
     isPaused: Boolean,
     showControls: Boolean,
     onToggleControls: () -> Unit,
@@ -401,6 +440,71 @@ private fun GameHudOverlay(
                     trackColor = QuackyOutline
                 )
             }
+        }
+
+        // Active Hoverboard Countdown Bar
+        if (isHoverboardActive) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp)
+            ) {
+                Text(
+                    text = "🛹 HOVERBOARD ACTIVE",
+                    fontFamily = SatoshiFontFamily,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF00E5FF)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                LinearProgressIndicator(
+                    progress = { hoverboardFraction },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(4.dp)
+                        .clip(RoundedCornerShape(2.dp)),
+                    color = Color(0xFF00E5FF),
+                    trackColor = QuackyOutline
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FloatingHoverboardButton(
+    inventory: Int,
+    isActive: Boolean,
+    fraction: Float,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .size(56.dp)
+            .background(
+                if (isActive) Color(0xFF00E5FF) else QuackySurfaceElevated,
+                CircleShape
+            )
+            .border(
+                1.5.dp,
+                if (isActive) Color.White else QuackyOutline,
+                CircleShape
+            )
+            .clickable(enabled = inventory > 0 || isActive) { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = "🛹", fontSize = 18.sp)
+            Text(
+                text = if (isActive) "${(fraction * 20).toInt()}s" else "$inventory",
+                fontFamily = SatoshiFontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 10.sp,
+                color = if (isActive) Color.Black else QuackyTextPrimary
+            )
         }
     }
 }
