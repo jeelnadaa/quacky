@@ -33,8 +33,8 @@ import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Refresh
-import androidx.compose.material.icons.rounded.VolumeMute
-import androidx.compose.material.icons.rounded.VolumeUp
+import androidx.compose.material.icons.automirrored.rounded.VolumeMute
+import androidx.compose.material.icons.automirrored.rounded.VolumeUp
 import androidx.compose.material.icons.rounded.Vibration
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -82,6 +82,7 @@ import app.quacky.core.designsystem.theme.QuackyTextSecondary
 import app.quacky.core.designsystem.theme.QuackyTextTertiary
 import app.quacky.core.haptics.rememberQuackyHaptics
 import app.quacky.core.registry.ToolRegistry
+import app.quacky.feature.surfer.domain.SurferAudioEngine
 
 private val BreadcrumbYellow = Color(0xFFFFD700)
 
@@ -102,18 +103,55 @@ fun QuackySurferScreen(
     var showOverflowMenu by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
 
+    // Initialize Audio Engine
+    val audioEngine = remember { SurferAudioEngine(context) }
+
     // Initialize 3D Engine Renderer
     val renderer3d = remember {
         Game3dRenderer(
             context = context,
-            onBreadcrumbCollected = { count -> viewModel.onBreadcrumbCollected(count) },
+            onBreadcrumbCollected = { count ->
+                audioEngine.playCoin()
+                viewModel.onBreadcrumbCollected(count)
+            },
             onCrash = { reason, dist, coins, score ->
+                audioEngine.playCrash()
+                audioEngine.stopBgm()
                 viewModel.onCrash(reason, dist, coins, score)
             }
         ).apply {
             onTick = { dist, coins, score ->
                 viewModel.onStatsUpdate(dist, coins, score)
             }
+        }
+    }
+
+    // Sync Audio Engine with Sound toggle setting
+    LaunchedEffect(state.soundEnabled) {
+        audioEngine.isSoundEnabled = state.soundEnabled
+    }
+
+    // Audio on Countdown ticks
+    LaunchedEffect(state.countdown) {
+        if (state.status == SurferUiStatus.COUNTDOWN) {
+            audioEngine.playCountdownTick()
+        }
+    }
+
+    // Audio on Game Status transitions
+    LaunchedEffect(state.status) {
+        when (state.status) {
+            SurferUiStatus.RUNNING -> {
+                audioEngine.playCountdownGo()
+                audioEngine.startBgm()
+            }
+            SurferUiStatus.PAUSED -> {
+                audioEngine.pauseBgm()
+            }
+            SurferUiStatus.CRASHED, SurferUiStatus.GAME_OVER -> {
+                audioEngine.stopBgm()
+            }
+            else -> {}
         }
     }
 
@@ -142,12 +180,14 @@ fun QuackySurferScreen(
                 Lifecycle.Event.ON_PAUSE -> {
                     gameSurfaceView?.stopRendering()
                     renderer3d.pause()
+                    audioEngine.pauseBgm()
                     viewModel.pause()
                 }
                 Lifecycle.Event.ON_RESUME -> {
                     gameSurfaceView?.startRendering()
                     if (state.status == SurferUiStatus.RUNNING) {
                         renderer3d.resume()
+                        audioEngine.resumeBgm()
                     }
                 }
                 else -> {}
@@ -157,6 +197,7 @@ fun QuackySurferScreen(
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
             gameSurfaceView?.stopRendering()
+            audioEngine.release()
             renderer3d.destroy()
         }
     }
@@ -169,6 +210,7 @@ fun QuackySurferScreen(
         onHelpClick = onOpenHowToUse,
         onResetClick = {
             haptics.click()
+            audioEngine.stopBgm()
             viewModel.playAgain {
                 renderer3d.startReadyState()
             }
@@ -224,18 +266,22 @@ fun QuackySurferScreen(
                             context = ctx,
                             renderer3d = renderer3d,
                             onSwipeLeft = {
+                                audioEngine.playSwipeLeft()
                                 if (state.hapticsEnabled) haptics.tick()
                                 renderer3d.requestMoveLeft()
                             },
                             onSwipeRight = {
+                                audioEngine.playSwipeRight()
                                 if (state.hapticsEnabled) haptics.tick()
                                 renderer3d.requestMoveRight()
                             },
                             onSwipeUp = {
+                                audioEngine.playJump()
                                 if (state.hapticsEnabled) haptics.tick()
                                 renderer3d.requestJump()
                             },
                             onSwipeDown = {
+                                audioEngine.playSlide()
                                 if (state.hapticsEnabled) haptics.tick()
                                 renderer3d.requestSlide()
                             }
@@ -368,7 +414,7 @@ fun QuackySurferScreen(
                                     text = { Text("Sound: ${if (state.soundEnabled) "ON" else "OFF"}", color = QuackyTextPrimary) },
                                     leadingIcon = {
                                         Icon(
-                                            if (state.soundEnabled) Icons.Rounded.VolumeUp else Icons.Rounded.VolumeMute,
+                                            if (state.soundEnabled) Icons.AutoMirrored.Rounded.VolumeUp else Icons.AutoMirrored.Rounded.VolumeMute,
                                             contentDescription = null,
                                             tint = QuackyTextSecondary
                                         )
@@ -544,6 +590,7 @@ fun QuackySurferScreen(
                                     onClick = {
                                         haptics.click()
                                         renderer3d.resume()
+                                        audioEngine.resumeBgm()
                                         viewModel.resume()
                                     },
                                     shape = RoundedCornerShape(16.dp),
@@ -563,6 +610,7 @@ fun QuackySurferScreen(
                                 OutlinedButton(
                                     onClick = {
                                         haptics.click()
+                                        audioEngine.stopBgm()
                                         viewModel.playAgain {
                                             renderer3d.startReadyState()
                                         }
@@ -718,6 +766,7 @@ fun QuackySurferScreen(
                                 Button(
                                     onClick = {
                                         haptics.click()
+                                        audioEngine.stopBgm()
                                         viewModel.playAgain {
                                             renderer3d.startReadyState()
                                         }
