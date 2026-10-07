@@ -3,7 +3,6 @@ package app.quacky.core.navigation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Home
@@ -11,6 +10,7 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
@@ -61,7 +61,8 @@ fun QuackyBottomBar(
         HorizontalDivider(color = QuackyOutline, thickness = 1.dp)
         NavigationBar(
             containerColor = QuackyBackground,
-            modifier = Modifier.height(68.dp)
+            modifier = Modifier.fillMaxWidth(),
+            windowInsets = NavigationBarDefaults.windowInsets
         ) {
             BottomNavItems.forEach { item ->
                 val selected = currentRoute == item.route
