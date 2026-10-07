@@ -11,6 +11,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.quacky.core.designsystem.theme.ButtonCornerRadius
 import app.quacky.core.designsystem.theme.QuackyAccent
 import app.quacky.core.designsystem.theme.QuackyBackground
@@ -18,6 +19,7 @@ import app.quacky.core.designsystem.theme.QuackyOutline
 import app.quacky.core.designsystem.theme.QuackyTextPrimary
 import app.quacky.core.designsystem.theme.QuackyTextSecondary
 import app.quacky.core.designsystem.theme.QuackyTextTertiary
+import app.quacky.core.designsystem.theme.SatoshiFontFamily
 
 enum class QuackyButtonStyle {
     Primary,
@@ -38,6 +40,7 @@ fun QuackyButton(
 
     when (style) {
         QuackyButtonStyle.Primary -> {
+            val contentColor = if (enabled) QuackyBackground else QuackyTextTertiary
             Button(
                 onClick = onClick,
                 modifier = modifier,
@@ -46,14 +49,29 @@ fun QuackyButton(
                 contentPadding = contentPadding,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = QuackyAccent,
-                    contentColor = QuackyBackground,
+                    contentColor = contentColor,
                     disabledContainerColor = QuackyOutline,
                     disabledContentColor = QuackyTextTertiary
-                ),
-                content = content
-            )
+                )
+            ) {
+                androidx.compose.runtime.CompositionLocalProvider(
+                    androidx.compose.material3.LocalContentColor provides contentColor
+                ) {
+                    androidx.compose.material3.ProvideTextStyle(
+                        value = androidx.compose.ui.text.TextStyle(
+                            fontFamily = SatoshiFontFamily,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                            fontSize = 14.sp,
+                            color = contentColor
+                        )
+                    ) {
+                        content()
+                    }
+                }
+            }
         }
         QuackyButtonStyle.Secondary -> {
+            val contentColor = if (enabled) QuackyTextPrimary else QuackyTextTertiary
             OutlinedButton(
                 onClick = onClick,
                 modifier = modifier,
@@ -63,13 +81,28 @@ fun QuackyButton(
                 border = BorderStroke(1.dp, if (enabled) QuackyOutline else QuackyOutline.copy(alpha = 0.5f)),
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = androidx.compose.ui.graphics.Color.Transparent,
-                    contentColor = QuackyTextPrimary,
+                    contentColor = contentColor,
                     disabledContentColor = QuackyTextTertiary
-                ),
-                content = content
-            )
+                )
+            ) {
+                androidx.compose.runtime.CompositionLocalProvider(
+                    androidx.compose.material3.LocalContentColor provides contentColor
+                ) {
+                    androidx.compose.material3.ProvideTextStyle(
+                        value = androidx.compose.ui.text.TextStyle(
+                            fontFamily = SatoshiFontFamily,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
+                            fontSize = 14.sp,
+                            color = contentColor
+                        )
+                    ) {
+                        content()
+                    }
+                }
+            }
         }
         QuackyButtonStyle.Text -> {
+            val contentColor = if (enabled) QuackyTextSecondary else QuackyTextTertiary
             TextButton(
                 onClick = onClick,
                 modifier = modifier,
@@ -77,11 +110,26 @@ fun QuackyButton(
                 shape = shape,
                 contentPadding = contentPadding,
                 colors = ButtonDefaults.textButtonColors(
-                    contentColor = QuackyTextSecondary,
+                    containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                    contentColor = contentColor,
                     disabledContentColor = QuackyTextTertiary
-                ),
-                content = content
-            )
+                )
+            ) {
+                androidx.compose.runtime.CompositionLocalProvider(
+                    androidx.compose.material3.LocalContentColor provides contentColor
+                ) {
+                    androidx.compose.material3.ProvideTextStyle(
+                        value = androidx.compose.ui.text.TextStyle(
+                            fontFamily = SatoshiFontFamily,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Medium,
+                            fontSize = 14.sp,
+                            color = contentColor
+                        )
+                    ) {
+                        content()
+                    }
+                }
+            }
         }
     }
 }

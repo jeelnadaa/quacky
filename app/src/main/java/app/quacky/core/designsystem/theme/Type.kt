@@ -20,23 +20,20 @@ val QuackyTypography = Typography(
         fontFamily = SatoshiFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 34.sp,
-        lineHeight = 40.sp,
-        color = QuackyTextPrimary
+        lineHeight = 40.sp
     ),
     // Title: 22sp / Bold
     titleLarge = TextStyle(
         fontFamily = SatoshiFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 22.sp,
-        lineHeight = 28.sp,
-        color = QuackyTextPrimary
+        lineHeight = 28.sp
     ),
     titleMedium = TextStyle(
         fontFamily = SatoshiFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 18.sp,
-        lineHeight = 24.sp,
-        color = QuackyTextPrimary
+        lineHeight = 24.sp
     ),
     // Section header: 13sp / Medium, uppercase, +1sp letter-spacing
     labelSmall = TextStyle(
@@ -44,30 +41,33 @@ val QuackyTypography = Typography(
         fontWeight = FontWeight.Medium,
         fontSize = 13.sp,
         lineHeight = 16.sp,
-        letterSpacing = 1.sp,
-        color = QuackyTextSecondary
+        letterSpacing = 1.sp
     ),
     // Body: 15sp / Regular
     bodyLarge = TextStyle(
         fontFamily = SatoshiFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 15.sp,
-        lineHeight = 22.sp,
-        color = QuackyTextPrimary
+        lineHeight = 22.sp
     ),
     bodyMedium = TextStyle(
         fontFamily = SatoshiFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
-        lineHeight = 20.sp,
-        color = QuackyTextSecondary
+        lineHeight = 20.sp
     ),
     // Caption / Hints: 12sp / Regular
     labelMedium = TextStyle(
         fontFamily = SatoshiFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
-        lineHeight = 16.sp,
-        color = QuackyTextTertiary
+        lineHeight = 16.sp
+    ),
+    labelLarge = TextStyle(
+        fontFamily = SatoshiFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        lineHeight = 20.sp
     )
 )
+

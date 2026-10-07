@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -36,6 +37,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.automirrored.rounded.RotateRight
 import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material.icons.rounded.Add
@@ -63,7 +65,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import app.quacky.feature.documentscanner.domain.DocumentProcessor
+import app.quacky.feature.documentscanner.domain.LiveEdgeDetector
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -100,6 +105,7 @@ import app.quacky.core.designsystem.theme.SatoshiFontFamily
 import app.quacky.core.registry.ToolRegistry
 import app.quacky.feature.documentscanner.domain.CornerPoint
 import app.quacky.feature.documentscanner.domain.DocFilterType
+import app.quacky.feature.documentscanner.domain.DocumentQuad
 import java.io.InputStream
 import kotlin.math.hypot
 
@@ -171,13 +177,17 @@ fun DocumentScannerScreen(
                 DocScanStep.CAPTURE -> {
                     CameraCaptureView(
                         flashEnabled = state.flashEnabled,
+                        autoCropEnabled = state.isAutoCropEnabled,
+                        liveDetectedQuad = state.liveDetectedQuad,
                         pagesCount = state.pages.size,
-                        onPhotoCaptured = { viewModel.onPhotoCaptured(it) },
+                        onPhotoCaptured = { bitmap, quad -> viewModel.onPhotoCaptured(bitmap, quad) },
                         onPickGallery = { galleryPicker.launch("image/*") },
                         onToggleFlash = { viewModel.toggleFlash() },
+                        onToggleAutoCrop = { viewModel.toggleAutoCrop() },
+                        onEdgeDetected = { viewModel.updateLiveDetectedQuad(it) },
                         onDone = {
                             if (state.pages.isNotEmpty()) {
-                                viewModel.applyCrop()
+                                viewModel.goToReview()
                             }
                         }
                     )
@@ -316,29 +326,70 @@ fun DocumentScannerScreen(
 @Composable
 private fun CameraCaptureView(
     flashEnabled: Boolean,
+    autoCropEnabled: Boolean,
+    liveDetectedQuad: DocumentQuad?,
     pagesCount: Int,
-    onPhotoCaptured: (Bitmap) -> Unit,
+    onPhotoCaptured: (Bitmap, DocumentQuad?) -> Unit,
     onPickGallery: () -> Unit,
     onToggleFlash: () -> Unit,
+    onToggleAutoCrop: () -> Unit,
+    onEdgeDetected: (DocumentQuad?) -> Unit,
     onDone: () -> Unit
 ) {
     val context = LocalContext.current
-    var imageCapture by remember {
-        mutableStateOf<ImageCapture?>(
-            ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
-                .build()
-        )
+    val imageCapture = remember {
+        ImageCapture.Builder()
+            .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+            .build()
+    }
+
+    val edgeDetector = remember(autoCropEnabled) {
+        if (autoCropEnabled) {
+            LiveEdgeDetector { detected ->
+                onEdgeDetected(detected)
+            }
+        } else null
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
         CameraPreview(
             modifier = Modifier.fillMaxSize(),
             torchEnabled = flashEnabled,
-            imageCapture = imageCapture
+            imageCapture = imageCapture,
+            imageAnalyzer = edgeDetector
         )
 
-        // Top Flash and Status controls
+        // Live Auto-Crop Quadrilateral Overlay
+        if (autoCropEnabled && liveDetectedQuad != null) {
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val q = liveDetectedQuad
+                val pTL = Offset(q.topLeft.x * size.width, q.topLeft.y * size.height)
+                val pTR = Offset(q.topRight.x * size.width, q.topRight.y * size.height)
+                val pBR = Offset(q.bottomRight.x * size.width, q.bottomRight.y * size.height)
+                val pBL = Offset(q.bottomLeft.x * size.width, q.bottomLeft.y * size.height)
+
+                val quadPath = Path().apply {
+                    moveTo(pTL.x, pTL.y)
+                    lineTo(pTR.x, pTR.y)
+                    lineTo(pBR.x, pBR.y)
+                    lineTo(pBL.x, pBL.y)
+                    close()
+                }
+
+                // Shaded tint inside detected document
+                drawPath(path = quadPath, color = Color(0x2A00E5FF))
+                // Boundary stroke
+                drawPath(path = quadPath, color = Color(0xFF00E5FF), style = Stroke(width = 2.5.dp.toPx()))
+
+                // 4 corner pins
+                listOf(pTL, pTR, pBR, pBL).forEach { pt ->
+                    drawCircle(color = Color(0xFF00E5FF), radius = 6.dp.toPx(), center = pt)
+                    drawCircle(color = Color.White, radius = 3.dp.toPx(), center = pt)
+                }
+            }
+        }
+
+        // Top Flash, Auto-Crop Toggle and Status controls
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -359,22 +410,60 @@ private fun CameraCaptureView(
                 )
             }
 
+            // Auto Crop On/Off Toggle Button
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(if (autoCropEnabled) QuackyAccent else QuackySurface.copy(alpha = 0.85f))
+                    .border(1.dp, if (autoCropEnabled) QuackyAccent else QuackyOutline, RoundedCornerShape(20.dp))
+                    .clickable { onToggleAutoCrop() }
+                    .padding(horizontal = 14.dp, vertical = 8.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Rounded.Crop,
+                        contentDescription = null,
+                        tint = if (autoCropEnabled) QuackyBackground else QuackyTextPrimary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = if (autoCropEnabled) "Auto Crop: ON" else "Auto Crop: OFF",
+                        fontFamily = SatoshiFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp,
+                        color = if (autoCropEnabled) QuackyBackground else QuackyTextPrimary
+                    )
+                }
+            }
+
             if (pagesCount > 0) {
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
                         .background(QuackyAccent)
                         .clickable { onDone() }
-                        .padding(horizontal = 14.dp, vertical = 6.dp)
+                        .padding(horizontal = 14.dp, vertical = 8.dp)
                 ) {
-                    Text(
-                        text = "Review ($pagesCount)",
-                        fontFamily = SatoshiFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 13.sp,
-                        color = QuackyBackground
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Next ($pagesCount)",
+                            fontFamily = SatoshiFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp,
+                            color = QuackyBackground
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+                            contentDescription = "Next",
+                            tint = QuackyBackground,
+                            modifier = Modifier.size(14.dp)
+                        )
+                    }
                 }
+            } else {
+                Spacer(modifier = Modifier.size(40.dp))
             }
         }
 
@@ -383,7 +472,8 @@ private fun CameraCaptureView(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .padding(bottom = 32.dp, start = 32.dp, end = 32.dp),
+                .navigationBarsPadding()
+                .padding(bottom = 24.dp, start = 32.dp, end = 32.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -391,7 +481,7 @@ private fun CameraCaptureView(
             IconButton(
                 onClick = onPickGallery,
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(52.dp)
                     .background(QuackySurface.copy(alpha = 0.85f), CircleShape)
                     .border(1.dp, QuackyOutline, CircleShape)
             ) {
@@ -416,9 +506,25 @@ private fun CameraCaptureView(
                             ContextCompat.getMainExecutor(context),
                             object : ImageCapture.OnImageCapturedCallback() {
                                 override fun onCaptureSuccess(image: ImageProxy) {
-                                    val bitmap = image.toBitmap()
+                                    val rotation = image.imageInfo.rotationDegrees
+                                    val rawBitmap = image.toBitmap()
                                     image.close()
-                                    onPhotoCaptured(bitmap)
+                                    val bitmap = if (rotation != 0) {
+                                        DocumentProcessor.rotateBitmap(rawBitmap, rotation)
+                                    } else {
+                                        rawBitmap
+                                    }
+                                    val quadToUse = if (autoCropEnabled && liveDetectedQuad != null) {
+                                        liveDetectedQuad
+                                    } else {
+                                        DocumentQuad(
+                                            topLeft = CornerPoint(0f, 0f),
+                                            topRight = CornerPoint(1f, 0f),
+                                            bottomRight = CornerPoint(1f, 1f),
+                                            bottomLeft = CornerPoint(0f, 1f)
+                                        )
+                                    }
+                                    onPhotoCaptured(bitmap, quadToUse)
                                 }
 
                                 override fun onError(exception: ImageCaptureException) {
@@ -437,7 +543,35 @@ private fun CameraCaptureView(
                 )
             }
 
-            Spacer(modifier = Modifier.size(48.dp))
+            if (pagesCount > 0) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(QuackySurface.copy(alpha = 0.85f))
+                        .border(1.dp, QuackyOutline, RoundedCornerShape(14.dp))
+                        .clickable { onDone() }
+                        .padding(horizontal = 14.dp, vertical = 12.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Review",
+                            fontFamily = SatoshiFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp,
+                            color = QuackyAccent
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+                            contentDescription = "Review",
+                            tint = QuackyAccent,
+                            modifier = Modifier.size(14.dp)
+                        )
+                    }
+                }
+            } else {
+                Spacer(modifier = Modifier.size(52.dp))
+            }
         }
     }
 }
@@ -454,6 +588,8 @@ private fun QuadCropView(
     onCancel: () -> Unit
 ) {
     var activeDraggingCorner by remember { mutableStateOf<String?>(null) }
+    val currentQuad by rememberUpdatedState(quad)
+    val currentOnCornerDragged by rememberUpdatedState(onCornerDragged)
 
     Column(modifier = Modifier.fillMaxSize()) {
         // Top Toolbar
@@ -528,52 +664,47 @@ private fun QuadCropView(
             Canvas(
                 modifier = Modifier
                     .fillMaxSize()
-                    .pointerInput(quad) {
+                    .pointerInput(dispW, dispH, offsetX, offsetY) {
                         detectDragGestures(
                             onDragStart = { startOffset ->
-                                val ptTL = Offset(offsetX + quad.topLeft.x * dispW, offsetY + quad.topLeft.y * dispH)
-                                val ptTR = Offset(offsetX + quad.topRight.x * dispW, offsetY + quad.topRight.y * dispH)
-                                val ptBR = Offset(offsetX + quad.bottomRight.x * dispW, offsetY + quad.bottomRight.y * dispH)
-                                val ptBL = Offset(offsetX + quad.bottomLeft.x * dispW, offsetY + quad.bottomLeft.y * dispH)
+                                val q = currentQuad
+                                val ptTL = Offset(offsetX + q.topLeft.x * dispW, offsetY + q.topLeft.y * dispH)
+                                val ptTR = Offset(offsetX + q.topRight.x * dispW, offsetY + q.topRight.y * dispH)
+                                val ptBR = Offset(offsetX + q.bottomRight.x * dispW, offsetY + q.bottomRight.y * dispH)
+                                val ptBL = Offset(offsetX + q.bottomLeft.x * dispW, offsetY + q.bottomLeft.y * dispH)
 
                                 val dTL = hypot(startOffset.x - ptTL.x, startOffset.y - ptTL.y)
                                 val dTR = hypot(startOffset.x - ptTR.x, startOffset.y - ptTR.y)
                                 val dBR = hypot(startOffset.x - ptBR.x, startOffset.y - ptBR.y)
                                 val dBL = hypot(startOffset.x - ptBL.x, startOffset.y - ptBL.y)
 
-                                val threshold = 80f
-                                activeDraggingCorner = when {
-                                    dTL < threshold -> "TL"
-                                    dTR < threshold -> "TR"
-                                    dBR < threshold -> "BR"
-                                    dBL < threshold -> "BL"
-                                    else -> null
-                                }
+                                val minDist = minOf(dTL, dTR, dBR, dBL)
+                                activeDraggingCorner = if (minDist < 180f) {
+                                    when (minDist) {
+                                        dTL -> "TL"
+                                        dTR -> "TR"
+                                        dBR -> "BR"
+                                        else -> "BL"
+                                    }
+                                } else null
                             },
                             onDragEnd = { activeDraggingCorner = null },
                             onDragCancel = { activeDraggingCorner = null },
-                            onDrag = { change, dragAmount ->
+                            onDrag = { change, _ ->
                                 change.consume()
                                 val corner = activeDraggingCorner ?: return@detectDragGestures
-                                val curNorm = when (corner) {
-                                    "TL" -> quad.topLeft
-                                    "TR" -> quad.topRight
-                                    "BR" -> quad.bottomRight
-                                    "BL" -> quad.bottomLeft
-                                    else -> return@detectDragGestures
-                                }
-
-                                val newNormX = (curNorm.x + dragAmount.x / dispW).coerceIn(0f, 1f)
-                                val newNormY = (curNorm.y + dragAmount.y / dispH).coerceIn(0f, 1f)
-                                onCornerDragged(corner, CornerPoint(newNormX, newNormY))
+                                val newNormX = ((change.position.x - offsetX) / dispW).coerceIn(0f, 1f)
+                                val newNormY = ((change.position.y - offsetY) / dispH).coerceIn(0f, 1f)
+                                currentOnCornerDragged(corner, CornerPoint(newNormX, newNormY))
                             }
                         )
                     }
             ) {
-                val pTL = Offset(offsetX + quad.topLeft.x * dispW, offsetY + quad.topLeft.y * dispH)
-                val pTR = Offset(offsetX + quad.topRight.x * dispW, offsetY + quad.topRight.y * dispH)
-                val pBR = Offset(offsetX + quad.bottomRight.x * dispW, offsetY + quad.bottomRight.y * dispH)
-                val pBL = Offset(offsetX + quad.bottomLeft.x * dispW, offsetY + quad.bottomLeft.y * dispH)
+                val q = quad
+                val pTL = Offset(offsetX + q.topLeft.x * dispW, offsetY + q.topLeft.y * dispH)
+                val pTR = Offset(offsetX + q.topRight.x * dispW, offsetY + q.topRight.y * dispH)
+                val pBR = Offset(offsetX + q.bottomRight.x * dispW, offsetY + q.bottomRight.y * dispH)
+                val pBL = Offset(offsetX + q.bottomLeft.x * dispW, offsetY + q.bottomLeft.y * dispH)
 
                 // Connecting quad boundary path
                 val quadPath = Path().apply {
@@ -584,13 +715,12 @@ private fun QuadCropView(
                     close()
                 }
 
-                // Shaded dim outside quad could be done, here draw crisp boundary
                 drawPath(path = quadPath, color = Color.White, style = Stroke(width = 2.5.dp.toPx()))
 
                 // Draw corner handles
                 listOf(pTL, pTR, pBR, pBL).forEach { pt ->
-                    drawCircle(color = Color.White, radius = 8.dp.toPx(), center = pt)
-                    drawCircle(color = Color.Black.copy(alpha = 0.4f), radius = 18.dp.toPx(), center = pt, style = Stroke(width = 2.dp.toPx()))
+                    drawCircle(color = Color.White, radius = 9.dp.toPx(), center = pt)
+                    drawCircle(color = Color.Black.copy(alpha = 0.5f), radius = 22.dp.toPx(), center = pt, style = Stroke(width = 2.5.dp.toPx()))
                 }
             }
         }
@@ -600,6 +730,7 @@ private fun QuadCropView(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(QuackySurface)
+                .navigationBarsPadding()
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -651,6 +782,7 @@ private fun ReviewPagesView(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(QuackySurface)
+                .navigationBarsPadding()
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
             // Horizontal Page Strip Carousel

@@ -5,19 +5,23 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -41,8 +45,11 @@ import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.FormatListBulleted
+import androidx.compose.material.icons.rounded.Place
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -227,8 +234,11 @@ fun ArRulerScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .pointerInput(Unit) {
-                        detectDragGestures { change, _ ->
-                            change.consume()
+                        detectTapGestures { offset ->
+                            val hit = arSurfaceViewRef?.performHitTest(offset.x, offset.y)
+                            if (hit != null) {
+                                viewModel.onPointPlaced(hit, offset.x, offset.y)
+                            }
                         }
                     }
             ) {
@@ -472,8 +482,59 @@ fun ArRulerScreen(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .navigationBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
+                // Mark Point Button (Start point / End point / Next point)
+                val activePointsCount = state.activeMeasurement?.points?.size ?: 0
+                val markButtonLabel = when {
+                    activePointsCount == 0 -> "Mark Start Point"
+                    activePointsCount == 1 -> "Mark End Point"
+                    else -> "Mark Next Point"
+                }
+                val isSurfaceFound = state.trackingStatus == ArTrackingStatus.SURFACE_FOUND
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Button(
+                        onClick = {
+                            val viewW = view.width.toFloat().takeIf { it > 0 } ?: 1080f
+                            val viewH = view.height.toFloat().takeIf { it > 0 } ?: 1920f
+                            val hit = state.reticleHit ?: arSurfaceViewRef?.performHitTest(viewW / 2f, viewH / 2f)
+                            if (hit != null) {
+                                viewModel.onPointPlaced(hit, viewW / 2f, viewH / 2f)
+                            } else {
+                                Toast.makeText(context, "Aim at a detected surface to mark point", Toast.LENGTH_SHORT).show()
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (isSurfaceFound) QuackyAccent else QuackySurfaceElevated,
+                            contentColor = if (isSurfaceFound) QuackyBackground else QuackyTextPrimary
+                        ),
+                        shape = RoundedCornerShape(24.dp),
+                        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
+                        border = BorderStroke(1.dp, if (isSurfaceFound) QuackyAccent else QuackyOutline)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Place,
+                            contentDescription = markButtonLabel,
+                            tint = if (isSurfaceFound) QuackyBackground else QuackyTextPrimary,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = markButtonLabel,
+                            fontFamily = SatoshiFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+
                 // Bottom Strip: Horizontal Scrollable List of Measurements
                 if (state.finishedMeasurements.isNotEmpty() || state.activeMeasurement != null) {
                     LazyRow(

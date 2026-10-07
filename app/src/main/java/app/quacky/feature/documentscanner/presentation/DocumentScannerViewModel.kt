@@ -42,6 +42,8 @@ data class DocScannerUiState(
     val activeCropQuad: DocumentQuad = DocumentQuad(),
     val activeFilter: DocFilterType = DocFilterType.MAGIC_COLOR,
     val flashEnabled: Boolean = false,
+    val isAutoCropEnabled: Boolean = true,
+    val liveDetectedQuad: DocumentQuad? = null,
     val isProcessing: Boolean = false,
     val isGeneratingPdf: Boolean = false,
     val generatedPdfFile: File? = null,
@@ -59,20 +61,65 @@ class DocumentScannerViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(DocScannerUiState())
     val uiState: StateFlow<DocScannerUiState> = _uiState.asStateFlow()
 
-    fun onPhotoCaptured(bitmap: Bitmap) {
+    fun toggleAutoCrop() {
+        _uiState.update { it.copy(isAutoCropEnabled = !it.isAutoCropEnabled) }
+    }
+
+    fun updateLiveDetectedQuad(quad: DocumentQuad?) {
+        _uiState.update { it.copy(liveDetectedQuad = quad) }
+    }
+
+    fun onPhotoCaptured(bitmap: Bitmap, initialQuad: DocumentQuad? = null) {
         val nextIndex = _uiState.value.pages.size
+        val quadToUse = initialQuad ?: if (_uiState.value.isAutoCropEnabled && _uiState.value.liveDetectedQuad != null) {
+            _uiState.value.liveDetectedQuad!!
+        } else {
+            DocumentQuad(
+                topLeft = CornerPoint(0f, 0f),
+                topRight = CornerPoint(1f, 0f),
+                bottomRight = CornerPoint(1f, 1f),
+                bottomLeft = CornerPoint(0f, 1f)
+            )
+        }
+
         val newPage = ScannedPage(
             id = UUID.randomUUID().toString(),
             pageIndex = nextIndex,
             originalBitmap = bitmap,
-            quad = DocumentQuad()
+            quad = quadToUse
         )
+
+        // Process in background so warped bitmap is immediately ready
+        viewModelScope.launch(Dispatchers.Default) {
+            val warped = DocumentProcessor.warpPerspective(bitmap, quadToUse)
+            val filtered = DocumentProcessor.applyFilter(warped, newPage.filterType)
+            withContext(Dispatchers.Main) {
+                _uiState.update { s ->
+                    val updated = s.pages.map { p ->
+                        if (p.id == newPage.id) p.copy(warpedBitmap = filtered) else p
+                    }
+                    s.copy(pages = updated)
+                }
+            }
+        }
+
+        // Add page to queue and STAY on CAPTURE step so user can immediately click a new picture
         _uiState.update {
             it.copy(
                 pages = it.pages + newPage,
                 activePageIndex = nextIndex,
-                activeCropQuad = newPage.quad,
-                step = DocScanStep.CROP
+                activeCropQuad = quadToUse,
+                snackbarMessage = "Page ${nextIndex + 1} added to queue"
+            )
+        }
+    }
+
+    fun goToReview() {
+        if (_uiState.value.pages.isEmpty()) return
+        _uiState.update {
+            it.copy(
+                step = DocScanStep.REVIEW,
+                activePageIndex = 0
             )
         }
     }
@@ -96,7 +143,7 @@ class DocumentScannerViewModel @Inject constructor(
                 pages = existing,
                 activePageIndex = startIndex,
                 activeCropQuad = existing[startIndex].quad,
-                step = DocScanStep.CROP,
+                step = DocScanStep.REVIEW,
                 snackbarMessage = "Imported ${bitmaps.size} photos"
             )
         }

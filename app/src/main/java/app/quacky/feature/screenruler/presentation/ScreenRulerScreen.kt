@@ -72,6 +72,10 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -409,9 +413,13 @@ private fun RulerTopHeader(
                     QuackyButton(
                         onClick = onOpenCalibration,
                         style = QuackyButtonStyle.Secondary,
-                        modifier = Modifier.height(32.dp)
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
                     ) {
-                        Text(stringResource(R.string.ruler_calibrate), fontSize = 12.sp)
+                        Text(
+                            text = stringResource(R.string.ruler_calibrate),
+                            fontSize = 12.sp,
+                            maxLines = 1
+                        )
                     }
                 }
             }
@@ -558,91 +566,120 @@ private fun RulerMarkersLayer(
     onMarker2Moved: (Float) -> Unit
 ) {
     val activeSpan = if (isLandscape) canvasWidth else canvasHeight
+    val crossSpan = if (isLandscape) canvasHeight else canvasWidth
     if (activeSpan <= 0f) return
 
     val m1Px = marker1Fraction * activeSpan
     val m2Px = marker2Fraction * activeSpan
 
-    // Marker 1 Line & Touch Target
-    RulerMarkerItem(
-        isLandscape = isLandscape,
-        positionPx = m1Px,
-        activeSpan = activeSpan,
-        crossSpan = if (isLandscape) canvasHeight else canvasWidth,
-        label = "1",
-        onPositionChanged = onMarker1Moved
-    )
+    val currentM1 by rememberUpdatedState(m1Px)
+    val currentM2 by rememberUpdatedState(m2Px)
+    var activeDraggingMarker by remember { mutableStateOf<Int?>(null) }
 
-    // Marker 2 Line & Touch Target
-    RulerMarkerItem(
-        isLandscape = isLandscape,
-        positionPx = m2Px,
-        activeSpan = activeSpan,
-        crossSpan = if (isLandscape) canvasHeight else canvasWidth,
-        label = "2",
-        onPositionChanged = onMarker2Moved
-    )
-}
-
-@Composable
-private fun RulerMarkerItem(
-    isLandscape: Boolean,
-    positionPx: Float,
-    activeSpan: Float,
-    crossSpan: Float,
-    label: String,
-    onPositionChanged: (Float) -> Unit
-) {
-    val handleSize = 44.dp
-    val handleHalfPx = 22 * 2.7f // approx px offset for center
+    val density = LocalDensity.current
+    val handleSizeDp = 48.dp
+    val handleRadiusPx = with(density) { (handleSizeDp / 2).toPx() }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .pointerInput(activeSpan) {
-                detectDragGestures { change, dragAmount ->
-                    change.consume()
-                    val delta = if (isLandscape) dragAmount.x else dragAmount.y
-                    val newPx = (positionPx + delta).coerceIn(0f, activeSpan)
-                    onPositionChanged(newPx / activeSpan)
-                }
+            .pointerInput(isLandscape, activeSpan) {
+                detectDragGestures(
+                    onDragStart = { startOffset ->
+                        val touchCoord = if (isLandscape) startOffset.x else startOffset.y
+                        val dist1 = kotlin.math.abs(touchCoord - currentM1)
+                        val dist2 = kotlin.math.abs(touchCoord - currentM2)
+                        activeDraggingMarker = if (dist1 <= dist2) 1 else 2
+                    },
+                    onDragEnd = { activeDraggingMarker = null },
+                    onDragCancel = { activeDraggingMarker = null },
+                    onDrag = { change, dragAmount ->
+                        change.consume()
+                        val delta = if (isLandscape) dragAmount.x else dragAmount.y
+                        when (activeDraggingMarker) {
+                            1 -> {
+                                val newPx = (currentM1 + delta).coerceIn(0f, activeSpan)
+                                onMarker1Moved(newPx / activeSpan)
+                            }
+                            2 -> {
+                                val newPx = (currentM2 + delta).coerceIn(0f, activeSpan)
+                                onMarker2Moved(newPx / activeSpan)
+                            }
+                        }
+                    }
+                )
             }
     ) {
-        // Line across canvas
+        // Draw both marker lines on Canvas
         Canvas(modifier = Modifier.fillMaxSize()) {
             if (isLandscape) {
+                // Marker 1 Line
                 drawLine(
                     color = QuackyAccent,
-                    start = Offset(positionPx, 0f),
-                    end = Offset(positionPx, crossSpan),
-                    strokeWidth = 2.5f
+                    start = Offset(m1Px, 0f),
+                    end = Offset(m1Px, crossSpan),
+                    strokeWidth = 3f
+                )
+                // Marker 2 Line
+                drawLine(
+                    color = QuackyAccent,
+                    start = Offset(m2Px, 0f),
+                    end = Offset(m2Px, crossSpan),
+                    strokeWidth = 3f
                 )
             } else {
+                // Marker 1 Line
                 drawLine(
                     color = QuackyAccent,
-                    start = Offset(0f, positionPx),
-                    end = Offset(crossSpan, positionPx),
-                    strokeWidth = 2.5f
+                    start = Offset(0f, m1Px),
+                    end = Offset(crossSpan, m1Px),
+                    strokeWidth = 3f
+                )
+                // Marker 2 Line
+                drawLine(
+                    color = QuackyAccent,
+                    start = Offset(0f, m2Px),
+                    end = Offset(crossSpan, m2Px),
+                    strokeWidth = 3f
                 )
             }
         }
 
-        // Draggable Handle Pill
-        val offsetX = if (isLandscape) positionPx.roundToInt() - 24 else (crossSpan / 2).roundToInt() - 24
-        val offsetY = if (isLandscape) (crossSpan / 2).roundToInt() - 24 else positionPx.roundToInt() - 24
+        // Draggable Handle Pills (staggered across crossSpan so they never collide)
+        val h1X = if (isLandscape) (m1Px - handleRadiusPx).roundToInt() else ((crossSpan * 0.35f) - handleRadiusPx).roundToInt()
+        val h1Y = if (isLandscape) ((crossSpan * 0.35f) - handleRadiusPx).roundToInt() else (m1Px - handleRadiusPx).roundToInt()
 
         Box(
             modifier = Modifier
-                .offset { IntOffset(offsetX, offsetY) }
-                .size(handleSize)
+                .offset { IntOffset(h1X, h1Y) }
+                .size(handleSizeDp)
                 .background(QuackyAccent, CircleShape)
                 .border(2.dp, QuackyOutline, CircleShape),
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = label,
+                text = "1",
                 color = QuackyBackground,
-                fontSize = 13.sp,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        val h2X = if (isLandscape) (m2Px - handleRadiusPx).roundToInt() else ((crossSpan * 0.65f) - handleRadiusPx).roundToInt()
+        val h2Y = if (isLandscape) ((crossSpan * 0.65f) - handleRadiusPx).roundToInt() else (m2Px - handleRadiusPx).roundToInt()
+
+        Box(
+            modifier = Modifier
+                .offset { IntOffset(h2X, h2Y) }
+                .size(handleSizeDp)
+                .background(QuackyAccent, CircleShape)
+                .border(2.dp, QuackyOutline, CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "2",
+                color = QuackyBackground,
+                fontSize = 15.sp,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -661,12 +698,14 @@ private fun RulerReadoutBar(
         color = QuackySurface,
         border = androidx.compose.foundation.BorderStroke(1.dp, QuackyOutline),
         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Main Tabular Numerals Distance Readout
@@ -687,7 +726,11 @@ private fun RulerReadoutBar(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 // Unit Switcher Chips
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(
+                    modifier = Modifier.weight(1f, fill = false),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     RulerUnit.entries.forEach { unit ->
                         QuackyChip(
                             text = unit.symbol,
@@ -697,12 +740,17 @@ private fun RulerReadoutBar(
                     }
                 }
 
+                Spacer(modifier = Modifier.width(8.dp))
+
                 // Copy and Save Measurement Buttons
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     IconButton(
                         onClick = onCopy,
                         modifier = Modifier
-                            .size(36.dp)
+                            .size(40.dp)
                             .background(QuackySurfaceElevated, CircleShape)
                             .border(1.dp, QuackyOutline, CircleShape)
                     ) {
@@ -717,7 +765,7 @@ private fun RulerReadoutBar(
                     IconButton(
                         onClick = onSave,
                         modifier = Modifier
-                            .size(36.dp)
+                            .size(40.dp)
                             .background(QuackyAccent, CircleShape)
                     ) {
                         Icon(

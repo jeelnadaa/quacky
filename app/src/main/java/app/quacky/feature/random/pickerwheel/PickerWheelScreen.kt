@@ -77,7 +77,7 @@ fun PickerWheelScreen(
 
     val animatedAngle by animateFloatAsState(
         targetValue = state.currentAngle,
-        animationSpec = tween(durationMillis = 1800),
+        animationSpec = tween(durationMillis = 1000),
         label = "wheel_spin"
     )
 

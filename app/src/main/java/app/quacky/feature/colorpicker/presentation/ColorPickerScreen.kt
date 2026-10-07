@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -603,7 +604,9 @@ private fun BottomControlsBar(
     Surface(
         color = QuackySurface,
         border = androidx.compose.foundation.BorderStroke(1.dp, QuackyOutline),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding()
     ) {
         Column(
             modifier = Modifier
@@ -630,11 +633,11 @@ private fun BottomControlsBar(
                     QuackyButton(
                         onClick = onToggleFreeze,
                         style = if (uiState.isFrozen) QuackyButtonStyle.Primary else QuackyButtonStyle.Secondary,
-                        modifier = Modifier.height(30.dp)
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 6.dp)
                     ) {
                         Icon(Icons.Rounded.AcUnit, contentDescription = null, modifier = Modifier.size(14.dp))
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(if (uiState.isFrozen) "Unfreeze" else "Freeze", fontSize = 11.sp)
+                        Text(if (uiState.isFrozen) "Unfreeze" else "Freeze", fontSize = 11.sp, maxLines = 1)
                     }
                 }
             }

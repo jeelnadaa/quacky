@@ -36,8 +36,19 @@ object DocumentProcessor {
         val leftHeight = hypot(blX - tlX, blY - tlY)
         val rightHeight = hypot(brX - trX, brY - trY)
 
-        val targetWidth = max(topWidth, bottomWidth).coerceIn(100f, 2400f)
-        val targetHeight = max(leftHeight, rightHeight).coerceIn(100f, 3200f)
+        val rawWidth = max(topWidth, bottomWidth)
+        val rawHeight = max(leftHeight, rightHeight)
+
+        // Compensate for perspective foreshortening (shooting document at an angle)
+        val keystoneRatio = if (topWidth > 1f) (bottomWidth / topWidth).coerceIn(0.5f, 2.5f) else 1f
+        val adjustedHeight = if (keystoneRatio > 1.05f) {
+            rawHeight * (1f + (keystoneRatio - 1f) * 0.75f)
+        } else {
+            rawHeight
+        }
+
+        val targetWidth = rawWidth.coerceIn(100f, 2400f)
+        val targetHeight = adjustedHeight.coerceIn(100f, 3200f)
 
         val srcPts = floatArrayOf(
             tlX, tlY,
