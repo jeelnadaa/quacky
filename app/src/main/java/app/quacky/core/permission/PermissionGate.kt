@@ -64,11 +64,32 @@ fun PermissionGate(
     }
     var hasRequestedOnce by remember { mutableStateOf(false) }
 
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+
+    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                isGranted = ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { granted ->
         isGranted = granted
         hasRequestedOnce = true
+    }
+
+    LaunchedEffect(permission) {
+        if (!isGranted && !hasRequestedOnce) {
+            hasRequestedOnce = true
+            permissionLauncher.launch(permission)
+        }
     }
 
     if (isGranted) {

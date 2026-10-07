@@ -2,6 +2,7 @@ package app.quacky.feature.arruler.presentation
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import com.google.ar.core.Config
@@ -21,6 +22,7 @@ class ArSurfaceView(
         projMatrix: FloatArray,
         hasSurface: Boolean,
         reticleHit: Vector3?,
+        featurePoints: List<Vector3>,
         width: Int,
         height: Int
     ) -> Unit,
@@ -47,22 +49,59 @@ class ArSurfaceView(
                 camera.getProjectionMatrix(projMatrix, 0, 0.1f, 100f)
 
                 val planes = arSession.getAllTrackables(Plane::class.java)
-                val hasSurface = planes.any { it.trackingState == TrackingState.TRACKING }
+                val hasTrackingPlane = planes.any { it.trackingState == TrackingState.TRACKING }
 
-                // Center hit test for reticle
-                val centerHits = frame.hitTest(width / 2f, height / 2f)
-                val reticleHitPose = centerHits.firstOrNull { hit ->
-                    val trackable = hit.trackable
-                    trackable is Plane && trackable.trackingState == TrackingState.TRACKING
-                }?.hitPose
+                // Multi-tier Center hit test for reticle
+                val reticleHit = queryBestHit(frame, width / 2f, height / 2f)
+                val hasSurface = hasTrackingPlane || (reticleHit != null)
 
-                val reticleHit = reticleHitPose?.let {
-                    Vector3(it.tx(), it.ty(), it.tz())
-                }
+                // Extract point cloud feature points for visible surface tracking dots
+                val featureList = mutableListOf<Vector3>()
+                try {
+                    val pointCloud = frame.acquirePointCloud()
+                    val pointsBuffer = pointCloud.points
+                    val totalPoints = pointsBuffer.remaining() / 4
+                    val sampleStep = (totalPoints / 25).coerceAtLeast(1)
+                    val maxPoints = 25
+                    var taken = 0
+                    var i = 0
+                    while (i < totalPoints && taken < maxPoints) {
+                        val px = pointsBuffer.get(i * 4)
+                        val py = pointsBuffer.get(i * 4 + 1)
+                        val pz = pointsBuffer.get(i * 4 + 2)
+                        val conf = pointsBuffer.get(i * 4 + 3)
+                        if (conf > 0.35f) {
+                            featureList.add(Vector3(px, py, pz))
+                            taken++
+                        }
+                        i += sampleStep
+                    }
+                    pointCloud.close()
+                } catch (_: Exception) {}
 
-                onFrameUpdated(arSession, frame, viewMatrix, projMatrix, hasSurface, reticleHit, width, height)
+                onFrameUpdated(
+                    arSession,
+                    frame,
+                    viewMatrix,
+                    projMatrix,
+                    hasSurface,
+                    reticleHit,
+                    featureList,
+                    width,
+                    height
+                )
             } else {
-                onFrameUpdated(arSession, frame, viewMatrix, projMatrix, false, null, width, height)
+                onFrameUpdated(
+                    arSession,
+                    frame,
+                    viewMatrix,
+                    projMatrix,
+                    false,
+                    null,
+                    emptyList(),
+                    width,
+                    height
+                )
             }
         }
 
@@ -78,6 +117,11 @@ class ArSurfaceView(
                 planeFindingMode = Config.PlaneFindingMode.HORIZONTAL_AND_VERTICAL
                 updateMode = Config.UpdateMode.LATEST_CAMERA_IMAGE
                 focusMode = Config.FocusMode.AUTO
+                instantPlacementMode = Config.InstantPlacementMode.LOCAL_Y_UP
+                if (s.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
+                    depthMode = Config.DepthMode.AUTOMATIC
+                }
+                lightEstimationMode = Config.LightEstimationMode.AMBIENT_INTENSITY
             }
             s.configure(config)
             session = s
@@ -110,18 +154,69 @@ class ArSurfaceView(
         } catch (_: Exception) {}
     }
 
-    fun performHitTest(x: Float, y: Float): Vector3? {
-        val frame = latestFrame ?: return null
+    fun capturePhoto(onCaptured: (Bitmap) -> Unit) {
+        renderer.captureNextFrame { bitmap ->
+            post {
+                onCaptured(bitmap)
+            }
+        }
+    }
+
+    private fun queryBestHit(frame: Frame, x: Float, y: Float): Vector3? {
         return try {
             val hits = frame.hitTest(x, y)
-            val hitPose = hits.firstOrNull { hit ->
+
+            // Tier 1: Inside exact plane polygon
+            hits.firstOrNull { hit ->
+                val trackable = hit.trackable
+                trackable is Plane && trackable.trackingState == TrackingState.TRACKING && trackable.isPoseInPolygon(hit.hitPose)
+            }?.hitPose?.let { return Vector3(it.tx(), it.ty(), it.tz()) }
+
+            // Tier 2: Inside plane extents
+            hits.firstOrNull { hit ->
+                val trackable = hit.trackable
+                trackable is Plane && trackable.trackingState == TrackingState.TRACKING && trackable.isPoseInExtents(hit.hitPose)
+            }?.hitPose?.let { return Vector3(it.tx(), it.ty(), it.tz()) }
+
+            // Tier 3: Any active tracking plane
+            hits.firstOrNull { hit ->
                 val trackable = hit.trackable
                 trackable is Plane && trackable.trackingState == TrackingState.TRACKING
-            }?.hitPose
-            hitPose?.let { Vector3(it.tx(), it.ty(), it.tz()) }
+            }?.hitPose?.let { return Vector3(it.tx(), it.ty(), it.tz()) }
+
+            // Tier 4: DepthPoint (accurate 3D depth)
+            hits.firstOrNull { hit ->
+                val trackable = hit.trackable
+                trackable is com.google.ar.core.DepthPoint && trackable.trackingState == TrackingState.TRACKING
+            }?.hitPose?.let { return Vector3(it.tx(), it.ty(), it.tz()) }
+
+            // Tier 5: Point with estimated surface normal
+            hits.firstOrNull { hit ->
+                val trackable = hit.trackable
+                trackable is com.google.ar.core.Point && trackable.trackingState == TrackingState.TRACKING &&
+                    trackable.orientationMode == com.google.ar.core.Point.OrientationMode.ESTIMATED_SURFACE_NORMAL
+            }?.hitPose?.let { return Vector3(it.tx(), it.ty(), it.tz()) }
+
+            // Tier 6: Instant placement point
+            try {
+                val instantHits = frame.hitTestInstantPlacement(x, y, 2.0f)
+                instantHits.firstOrNull { it.trackable.trackingState == TrackingState.TRACKING }
+                    ?.hitPose?.let { return Vector3(it.tx(), it.ty(), it.tz()) }
+            } catch (_: Exception) {}
+
+            // Tier 7: Any tracked feature point
+            hits.firstOrNull { hit ->
+                val trackable = hit.trackable
+                trackable is com.google.ar.core.Point && trackable.trackingState == TrackingState.TRACKING
+            }?.hitPose?.let { Vector3(it.tx(), it.ty(), it.tz()) }
         } catch (_: Exception) {
             null
         }
+    }
+
+    fun performHitTest(x: Float, y: Float): Vector3? {
+        val frame = latestFrame ?: return null
+        return queryBestHit(frame, x, y)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

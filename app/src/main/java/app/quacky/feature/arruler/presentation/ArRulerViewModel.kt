@@ -49,6 +49,8 @@ data class ArUiState(
     val managingMeasurementId: String? = null,
     val trackingStatus: ArTrackingStatus = ArTrackingStatus.SEARCHING_SURFACE,
     val reticleHit: Vector3? = null,
+    val reticleDistanceMeters: Float? = null,
+    val surfaceFeaturePoints: List<ScreenPoint> = emptyList(),
     val isAccuracyNoteDismissed: Boolean = false,
     val isHistoryOpen: Boolean = false,
     val isSessionListOpen: Boolean = false,
@@ -300,12 +302,21 @@ class ArRulerViewModel @Inject constructor(
         projMatrix: FloatArray,
         hasSurface: Boolean,
         reticleHit: Vector3?,
+        featurePoints: List<Vector3> = emptyList(),
         viewportWidth: Int,
         viewportHeight: Int
     ) {
         val w = viewportWidth.toFloat()
         val h = viewportHeight.toFloat()
         val status = if (hasSurface) ArTrackingStatus.SURFACE_FOUND else ArTrackingStatus.SEARCHING_SURFACE
+
+        val projectedFeatures = featurePoints.mapNotNull { pt ->
+            ArMath.projectWorldToScreen(pt, viewMatrix, projMatrix, w, h)
+        }
+
+        val reticleDist = reticleHit?.let {
+            kotlin.math.hypot(it.x, kotlin.math.hypot(it.y, it.z))
+        }
 
         _uiState.update { state ->
             // Update projections for active measurement
@@ -322,7 +333,9 @@ class ArRulerViewModel @Inject constructor(
                 activeMeasurement = updatedActive,
                 finishedMeasurements = updatedFinished,
                 trackingStatus = status,
-                reticleHit = reticleHit
+                reticleHit = reticleHit,
+                reticleDistanceMeters = reticleDist,
+                surfaceFeaturePoints = projectedFeatures
             )
         }
     }
@@ -641,7 +654,7 @@ class ArRulerViewModel @Inject constructor(
 
                 withContext(Dispatchers.Main) {
                     autoSaveSessionHistory(thumbnailBytes = thumbBytes)
-                    _uiState.update { it.copy(snackbarMessage = "Session screenshot saved to gallery") }
+                    _uiState.update { it.copy(snackbarMessage = "Saved to Pictures/Quacky") }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {

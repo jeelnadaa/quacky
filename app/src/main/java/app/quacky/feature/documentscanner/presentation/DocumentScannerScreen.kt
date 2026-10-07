@@ -59,6 +59,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -107,11 +108,37 @@ import app.quacky.feature.documentscanner.domain.CornerPoint
 import app.quacky.feature.documentscanner.domain.DocFilterType
 import app.quacky.feature.documentscanner.domain.DocumentQuad
 import java.io.InputStream
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.window.Dialog
+import app.quacky.core.permission.PermissionGate
 import kotlin.math.hypot
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DocumentScannerScreen(
+    viewModel: DocumentScannerViewModel,
+    onBack: () -> Unit,
+    onOpenHowToUse: () -> Unit,
+    isPinned: Boolean = false,
+    onTogglePin: () -> Unit = {}
+) {
+    PermissionGate(
+        permission = android.Manifest.permission.CAMERA,
+        onBack = onBack
+    ) {
+        DocumentScannerContent(
+            viewModel = viewModel,
+            onBack = onBack,
+            onOpenHowToUse = onOpenHowToUse,
+            isPinned = isPinned,
+            onTogglePin = onTogglePin
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DocumentScannerContent(
     viewModel: DocumentScannerViewModel,
     onBack: () -> Unit,
     onOpenHowToUse: () -> Unit,
@@ -248,79 +275,117 @@ fun DocumentScannerScreen(
         }
     }
 
-    // PDF Export Success Dialog
+    // Custom Modal for PDF Export Success
     state.generatedPdfFile?.let { pdfFile ->
-        AlertDialog(
-            onDismissRequest = { viewModel.clearGeneratedPdf() },
-            containerColor = QuackySurfaceElevated,
-            title = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Rounded.PictureAsPdf,
-                        contentDescription = null,
-                        tint = QuackyAccent,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "PDF Generated",
-                        fontFamily = SatoshiFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        color = QuackyTextPrimary
-                    )
-                }
-            },
-            text = {
-                Column {
-                    Text(
-                        text = pdfFile.name,
-                        fontFamily = SatoshiFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 15.sp,
-                        color = QuackyTextPrimary
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "${state.pages.size} pages · ${pdfFile.length() / 1024} KB",
-                        fontFamily = SatoshiFontFamily,
-                        fontSize = 13.sp,
-                        color = QuackyTextSecondary
-                    )
-                }
-            },
-            confirmButton = {
-                QuackyButton(
-                    onClick = {
-                        val uri = FileProvider.getUriForFile(
-                            context,
-                            "${context.packageName}.fileprovider",
-                            pdfFile
-                        )
-                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                            type = "application/pdf"
-                            putExtra(Intent.EXTRA_STREAM, uri)
-                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                        }
-                        context.startActivity(Intent.createChooser(shareIntent, "Share Document PDF"))
-                    },
-                    style = QuackyButtonStyle.Primary
-                ) {
+        Dialog(onDismissRequest = { viewModel.clearGeneratedPdf() }) {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = QuackySurfaceElevated,
+                border = BorderStroke(1.dp, QuackyOutline),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            ) {
+                Column(modifier = Modifier.padding(22.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(imageVector = Icons.Rounded.Share, contentDescription = null, modifier = Modifier.size(16.dp))
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text("Share PDF")
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(QuackyAccent.copy(alpha = 0.15f), RoundedCornerShape(10.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.PictureAsPdf,
+                                contentDescription = null,
+                                tint = QuackyAccent,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
+                            Text(
+                                text = "PDF Generated",
+                                fontFamily = SatoshiFontFamily,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 17.sp,
+                                color = QuackyTextPrimary
+                            )
+                            Text(
+                                text = "Saved to Documents/Quacky",
+                                fontFamily = SatoshiFontFamily,
+                                fontSize = 12.sp,
+                                color = QuackyAccent
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Surface(
+                        shape = RoundedCornerShape(10.dp),
+                        color = QuackySurface,
+                        border = BorderStroke(1.dp, QuackyOutline),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text(
+                                text = pdfFile.name,
+                                fontFamily = SatoshiFontFamily,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 14.sp,
+                                color = QuackyTextPrimary
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "${state.pages.size} pages · ${pdfFile.length() / 1024} KB",
+                                fontFamily = SatoshiFontFamily,
+                                fontSize = 12.sp,
+                                color = QuackyTextSecondary
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        QuackyButton(
+                            onClick = { viewModel.clearGeneratedPdf() },
+                            style = QuackyButtonStyle.Secondary,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(stringResource(R.string.action_done))
+                        }
+
+                        QuackyButton(
+                            onClick = {
+                                val uri = FileProvider.getUriForFile(
+                                    context,
+                                    "${context.packageName}.fileprovider",
+                                    pdfFile
+                                )
+                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                    type = "application/pdf"
+                                    putExtra(Intent.EXTRA_STREAM, uri)
+                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                }
+                                context.startActivity(Intent.createChooser(shareIntent, "Share Document PDF"))
+                            },
+                            style = QuackyButtonStyle.Primary,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(imageVector = Icons.Rounded.Share, contentDescription = null, modifier = Modifier.size(16.dp))
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text("Share PDF")
+                            }
+                        }
                     }
                 }
-            },
-            dismissButton = {
-                QuackyButton(
-                    onClick = { viewModel.clearGeneratedPdf() },
-                    style = QuackyButtonStyle.Secondary
-                ) {
-                    Text(stringResource(R.string.action_done))
-                }
             }
-        )
+        }
     }
 }
 

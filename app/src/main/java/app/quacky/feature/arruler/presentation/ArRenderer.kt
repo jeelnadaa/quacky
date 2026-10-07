@@ -1,5 +1,6 @@
 package app.quacky.feature.arruler.presentation
 
+import android.graphics.Bitmap
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
@@ -22,6 +23,13 @@ class ArRenderer(
     private var positionAttrib: Int = -1
     private var texCoordAttrib: Int = -1
     private var textureUniform: Int = -1
+
+    @Volatile
+    private var captureRequest: ((Bitmap) -> Unit)? = null
+
+    fun captureNextFrame(callback: (Bitmap) -> Unit) {
+        captureRequest = callback
+    }
 
     private var viewportWidth = 1
     private var viewportHeight = 1
@@ -155,6 +163,29 @@ class ArRenderer(
 
             GLES20.glDisableVertexAttribArray(positionAttrib)
             GLES20.glDisableVertexAttribArray(texCoordAttrib)
+
+            // Check if frame capture was requested
+            val callback = captureRequest
+            if (callback != null && viewportWidth > 0 && viewportHeight > 0) {
+                captureRequest = null
+                try {
+                    val buffer = ByteBuffer.allocateDirect(viewportWidth * viewportHeight * 4)
+                        .order(ByteOrder.nativeOrder())
+                    GLES20.glReadPixels(
+                        0, 0, viewportWidth, viewportHeight,
+                        GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, buffer
+                    )
+                    buffer.rewind()
+                    val rawBitmap = Bitmap.createBitmap(viewportWidth, viewportHeight, Bitmap.Config.ARGB_8888)
+                    rawBitmap.copyPixelsFromBuffer(buffer)
+                    val flipMatrix = android.graphics.Matrix().apply { preScale(1.0f, -1.0f) }
+                    val finalBitmap = Bitmap.createBitmap(rawBitmap, 0, 0, viewportWidth, viewportHeight, flipMatrix, true)
+                    if (rawBitmap != finalBitmap) {
+                        rawBitmap.recycle()
+                    }
+                    callback(finalBitmap)
+                } catch (_: Exception) {}
+            }
 
             // Notify listener for tracking and point projection
             onFrameListener(currentSession, frame, viewportWidth, viewportHeight)

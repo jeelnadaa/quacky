@@ -106,10 +106,36 @@ import app.quacky.feature.arruler.domain.ArSingleMeasurement
 import app.quacky.feature.arruler.domain.ArTrackingStatus
 import app.quacky.feature.arruler.domain.ArUnit
 import app.quacky.feature.arruler.domain.MeasurementTones
+import app.quacky.core.permission.PermissionGate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArRulerScreen(
+    viewModel: ArRulerViewModel,
+    onBack: () -> Unit,
+    onOpenHowToUse: () -> Unit,
+    isPinned: Boolean = false,
+    onTogglePin: () -> Unit = {},
+    onNavigateToAreaVolume: ((Double) -> Unit)? = null
+) {
+    PermissionGate(
+        permission = android.Manifest.permission.CAMERA,
+        onBack = onBack
+    ) {
+        ArRulerContent(
+            viewModel = viewModel,
+            onBack = onBack,
+            onOpenHowToUse = onOpenHowToUse,
+            isPinned = isPinned,
+            onTogglePin = onTogglePin,
+            onNavigateToAreaVolume = onNavigateToAreaVolume
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ArRulerContent(
     viewModel: ArRulerViewModel,
     onBack: () -> Unit,
     onOpenHowToUse: () -> Unit,
@@ -200,12 +226,13 @@ fun ArRulerScreen(
                 factory = { ctx ->
                     ArSurfaceView(
                         context = ctx,
-                        onFrameUpdated = { _, _, viewMatrix, projMatrix, hasSurface, reticleHit, width, height ->
+                        onFrameUpdated = { _, _, viewMatrix, projMatrix, hasSurface, reticleHit, featurePoints, width, height ->
                             viewModel.onFrameUpdated(
                                 viewMatrix = viewMatrix,
                                 projMatrix = projMatrix,
                                 hasSurface = hasSurface,
                                 reticleHit = reticleHit,
+                                featurePoints = featurePoints,
                                 viewportWidth = width,
                                 viewportHeight = height
                             )
@@ -247,23 +274,39 @@ fun ArRulerScreen(
                 val cx = size.width / 2f
                 val cy = size.height / 2f
 
-                // Draw Center Reticle Ring
+                // Draw Detected Surface Feature Tracking Dots (visual feedback of 3D geometry)
+                state.surfaceFeaturePoints.forEach { pt ->
+                    drawCircle(
+                        color = QuackyAccent.copy(alpha = 0.6f),
+                        radius = 2.5.dp.toPx(),
+                        center = Offset(pt.x, pt.y)
+                    )
+                }
+
+                // Draw Center Reticle Ring & Precision Indicator
                 val isSurfaceFound = state.trackingStatus == ArTrackingStatus.SURFACE_FOUND
-                val reticleAlpha = if (isSurfaceFound) 0.95f else 0.4f
+                val reticleColor = if (isSurfaceFound) QuackyAccent else Color.White.copy(alpha = 0.4f)
                 val reticleRadius = 24.dp.toPx()
 
                 drawCircle(
-                    color = Color.White.copy(alpha = reticleAlpha),
+                    color = reticleColor,
                     radius = reticleRadius,
                     center = Offset(cx, cy),
-                    style = Stroke(width = 2.dp.toPx())
+                    style = Stroke(width = if (isSurfaceFound) 2.5.dp.toPx() else 1.5.dp.toPx())
                 )
                 if (isSurfaceFound) {
                     drawCircle(
-                        color = Color.White.copy(alpha = 0.9f),
-                        radius = 3.dp.toPx(),
+                        color = QuackyAccent,
+                        radius = 3.5.dp.toPx(),
                         center = Offset(cx, cy)
                     )
+                    // Precision crosshair tick marks
+                    val tickLen = 6.dp.toPx()
+                    val tickOffset = reticleRadius + 4.dp.toPx()
+                    drawLine(QuackyAccent, Offset(cx, cy - tickOffset), Offset(cx, cy - tickOffset - tickLen), strokeWidth = 2.dp.toPx())
+                    drawLine(QuackyAccent, Offset(cx, cy + tickOffset), Offset(cx, cy + tickOffset + tickLen), strokeWidth = 2.dp.toPx())
+                    drawLine(QuackyAccent, Offset(cx - tickOffset, cy), Offset(cx - tickOffset - tickLen, cy), strokeWidth = 2.dp.toPx())
+                    drawLine(QuackyAccent, Offset(cx + tickOffset, cy), Offset(cx + tickOffset + tickLen, cy), strokeWidth = 2.dp.toPx())
                 }
 
                 // 1. Draw Finished Measurements
@@ -479,37 +522,39 @@ fun ArRulerScreen(
                 }
             }
 
-            // Surface Detection Prompt (shown while searching surface)
+            // Surface Detection Prompt (shown at top while searching surface so center reticle is fully visible)
             if (state.trackingStatus == ArTrackingStatus.SEARCHING_SURFACE) {
                 Box(
                     modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(horizontal = 32.dp)
-                        .background(QuackySurfaceElevated.copy(alpha = 0.95f), RoundedCornerShape(16.dp))
-                        .border(1.dp, QuackyOutline, RoundedCornerShape(16.dp))
-                        .padding(20.dp),
+                        .align(Alignment.TopCenter)
+                        .padding(top = 72.dp, start = 24.dp, end = 24.dp)
+                        .background(QuackySurfaceElevated.copy(alpha = 0.95f), RoundedCornerShape(14.dp))
+                        .border(1.dp, QuackyOutline, RoundedCornerShape(14.dp))
+                        .padding(horizontal = 18.dp, vertical = 12.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = Icons.Rounded.CenterFocusStrong,
-                            contentDescription = null,
-                            tint = QuackyAccent,
-                            modifier = Modifier.size(36.dp)
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Rounded.CenterFocusStrong,
+                                contentDescription = null,
+                                tint = QuackyAccent,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Detecting Surface",
+                                fontFamily = SatoshiFontFamily,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                color = QuackyTextPrimary
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "Detecting Surface",
+                            text = "Keep phone stable and scan a textured flat surface slowly.",
                             fontFamily = SatoshiFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            color = QuackyTextPrimary
-                        )
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Text(
-                            text = "Keep phone stable and scan a flat surface slowly. Measuring will start once detected.",
-                            fontFamily = SatoshiFontFamily,
-                            fontSize = 13.sp,
+                            fontSize = 12.sp,
                             color = QuackyTextSecondary,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center
                         )
@@ -772,14 +817,29 @@ fun ArRulerScreen(
                             // Screenshot Button
                             IconButton(
                                 onClick = {
-                                    val bitmap = Bitmap.createBitmap(
-                                        view.width.coerceAtLeast(1),
-                                        view.height.coerceAtLeast(1),
-                                        Bitmap.Config.ARGB_8888
-                                    )
-                                    val canvas = android.graphics.Canvas(bitmap)
-                                    view.draw(canvas)
-                                    viewModel.captureScreenshot(bitmap, context)
+                                    val surfaceView = arSurfaceViewRef
+                                    if (surfaceView != null) {
+                                        surfaceView.capturePhoto { cameraBitmap ->
+                                            val annotatedBitmap = cameraBitmap.copy(Bitmap.Config.ARGB_8888, true)
+                                            val canvas = android.graphics.Canvas(annotatedBitmap)
+                                            drawArAnnotationsOnBitmap(
+                                                canvas = canvas,
+                                                finished = state.finishedMeasurements,
+                                                active = state.activeMeasurement,
+                                                selectedId = state.selectedMeasurementId
+                                            )
+                                            viewModel.captureScreenshot(annotatedBitmap, context)
+                                        }
+                                    } else {
+                                        val bitmap = Bitmap.createBitmap(
+                                            view.width.coerceAtLeast(1),
+                                            view.height.coerceAtLeast(1),
+                                            Bitmap.Config.ARGB_8888
+                                        )
+                                        val canvas = android.graphics.Canvas(bitmap)
+                                        view.draw(canvas)
+                                        viewModel.captureScreenshot(bitmap, context)
+                                    }
                                 },
                                 modifier = Modifier
                                     .size(44.dp)
@@ -1357,6 +1417,90 @@ fun ArRulerScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(24.dp))
+            }
+        }
+    }
+}
+
+private fun drawArAnnotationsOnBitmap(
+    canvas: android.graphics.Canvas,
+    finished: List<ArSingleMeasurement>,
+    active: ArSingleMeasurement?,
+    selectedId: String?
+) {
+    val linePaint = android.graphics.Paint().apply {
+        isAntiAlias = true
+        style = android.graphics.Paint.Style.STROKE
+        strokeWidth = 8f
+        strokeCap = android.graphics.Paint.Cap.ROUND
+    }
+
+    val pointPaint = android.graphics.Paint().apply {
+        isAntiAlias = true
+        style = android.graphics.Paint.Style.FILL
+    }
+
+    val ringPaint = android.graphics.Paint().apply {
+        isAntiAlias = true
+        style = android.graphics.Paint.Style.STROKE
+        strokeWidth = 3f
+    }
+
+    val textPaint = android.graphics.Paint().apply {
+        isAntiAlias = true
+        textSize = 34f
+        color = android.graphics.Color.WHITE
+        textAlign = android.graphics.Paint.Align.CENTER
+        typeface = android.graphics.Typeface.create(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.BOLD)
+    }
+
+    val pillPaint = android.graphics.Paint().apply {
+        isAntiAlias = true
+        style = android.graphics.Paint.Style.FILL
+        color = android.graphics.Color.parseColor("#E6121212")
+    }
+
+    val allMeasurements = finished + listOfNotNull(active)
+    for (m in allMeasurements) {
+        val isSelected = (m.id == selectedId)
+        val mColor = if (isSelected) android.graphics.Color.WHITE else android.graphics.Color.parseColor("#F5C518")
+
+        // Draw measurement segments
+        for (seg in m.segments) {
+            val p1 = seg.from.screenPoint
+            val p2 = seg.to.screenPoint
+            if (p1 != null && p2 != null) {
+                linePaint.color = mColor
+                canvas.drawLine(p1.x, p1.y, p2.x, p2.y, linePaint)
+
+                // Draw distance pill tag at segment midpoint
+                val mx = if (seg.midScreenX > 0) seg.midScreenX else (p1.x + p2.x) / 2f
+                val my = if (seg.midScreenY > 0) seg.midScreenY else (p1.y + p2.y) / 2f
+                val label = "${m.name} · ${seg.formattedLength}"
+                val bounds = android.graphics.Rect()
+                textPaint.getTextBounds(label, 0, label.length, bounds)
+                val padX = 22f
+                val padY = 14f
+                val rectF = android.graphics.RectF(
+                    mx - bounds.width() / 2f - padX,
+                    my - bounds.height() / 2f - padY,
+                    mx + bounds.width() / 2f + padX,
+                    my + bounds.height() / 2f + padY
+                )
+                canvas.drawRoundRect(rectF, 20f, 20f, pillPaint)
+                canvas.drawText(label, mx, my + bounds.height() / 4f, textPaint)
+            }
+        }
+
+        // Draw points
+        for (pt in m.points) {
+            val sp = pt.screenPoint
+            if (sp != null) {
+                pointPaint.color = mColor
+                canvas.drawCircle(sp.x, sp.y, 14f, pointPaint)
+                ringPaint.color = mColor
+                ringPaint.alpha = 180
+                canvas.drawCircle(sp.x, sp.y, 24f, ringPaint)
             }
         }
     }
