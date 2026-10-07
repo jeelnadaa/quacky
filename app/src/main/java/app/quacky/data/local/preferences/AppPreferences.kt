@@ -17,6 +17,8 @@ import javax.inject.Singleton
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "quacky_settings")
 
+val LocalAppPreferences = androidx.compose.runtime.staticCompositionLocalOf<AppPreferences?> { null }
+
 @Singleton
 class AppPreferences @Inject constructor(
     @ApplicationContext private val context: Context
@@ -38,6 +40,7 @@ class AppPreferences @Inject constructor(
         val KEY_AR_RULER_UNIT = stringPreferencesKey("ar_ruler_unit")
         val KEY_AR_RULER_ACCURACY_NOTE_DISMISSED = booleanPreferencesKey("ar_ruler_accuracy_note_dismissed")
         val KEY_AR_AUTO_FINISH = booleanPreferencesKey("ar_auto_finish")
+        val KEY_CONFIRM_ON_BACK = booleanPreferencesKey("confirm_on_back")
     }
 
     // Pinned Tools: stored as comma-separated or JSON list of IDs
@@ -93,6 +96,9 @@ class AppPreferences @Inject constructor(
 
     val isTipsOnFirstOpen: Flow<Boolean> = dataStore.data.map { it[KEY_TIPS_ON_FIRST_OPEN] ?: true }
     suspend fun setTipsOnFirstOpen(value: Boolean) = dataStore.edit { it[KEY_TIPS_ON_FIRST_OPEN] = value }
+
+    val isConfirmOnBackEnabled: Flow<Boolean> = dataStore.data.map { it[KEY_CONFIRM_ON_BACK] ?: true }
+    suspend fun setConfirmOnBackEnabled(value: Boolean) = dataStore.edit { it[KEY_CONFIRM_ON_BACK] = value }
 
     // Ruler calibration
     val rulerCalibrationFactor: Flow<Float> = dataStore.data.map { it[KEY_RULER_CALIBRATION_FACTOR] ?: 1.0f }

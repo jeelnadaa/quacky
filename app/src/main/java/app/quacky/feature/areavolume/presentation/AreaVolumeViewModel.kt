@@ -445,4 +445,9 @@ class AreaVolumeViewModel @Inject constructor(
             }
         }
     }
+
+    fun reset() {
+        _uiState.value = AreaVolumeUiState()
+        recalculate()
+    }
 }

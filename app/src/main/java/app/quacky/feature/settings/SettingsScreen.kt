@@ -103,14 +103,21 @@ fun SettingsScreen(
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // 1. Appearance Section
+            // 1. Behavior & Haptics Section
             item {
-                SettingsSection(title = "Appearance") {
+                SettingsSection(title = "Behavior & Haptics") {
                     SettingsSwitchRow(
                         title = "Haptic feedback",
                         subtitle = "Vibrate on key actions and gestures",
                         checked = state.isHapticsEnabled,
                         onCheckedChange = viewModel::setHapticsEnabled
+                    )
+                    HorizontalDivider(color = QuackyOutline, thickness = 1.dp)
+                    SettingsSwitchRow(
+                        title = "Exit tool confirmation",
+                        subtitle = "Prompt to stay or exit to prevent accidental loss of progress",
+                        checked = state.isConfirmOnBackEnabled,
+                        onCheckedChange = viewModel::setConfirmOnBackEnabled
                     )
                 }
             }
@@ -319,15 +326,9 @@ private fun SettingsSwitchRow(
             )
         }
         Spacer(modifier = Modifier.width(12.dp))
-        Switch(
+        app.quacky.core.components.QuackySwitch(
             checked = checked,
-            onCheckedChange = onCheckedChange,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = QuackyAccent,
-                checkedTrackColor = QuackySurface,
-                uncheckedThumbColor = QuackyTextTertiary,
-                uncheckedTrackColor = QuackyBackground
-            )
+            onCheckedChange = onCheckedChange
         )
     }
 }

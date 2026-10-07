@@ -146,6 +146,7 @@ fun ArRulerScreen(
         onTogglePin = onTogglePin,
         onHistoryClick = { viewModel.toggleHistory() },
         onHelpClick = onOpenHowToUse,
+        onResetClick = { viewModel.clearAllMeasurements() },
         additionalActions = {
             // Undo button
             IconButton(

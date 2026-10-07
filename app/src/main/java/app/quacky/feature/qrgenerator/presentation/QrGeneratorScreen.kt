@@ -421,10 +421,9 @@ private fun GeneratorFormFields(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text("Hidden network", color = QuackyTextPrimary, fontSize = 14.sp)
-                    Switch(
+                    app.quacky.core.components.QuackySwitch(
                         checked = uiState.wifiHidden,
-                        onCheckedChange = { onToggleWifiHidden() },
-                        colors = SwitchDefaults.colors(checkedThumbColor = QuackyAccent)
+                        onCheckedChange = { onToggleWifiHidden() }
                     )
                 }
             }

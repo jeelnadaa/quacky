@@ -228,4 +228,17 @@ class DateCalcViewModel @Inject constructor(
             )
         }
     }
+
+    fun reset() {
+        _birthDate.value = LocalDate.now().minusYears(20)
+        _diffStartDate.value = LocalDate.now().minusMonths(1)
+        _diffEndDate.value = LocalDate.now()
+        _includeEndDate.value = false
+        _addSubStartDate.value = LocalDate.now()
+        _addYears.value = 0
+        _addMonths.value = 1
+        _addDays.value = 0
+        _isAdd.value = true
+        _infoDate.value = LocalDate.now()
+    }
 }

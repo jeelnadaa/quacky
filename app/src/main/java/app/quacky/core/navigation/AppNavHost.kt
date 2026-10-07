@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.flow.first
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -71,31 +73,32 @@ fun AppNavHost(
         NavRoutes.SETTINGS
     )
 
-    Scaffold(
-        modifier = modifier,
-        containerColor = QuackyBackground,
-        bottomBar = {
-            if (isTopLevelDestination) {
-                QuackyBottomBar(
-                    currentRoute = currentRoute,
-                    onNavigateToRoute = { route ->
-                        if (currentRoute != route) {
-                            navController.navigate(route) {
-                                popUpTo(NavRoutes.HOME) { saveState = true }
-                                launchSingleTop = true
-                                restoreState = true
+    androidx.compose.runtime.CompositionLocalProvider(app.quacky.data.local.preferences.LocalAppPreferences provides preferences) {
+        Scaffold(
+            modifier = modifier,
+            containerColor = QuackyBackground,
+            bottomBar = {
+                if (isTopLevelDestination) {
+                    QuackyBottomBar(
+                        currentRoute = currentRoute,
+                        onNavigateToRoute = { route ->
+                            if (currentRoute != route) {
+                                navController.navigate(route) {
+                                    popUpTo(NavRoutes.HOME) { saveState = true }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         }
-                    }
-                )
+                    )
+                }
             }
-        }
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = NavRoutes.HOME,
-            modifier = Modifier.padding(innerPadding)
-        ) {
+        ) { innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = NavRoutes.HOME,
+                modifier = Modifier.padding(innerPadding)
+            ) {
             // 1. Home Screen
             composable(NavRoutes.HOME) {
                 val homeViewModel: HomeViewModel = hiltViewModel()
@@ -177,6 +180,17 @@ fun AppNavHost(
 
                 val checkResult = remember(tool, isRulerCalibrated) {
                     requirementChecker.check(tool, isRulerCalibrated)
+                }
+
+                val tipsOnFirstOpen by preferences.isTipsOnFirstOpen.collectAsState(initial = true)
+                LaunchedEffect(tool.id, tipsOnFirstOpen, checkResult) {
+                    if (tipsOnFirstOpen && checkResult is RequirementResult.Ready) {
+                        val seen = preferences.isTipSeen(tool.id).first()
+                        if (!seen) {
+                            activeGuideTool = tool
+                            preferences.setTipSeen(tool.id, true)
+                        }
+                    }
                 }
 
                 when (checkResult) {
@@ -367,11 +381,12 @@ fun AppNavHost(
         }
     }
 
-    activeGuideTool?.let { tool ->
-        val guide = remember(tool) { GuideRegistry.getGuideForTool(tool.id) }
-        HowToSheet(
-            guide = guide,
-            onDismiss = { activeGuideTool = null }
-        )
+        activeGuideTool?.let { tool ->
+            val guide = remember(tool) { GuideRegistry.getGuideForTool(tool.id) }
+            HowToSheet(
+                guide = guide,
+                onDismiss = { activeGuideTool = null }
+            )
+        }
     }
 }

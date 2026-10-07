@@ -109,7 +109,18 @@ class DiceViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DiceUiState())
 
     fun setNumberOfDice(count: Int) {
-        _numberOfDice.value = count.coerceIn(1, 10)
+        _numberOfDice.value = count.coerceIn(1, 200)
+    }
+
+    fun reset() {
+        _numberOfDice.value = 1
+        _sides.value = 6
+        _modifier.value = 0
+        _d20Mode.value = D20RollMode.NORMAL
+        _currentValues.value = listOf(6)
+        _currentTotal.value = 6
+        _isRolling.value = false
+        _history.value = emptyList()
     }
 
     fun setSides(s: Int) {

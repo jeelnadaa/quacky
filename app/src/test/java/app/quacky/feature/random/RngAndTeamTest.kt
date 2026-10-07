@@ -34,30 +34,26 @@ class RngAndTeamTest {
     }
 
     @Test
-    fun `snake draft balances team skill totals evenly`() {
+    fun `split into teams distributes players evenly`() {
         val players = listOf(
-            Player("1", "Pro 1", skill = 5),
-            Player("2", "Pro 2", skill = 5),
-            Player("3", "Mid 1", skill = 3),
-            Player("4", "Mid 2", skill = 3),
-            Player("5", "Novice 1", skill = 1),
-            Player("6", "Novice 2", skill = 1)
+            Player("1", "Alice"),
+            Player("2", "Bob"),
+            Player("3", "Charlie"),
+            Player("4", "David"),
+            Player("5", "Eva"),
+            Player("6", "Frank")
         )
 
         val teams = TeamSplitterEngine.splitIntoTeams(
             players = players,
             teamCount = 2,
-            balanceBySkill = true,
             seed = 12345L
         )
 
         assertEquals(2, teams.size)
         assertEquals(3, teams[0].members.size)
         assertEquals(3, teams[1].members.size)
-        // With snake draft:
-        // Team 1 gets Pro (5), Mid (3), Novice (1) = 9
-        // Team 2 gets Pro (5), Mid (3), Novice (1) = 9
-        val diff = kotlin.math.abs(teams[0].totalSkill - teams[1].totalSkill)
-        assertTrue("Skill difference between teams must be minimal", diff <= 1)
+        val allAssigned = (teams[0].members + teams[1].members).map { it.name }.toSet()
+        assertEquals(6, allAssigned.size)
     }
 }

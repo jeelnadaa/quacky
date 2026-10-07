@@ -23,11 +23,14 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.background
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.ContentPaste
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Save
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -80,7 +83,7 @@ fun TextCounterScreen(
         tool = ToolRegistry.TEXT_COUNTER,
         onBack = onBack,
         onHelpClick = onOpenHowToUse,
-        onResetClick = viewModel::clearText
+        onResetClick = viewModel::reset
     ) { innerPadding ->
         LazyColumn(
             modifier = modifier
@@ -270,6 +273,95 @@ fun TextCounterScreen(
                                         color = QuackyTextSecondary
                                     )
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Custom Character / Word Frequency & Filters
+            item {
+                SectionLabel(text = "Custom Frequency & Search")
+                Surface(
+                    shape = RoundedCornerShape(CardCornerRadius),
+                    color = QuackySurface,
+                    border = BorderStroke(1.dp, QuackyOutline),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(
+                        modifier = Modifier.padding(14.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        androidx.compose.material3.OutlinedTextField(
+                            value = state.searchQuery,
+                            onValueChange = viewModel::onSearchQueryChanged,
+                            placeholder = { Text("Find character, word or pattern...", color = QuackyTextTertiary, fontSize = 14.sp) },
+                            singleLine = true,
+                            leadingIcon = {
+                                Icon(Icons.Rounded.Search, contentDescription = null, tint = QuackyTextSecondary, modifier = Modifier.size(18.dp))
+                            },
+                            trailingIcon = {
+                                if (state.searchQuery.isNotEmpty()) {
+                                    IconButton(onClick = { viewModel.onSearchQueryChanged("") }) {
+                                        Icon(Icons.Rounded.Close, contentDescription = "Clear search", tint = QuackyTextTertiary, modifier = Modifier.size(16.dp))
+                                    }
+                                }
+                            },
+                            colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = QuackyAccent,
+                                unfocusedBorderColor = QuackyOutline,
+                                focusedTextColor = QuackyTextPrimary,
+                                unfocusedTextColor = QuackyTextPrimary
+                            ),
+                            shape = RoundedCornerShape(10.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        // Filter Chips
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            QuackyChip(
+                                text = if (state.ignoreCase) "Ignore Case" else "Match Case",
+                                selected = state.ignoreCase,
+                                onClick = viewModel::toggleIgnoreCase
+                            )
+                            QuackyChip(
+                                text = "Whole Words",
+                                selected = state.matchWholeWord,
+                                onClick = viewModel::toggleMatchWholeWord
+                            )
+                            QuackyChip(
+                                text = "Regex",
+                                selected = state.isRegex,
+                                onClick = viewModel::toggleRegex
+                            )
+                        }
+
+                        // Occurrence result display
+                        if (state.searchQuery.isNotBlank()) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(QuackyBackground, RoundedCornerShape(8.dp))
+                                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Matches found",
+                                    fontFamily = SatoshiFontFamily,
+                                    fontSize = 13.sp,
+                                    color = QuackyTextSecondary
+                                )
+                                Text(
+                                    text = "${state.customMatchCount} (${String.format(java.util.Locale.ROOT, "%.2f", state.customMatchPercentage)}%)",
+                                    fontFamily = SatoshiFontFamily,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 15.sp,
+                                    color = QuackyAccent
+                                )
                             }
                         }
                     }

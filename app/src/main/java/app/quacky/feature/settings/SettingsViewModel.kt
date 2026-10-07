@@ -18,6 +18,7 @@ data class SettingsUiState(
     val isShowRecents: Boolean = true,
     val isHapticsEnabled: Boolean = true,
     val isTipsOnFirstOpen: Boolean = true,
+    val isConfirmOnBackEnabled: Boolean = true,
     val isEasterEggFound: Boolean = false
 )
 
@@ -32,14 +33,16 @@ class SettingsViewModel @Inject constructor(
         preferences.isShowRecents,
         preferences.isHapticsEnabled,
         preferences.isTipsOnFirstOpen,
+        preferences.isConfirmOnBackEnabled,
         preferences.isEasterEggFound
-    ) { flatGrid, showRecents, haptics, tipsOnFirstOpen, easterEgg ->
+    ) { args: Array<Any> ->
         SettingsUiState(
-            isFlatGrid = flatGrid,
-            isShowRecents = showRecents,
-            isHapticsEnabled = haptics,
-            isTipsOnFirstOpen = tipsOnFirstOpen,
-            isEasterEggFound = easterEgg
+            isFlatGrid = args[0] as Boolean,
+            isShowRecents = args[1] as Boolean,
+            isHapticsEnabled = args[2] as Boolean,
+            isTipsOnFirstOpen = args[3] as Boolean,
+            isConfirmOnBackEnabled = args[4] as Boolean,
+            isEasterEggFound = args[5] as Boolean
         )
     }.stateIn(
         scope = viewModelScope,
@@ -61,6 +64,10 @@ class SettingsViewModel @Inject constructor(
 
     fun setTipsOnFirstOpen(value: Boolean) {
         viewModelScope.launch { preferences.setTipsOnFirstOpen(value) }
+    }
+
+    fun setConfirmOnBackEnabled(value: Boolean) {
+        viewModelScope.launch { preferences.setConfirmOnBackEnabled(value) }
     }
 
     fun resetAllTips() {

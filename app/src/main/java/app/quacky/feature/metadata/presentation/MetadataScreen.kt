@@ -113,7 +113,8 @@ fun MetadataScreen(
         onBack = onBack,
         isPinned = isPinned,
         onTogglePin = onTogglePin,
-        onHelpClick = onOpenHowToUse
+        onHelpClick = onOpenHowToUse,
+        onResetClick = viewModel::clearAllPhotos
     ) { padding ->
         Box(
             modifier = Modifier
@@ -207,10 +208,10 @@ fun MetadataScreen(
                                     tint = QuackyTextPrimary
                                 )
                             }
-                            IconButton(onClick = { viewModel.clearAllPhotos() }) {
+                            IconButton(onClick = { viewModel.removePhoto(state.activeIndex) }) {
                                 Icon(
-                                    Icons.Rounded.Clear,
-                                    contentDescription = stringResource(R.string.metadata_clear),
+                                    Icons.Rounded.Close,
+                                    contentDescription = "Remove photo",
                                     tint = QuackyTextTertiary
                                 )
                             }
@@ -245,13 +246,31 @@ fun MetadataScreen(
                                         contentScale = ContentScale.Crop,
                                         modifier = Modifier.fillMaxSize()
                                     )
+                                    // Individual photo remove button
+                                    Box(
+                                        modifier = Modifier
+                                            .align(Alignment.TopEnd)
+                                            .padding(2.dp)
+                                            .size(18.dp)
+                                            .clip(CircleShape)
+                                            .background(Color(0xCC000000))
+                                            .clickable { viewModel.removePhoto(index) },
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.Close,
+                                            contentDescription = "Remove",
+                                            tint = Color.White,
+                                            modifier = Modifier.size(12.dp)
+                                        )
+                                    }
                                     // GPS indicator badge
                                     if (item.location.hasGps) {
                                         Box(
                                             modifier = Modifier
-                                                .align(Alignment.TopEnd)
+                                                .align(Alignment.BottomStart)
                                                 .padding(4.dp)
-                                                .size(10.dp)
+                                                .size(8.dp)
                                                 .clip(CircleShape)
                                                 .background(DestructiveRed)
                                         )

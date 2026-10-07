@@ -397,4 +397,8 @@ class DocumentScannerViewModel @Inject constructor(
     fun clearSnackbarMessage() {
         _uiState.update { it.copy(snackbarMessage = null) }
     }
+
+    fun reset() {
+        _uiState.update { DocScannerUiState() }
+    }
 }

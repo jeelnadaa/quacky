@@ -91,6 +91,31 @@ class RandomNumberViewModel @Inject constructor(
         _max.value = maxOf(min, max)
     }
 
+    fun setMin(min: Long) {
+        _min.value = min
+        if (_max.value < min) {
+            _max.value = min
+        }
+    }
+
+    fun setMax(max: Long) {
+        _max.value = max
+        if (_min.value > max) {
+            _min.value = max
+        }
+    }
+
+    fun reset() {
+        _min.value = 1L
+        _max.value = 100L
+        _count.value = 1
+        _allowDuplicates.value = true
+        _isSortResults.value = false
+        _seed.value = ""
+        _sequenceIndex.value = 0L
+        _generatedNumbers.value = listOf(42L)
+    }
+
     fun setCount(c: Int) {
         _count.value = c.coerceIn(1, 1000)
     }

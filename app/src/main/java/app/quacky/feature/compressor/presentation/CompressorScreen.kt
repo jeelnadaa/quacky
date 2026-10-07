@@ -100,7 +100,8 @@ fun CompressorScreen(
         onBack = onBack,
         isPinned = isPinned,
         onTogglePin = onTogglePin,
-        onHelpClick = onOpenHowToUse
+        onHelpClick = onOpenHowToUse,
+        onResetClick = viewModel::clearFiles
     ) { padding ->
         Box(
             modifier = Modifier
@@ -301,12 +302,33 @@ fun CompressorScreen(
 
                                                 Spacer(modifier = Modifier.height(10.dp))
 
-                                                Text(
-                                                    text = "Quality: ${state.imageConfig.quality}%",
-                                                    style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
-                                                    fontWeight = FontWeight.Medium,
-                                                    color = QuackyTextPrimary
-                                                )
+                                                val origSize = activeFile.originalSizeBytes
+                                                val estBytes = if (origSize > 0) {
+                                                    val factor = (state.imageConfig.quality / 100f).coerceIn(0.05f, 1.0f)
+                                                    val est = (origSize * (0.15f + 0.85f * factor)).toLong()
+                                                    est.coerceIn(512L, origSize)
+                                                } else null
+
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    Text(
+                                                        text = "Quality: ${state.imageConfig.quality}%",
+                                                        style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
+                                                        fontWeight = FontWeight.Medium,
+                                                        color = QuackyTextPrimary
+                                                    )
+                                                    if (estBytes != null) {
+                                                        Text(
+                                                            text = "Est. output: ~${app.quacky.feature.compressor.domain.CompressionResult.formatBytes(estBytes)}",
+                                                            fontSize = 12.sp,
+                                                            fontWeight = FontWeight.Bold,
+                                                            color = Color.White
+                                                        )
+                                                    }
+                                                }
                                                 Slider(
                                                     value = state.imageConfig.quality.toFloat(),
                                                     onValueChange = { viewModel.setQuality(it.toInt()) },
@@ -365,14 +387,9 @@ fun CompressorScreen(
                                                     Text(stringResource(R.string.compressor_strip_meta), color = QuackyTextPrimary, fontSize = 13.sp, fontWeight = FontWeight.Medium)
                                                     Text("Removes EXIF, camera info, and GPS coordinates", color = QuackyTextSecondary, fontSize = 11.sp)
                                                 }
-                                                Switch(
+                                                app.quacky.core.components.QuackySwitch(
                                                     checked = state.imageConfig.stripMetadata,
-                                                    onCheckedChange = { viewModel.toggleStripMetadata(it) },
-                                                    colors = SwitchDefaults.colors(
-                                                        checkedThumbColor = Color.Black,
-                                                        checkedTrackColor = Color.White,
-                                                        uncheckedTrackColor = QuackyOutline
-                                                    )
+                                                    onCheckedChange = { viewModel.toggleStripMetadata(it) }
                                                 )
                                             }
 
@@ -387,14 +404,9 @@ fun CompressorScreen(
                                                     Text(stringResource(R.string.compressor_keep_dims), color = QuackyTextPrimary, fontSize = 13.sp, fontWeight = FontWeight.Medium)
                                                     Text("Prevent dimension downscaling during compression", color = QuackyTextSecondary, fontSize = 11.sp)
                                                 }
-                                                Switch(
+                                                app.quacky.core.components.QuackySwitch(
                                                     checked = state.imageConfig.keepDimensions,
-                                                    onCheckedChange = { viewModel.toggleKeepDimensions(it) },
-                                                    colors = SwitchDefaults.colors(
-                                                        checkedThumbColor = Color.Black,
-                                                        checkedTrackColor = Color.White,
-                                                        uncheckedTrackColor = QuackyOutline
-                                                    )
+                                                    onCheckedChange = { viewModel.toggleKeepDimensions(it) }
                                                 )
                                             }
                                         }

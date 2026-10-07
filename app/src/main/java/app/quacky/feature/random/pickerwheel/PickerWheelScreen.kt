@@ -72,7 +72,7 @@ fun PickerWheelScreen(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
-    val haptic = LocalHapticFeedback.current
+    val haptics = app.quacky.core.haptics.rememberQuackyHaptics()
     var newOptionText by remember { mutableStateOf("") }
 
     val animatedAngle by animateFloatAsState(
@@ -84,7 +84,8 @@ fun PickerWheelScreen(
     ToolScaffold(
         tool = ToolRegistry.PICKER_WHEEL,
         onBack = onBack,
-        onHelpClick = onOpenHowToUse
+        onHelpClick = onOpenHowToUse,
+        onResetClick = viewModel::reset
     ) { innerPadding ->
         LazyColumn(
             modifier = modifier
@@ -188,7 +189,7 @@ fun PickerWheelScreen(
             item {
                 QuackyButton(
                     onClick = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        haptics.heavy()
                         viewModel.spin()
                     },
                     style = QuackyButtonStyle.Primary,

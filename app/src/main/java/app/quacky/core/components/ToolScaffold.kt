@@ -1,10 +1,12 @@
 package app.quacky.core.components
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.HelpOutline
@@ -12,6 +14,7 @@ import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Pin
 import androidx.compose.material.icons.rounded.PushPin
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,13 +33,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.quacky.R
+import app.quacky.core.designsystem.component.QuackyButton
+import app.quacky.core.designsystem.component.QuackyButtonStyle
 import app.quacky.core.designsystem.theme.QuackyBackground
+import app.quacky.core.designsystem.theme.QuackySurface
 import app.quacky.core.designsystem.theme.QuackyTextPrimary
 import app.quacky.core.designsystem.theme.QuackyTextSecondary
 import app.quacky.core.designsystem.theme.SatoshiFontFamily
 import app.quacky.core.registry.ToolDefinition
+import app.quacky.data.local.preferences.LocalAppPreferences
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +60,67 @@ fun ToolScaffold(
     content: @Composable (PaddingValues) -> Unit
 ) {
     var overflowMenuExpanded by remember { mutableStateOf(false) }
+    var showBackConfirmModal by remember { mutableStateOf(false) }
+
+    val preferences = LocalAppPreferences.current
+    val confirmOnBack by preferences?.isConfirmOnBackEnabled?.collectAsState(initial = true)
+        ?: remember { mutableStateOf(true) }
+
+    val requestBack = {
+        if (confirmOnBack) {
+            showBackConfirmModal = true
+        } else {
+            onBack()
+        }
+    }
+
+    BackHandler(enabled = confirmOnBack) {
+        showBackConfirmModal = true
+    }
+
+    if (showBackConfirmModal) {
+        AlertDialog(
+            onDismissRequest = { showBackConfirmModal = false },
+            title = {
+                Text(
+                    text = "Exit ${stringResource(tool.nameRes)}?",
+                    fontFamily = SatoshiFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = QuackyTextPrimary
+                )
+            },
+            text = {
+                Text(
+                    text = "Are you sure you want to go back? Any active progress will be lost.",
+                    fontFamily = SatoshiFontFamily,
+                    fontSize = 14.sp,
+                    color = QuackyTextSecondary
+                )
+            },
+            confirmButton = {
+                QuackyButton(
+                    onClick = {
+                        showBackConfirmModal = false
+                        onBack()
+                    },
+                    style = QuackyButtonStyle.Primary
+                ) {
+                    Text("Exit", fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                QuackyButton(
+                    onClick = { showBackConfirmModal = false },
+                    style = QuackyButtonStyle.Secondary
+                ) {
+                    Text("Continue")
+                }
+            },
+            containerColor = QuackySurface,
+            shape = RoundedCornerShape(16.dp)
+        )
+    }
 
     Scaffold(
         containerColor = QuackyBackground,
@@ -66,7 +136,7 @@ fun ToolScaffold(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = requestBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                             contentDescription = stringResource(R.string.action_back),

@@ -69,7 +69,8 @@ fun DateCalcScreen(
     ToolScaffold(
         tool = ToolRegistry.DATE_CALC,
         onBack = onBack,
-        onHelpClick = onOpenHowToUse
+        onHelpClick = onOpenHowToUse,
+        onResetClick = viewModel::reset
     ) { innerPadding ->
         LazyColumn(
             modifier = modifier

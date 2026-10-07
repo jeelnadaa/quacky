@@ -65,7 +65,7 @@ class CoinFlipViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), CoinFlipUiState())
 
     fun setCoinCount(count: Int) {
-        _coinCount.value = count.coerceIn(1, 10)
+        _coinCount.value = count.coerceIn(1, 200)
     }
 
     fun setCustomLabels(heads: String, tails: String) {
@@ -99,7 +99,7 @@ class CoinFlipViewModel @Inject constructor(
                 toolId = ToolRegistry.COIN_FLIP.id,
                 type = "flip",
                 title = "Flipped $count coin${if (count > 1) "s" else ""}",
-                subtitle = summary.joinToString(", "),
+                subtitle = summary.take(6).joinToString(", ") + if (summary.size > 6) "..." else "",
                 payloadJson = JSONObject().apply {
                     put("count", count)
                     put("heads", newHeads)
@@ -112,5 +112,7 @@ class CoinFlipViewModel @Inject constructor(
     fun resetSession() {
         _headsCount.value = 0
         _tailsCount.value = 0
+        _coinCount.value = 1
+        _currentResults.value = listOf(true)
     }
 }

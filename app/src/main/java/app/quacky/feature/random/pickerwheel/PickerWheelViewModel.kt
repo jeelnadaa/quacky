@@ -141,4 +141,16 @@ class PickerWheelViewModel @Inject constructor(
             wheelDao.insertOptions(optionEntities)
         }
     }
+
+    fun reset() {
+        _options.value = listOf(
+            WheelItem("1", "Option A"),
+            WheelItem("2", "Option B"),
+            WheelItem("3", "Option C"),
+            WheelItem("4", "Option D")
+        )
+        _currentAngle.value = 0f
+        _isSpinning.value = false
+        _winner.value = null
+    }
 }

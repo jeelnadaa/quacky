@@ -93,7 +93,8 @@ fun AreaVolumeScreen(
         onBack = onBack,
         isPinned = isPinned,
         onTogglePin = onTogglePin,
-        onHelpClick = onOpenHowToUse
+        onHelpClick = onOpenHowToUse,
+        onResetClick = viewModel::reset
     ) { padding ->
         Column(
             modifier = Modifier

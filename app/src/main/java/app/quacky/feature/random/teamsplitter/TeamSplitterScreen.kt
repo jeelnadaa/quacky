@@ -72,13 +72,14 @@ fun TeamSplitterScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    val haptic = LocalHapticFeedback.current
+    val haptics = app.quacky.core.haptics.rememberQuackyHaptics()
     var newPlayerName by remember { mutableStateOf("") }
 
     ToolScaffold(
         tool = ToolRegistry.TEAM_SPLITTER,
         onBack = onBack,
-        onHelpClick = onOpenHowToUse
+        onHelpClick = onOpenHowToUse,
+        onResetClick = viewModel::reset
     ) { innerPadding ->
         LazyColumn(
             modifier = modifier
@@ -111,7 +112,7 @@ fun TeamSplitterScreen(
                                         color = QuackyTextPrimary
                                     )
                                     Text(
-                                        text = "Skill rating: ${team.totalSkill}",
+                                        text = "${team.members.size} players",
                                         fontFamily = SatoshiFontFamily,
                                         fontSize = 12.sp,
                                         color = QuackyTextSecondary
@@ -119,7 +120,7 @@ fun TeamSplitterScreen(
                                 }
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Text(
-                                    text = team.members.joinToString(", ") { "${it.name} (${it.skill}★)" },
+                                    text = team.members.joinToString(", ") { it.name },
                                     fontFamily = SatoshiFontFamily,
                                     fontSize = 14.sp,
                                     color = QuackyTextPrimary
@@ -138,7 +139,7 @@ fun TeamSplitterScreen(
                 ) {
                     QuackyButton(
                         onClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            haptics.heavy()
                             viewModel.split()
                         },
                         style = QuackyButtonStyle.Primary,
@@ -226,7 +227,7 @@ fun TeamSplitterScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "${player.name} (${player.skill}★)",
+                            text = player.name,
                             fontFamily = SatoshiFontFamily,
                             fontSize = 14.sp,
                             color = QuackyTextPrimary

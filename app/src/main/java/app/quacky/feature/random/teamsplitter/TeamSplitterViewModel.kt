@@ -21,7 +21,6 @@ import javax.inject.Inject
 data class TeamSplitterUiState(
     val players: List<Player> = emptyList(),
     val teamCount: Int = 2,
-    val balanceBySkill: Boolean = true,
     val teams: List<Team> = emptyList(),
     val savedGroups: List<SavedGroupEntity> = emptyList()
 )
@@ -34,14 +33,13 @@ class TeamSplitterViewModel @Inject constructor(
 
     private val _players = MutableStateFlow(
         listOf(
-            Player("1", "Alex", 4),
-            Player("2", "Jordan", 5),
-            Player("3", "Taylor", 2),
-            Player("4", "Morgan", 3)
+            Player("1", "Alex"),
+            Player("2", "Jordan"),
+            Player("3", "Taylor"),
+            Player("4", "Morgan")
         )
     )
     private val _teamCount = MutableStateFlow(2)
-    private val _balanceBySkill = MutableStateFlow(true)
     private val _teams = MutableStateFlow<List<Team>>(emptyList())
 
     val savedGroups: StateFlow<List<SavedGroupEntity>> = groupDao.getAllGroupsFlow()
@@ -50,13 +48,11 @@ class TeamSplitterViewModel @Inject constructor(
     val uiState: StateFlow<TeamSplitterUiState> = combine(
         _players,
         _teamCount,
-        _balanceBySkill,
         _teams
-    ) { pList, count, balance, tList ->
+    ) { pList, count, tList ->
         TeamSplitterUiState(
             players = pList,
             teamCount = count,
-            balanceBySkill = balance,
             teams = tList,
             savedGroups = savedGroups.value
         )
@@ -66,9 +62,9 @@ class TeamSplitterViewModel @Inject constructor(
         split()
     }
 
-    fun addPlayer(name: String, skill: Int = 3) {
+    fun addPlayer(name: String) {
         if (name.isBlank()) return
-        val player = Player(id = "${System.currentTimeMillis()}", name = name.trim(), skill = skill)
+        val player = Player(id = "${System.currentTimeMillis()}", name = name.trim())
         _players.value = _players.value + player
         split()
     }
@@ -83,16 +79,10 @@ class TeamSplitterViewModel @Inject constructor(
         split()
     }
 
-    fun setBalanceBySkill(balance: Boolean) {
-        _balanceBySkill.value = balance
-        split()
-    }
-
     fun split() {
         val teams = TeamSplitterEngine.splitIntoTeams(
             players = _players.value,
-            teamCount = _teamCount.value,
-            balanceBySkill = _balanceBySkill.value
+            teamCount = _teamCount.value
         )
         _teams.value = teams
 
@@ -113,12 +103,23 @@ class TeamSplitterViewModel @Inject constructor(
         }
     }
 
+    fun reset() {
+        _players.value = listOf(
+            Player("1", "Alex"),
+            Player("2", "Jordan"),
+            Player("3", "Taylor"),
+            Player("4", "Morgan")
+        )
+        _teamCount.value = 2
+        split()
+    }
+
     fun saveGroup(groupName: String) {
         if (groupName.isBlank()) return
         viewModelScope.launch {
             val groupId = groupDao.insertGroup(SavedGroupEntity(name = groupName.trim()))
             val members = _players.value.map {
-                GroupMemberEntity(groupId = groupId, name = it.name, skillRating = it.skill)
+                GroupMemberEntity(groupId = groupId, name = it.name, skillRating = 3)
             }
             groupDao.insertMembers(members)
         }

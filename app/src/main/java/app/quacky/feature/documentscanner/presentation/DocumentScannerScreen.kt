@@ -152,6 +152,7 @@ fun DocumentScannerScreen(
         isPinned = isPinned,
         onTogglePin = onTogglePin,
         onHelpClick = onOpenHowToUse,
+        onResetClick = viewModel::reset,
         additionalActions = {
             if (state.step == DocScanStep.REVIEW && state.pages.isNotEmpty()) {
                 IconButton(
