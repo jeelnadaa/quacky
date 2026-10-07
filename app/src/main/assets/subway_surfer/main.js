@@ -12,7 +12,7 @@ const THREE = window.THREE;
    ============================================================ */
 
 const LANES = [-2.2, 0, 2.2];
-const GRAVITY = -32;
+const GRAVITY = -24;
 const TRAIN_H = 2.3;
 const TRAIN_W = 1.9;
 // walkable ramp: footprint length, top meets train roof (topY = TRAIN_H+0.29)
@@ -206,37 +206,102 @@ for(let i=0;i<8;i++){
   scene.add(g); clouds.push(g);
 }
 
-// ---------- player ----------
 function buildRunner(shirt=0xffd23f, pants=0x1e88e5, skin=0xffe082, isDuck=false){
   const g=new THREE.Group();
   const mat = c=>new THREE.MeshLambertMaterial({color:c});
-  const torso=new THREE.Mesh(new THREE.BoxGeometry(0.72,0.8,0.42), mat(shirt));
-  torso.position.y=1.25; torso.castShadow=true; g.add(torso); g.userData.torso=torso;
-  const head=new THREE.Mesh(new THREE.BoxGeometry(0.52,0.52,0.52), mat(skin));
-  head.position.y=1.95; head.castShadow=true; g.add(head); g.userData.head=head;
+
   if(isDuck){
-    // Quacky Duck Beak & Backwards Street Snapback Cap
-    const beak=new THREE.Mesh(new THREE.BoxGeometry(0.38,0.16,0.34), mat(0xff9800));
-    beak.position.set(0,1.88,-0.38); beak.castShadow=true; g.add(beak);
-    const cap=new THREE.Mesh(new THREE.BoxGeometry(0.56,0.18,0.56), mat(0xe53935));
-    cap.position.y=2.26; g.add(cap);
-    const brim=new THREE.Mesh(new THREE.BoxGeometry(0.52,0.06,0.32), mat(0xd32f2f));
-    brim.position.set(0,2.20,0.40); g.add(brim);
+    // Volumetric 3D Quacky Duck Mascot
+    // Torso: Rounded golden duck body
+    const torso=new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.42, 0.82, 16), mat(shirt));
+    torso.position.y=1.22; torso.castShadow=true; g.add(torso); g.userData.torso=torso;
+
+    // Belly patch: Soft cream feathers
+    const belly=new THREE.Mesh(new THREE.SphereGeometry(0.32, 12, 12), mat(0xfffde7));
+    belly.scale.set(0.9, 1.1, 0.5);
+    belly.position.set(0, 1.20, -0.22);
+    g.add(belly);
+
+    // Head: Real 3D Spherical Duck Head
+    const head=new THREE.Mesh(new THREE.SphereGeometry(0.36, 18, 18), mat(skin));
+    head.position.y=1.86; head.castShadow=true; g.add(head); g.userData.head=head;
+
+    // 3D Duck Eyes with highlights
+    for(const s of [-1, 1]){
+      const eyeWhite = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 10), mat(0xffffff));
+      eyeWhite.scale.set(0.8, 1.1, 0.6);
+      eyeWhite.position.set(s * 0.16, 1.94, -0.28);
+      g.add(eyeWhite);
+
+      const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 8), mat(0x111111));
+      pupil.position.set(s * 0.16, 1.94, -0.34);
+      g.add(pupil);
+    }
+
+    // 3D Curved Duck Beak (tapered orange bill)
+    const beak=new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.20, 0.32, 12), mat(0xff9800));
+    beak.rotation.x=Math.PI/2;
+    beak.scale.set(1.1, 0.45, 1.0);
+    beak.position.set(0, 1.80, -0.42);
+    beak.castShadow=true; g.add(beak);
+
+    // Backwards Street Snapback Cap (Red with brim)
+    const cap=new THREE.Mesh(new THREE.SphereGeometry(0.38, 16, 12, 0, Math.PI*2, 0, Math.PI*0.55), mat(0xe53935));
+    cap.position.y=1.92; g.add(cap);
+    const brim=new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.05, 0.30), mat(0xd32f2f));
+    brim.position.set(0, 1.98, 0.38); g.add(brim);
+
+    // 3D Flapping Feather Wings (attached to torso sides)
+    const wingGeo = new THREE.BoxGeometry(0.14, 0.56, 0.30);
+    const armL=new THREE.Mesh(wingGeo, mat(skin));
+    armL.geometry.translate(0, -0.24, 0);
+    armL.position.set(-0.44, 1.50, 0); armL.castShadow=true; g.add(armL);
+
+    const armR=new THREE.Mesh(wingGeo, mat(skin));
+    armR.geometry.translate(0, -0.24, 0);
+    armR.position.set(0.44, 1.50, 0); armR.castShadow=true; g.add(armR);
+
+    // Athletic Running Sneakers (Red body + white rubber soles)
+    const legL=new THREE.Group();
+    const legLMesh=new THREE.Mesh(new THREE.CylinderGeometry(0.10, 0.10, 0.70, 8), mat(pants));
+    legLMesh.position.y=-0.35; legLMesh.castShadow=true; legL.add(legLMesh);
+    const shoeL=new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.16, 0.44), mat(0xd32f2f));
+    shoeL.position.set(0, -0.68, -0.06); shoeL.castShadow=true; legL.add(shoeL);
+    const soleL=new THREE.Mesh(new THREE.BoxGeometry(0.30, 0.06, 0.46), mat(0xffffff));
+    soleL.position.set(0, -0.77, -0.06); legL.add(soleL);
+    legL.position.set(-0.20, 0.85, 0); g.add(legL);
+
+    const legR=new THREE.Group();
+    const legRMesh=new THREE.Mesh(new THREE.CylinderGeometry(0.10, 0.10, 0.70, 8), mat(pants));
+    legRMesh.position.y=-0.35; legRMesh.castShadow=true; legR.add(legRMesh);
+    const shoeR=new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.16, 0.44), mat(0xd32f2f));
+    shoeR.position.set(0, -0.68, -0.06); shoeR.castShadow=true; legR.add(shoeR);
+    const soleR=new THREE.Mesh(new THREE.BoxGeometry(0.30, 0.06, 0.46), mat(0xffffff));
+    soleR.position.set(0, -0.77, -0.06); legR.add(soleR);
+    legR.position.set(0.20, 0.85, 0); g.add(legR);
+
+    g.userData={...g.userData, legL, legR, armL, armR};
   } else {
+    // Inspector
+    const torso=new THREE.Mesh(new THREE.BoxGeometry(0.72,0.8,0.42), mat(shirt));
+    torso.position.y=1.25; torso.castShadow=true; g.add(torso); g.userData.torso=torso;
+    const head=new THREE.Mesh(new THREE.BoxGeometry(0.52,0.52,0.52), mat(skin));
+    head.position.y=1.95; head.castShadow=true; g.add(head); g.userData.head=head;
     const cap=new THREE.Mesh(new THREE.BoxGeometry(0.54,0.16,0.54), mat(0x1d3557));
     cap.position.y=2.24; g.add(cap);
     const brim=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.06,0.3), mat(0x111111));
     brim.position.set(0,2.18,-0.4); g.add(brim);
+    const pack=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.55,0.22), mat(0x27ae60));
+    pack.position.set(0,1.3,0.32); g.add(pack);
+    const legL=new THREE.Mesh(new THREE.BoxGeometry(0.26,0.85,0.3), mat(pants));
+    legL.geometry.translate(0,-0.42,0); legL.position.set(-0.19,0.85,0); legL.castShadow=true; g.add(legL);
+    const legR=legL.clone(); legR.position.x=0.19; g.add(legR);
+    const armL=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.7,0.24), mat(shirt));
+    armL.geometry.translate(0,-0.35,0); armL.position.set(-0.5,1.6,0); armL.castShadow=true; g.add(armL);
+    const armR=armL.clone(); armR.position.x=0.5; g.add(armR);
+    g.userData={...g.userData, legL, legR, armL, armR};
   }
-  const pack=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.55,0.22), mat(0x27ae60));
-  pack.position.set(0,1.3,0.32); g.add(pack);
-  const legL=new THREE.Mesh(new THREE.BoxGeometry(0.26,0.85,0.3), mat(pants));
-  legL.geometry.translate(0,-0.42,0); legL.position.set(-0.19,0.85,0); legL.castShadow=true; g.add(legL);
-  const legR=legL.clone(); legR.position.x=0.19; g.add(legR);
-  const armL=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.7,0.24), mat(shirt));
-  armL.geometry.translate(0,-0.35,0); armL.position.set(-0.5,1.6,0); armL.castShadow=true; g.add(armL);
-  const armR=armL.clone(); armR.position.x=0.5; g.add(armR);
-  g.userData={...g.userData, legL, legR, armL, armR};
+
   // hoverboard
   const board=new THREE.Mesh(new THREE.BoxGeometry(0.68,0.1,1.35),
     new THREE.MeshStandardMaterial({color:0x00e5ff, emissive:0x00838f, emissiveIntensity:.7, metalness:.5, roughness:.3}));
@@ -411,7 +476,7 @@ function makePowerup(type){
 const G = {
   state:'menu', // menu | countdown | run | over | pause
   speed:12, baseSpeed:12, maxSpeed:30,
-  lane:1, x:0, y:0, vy:0, grounded:true, rolling:0, rollDur:0.72,
+  lane:1, x:0, y:0, vy:0, grounded:true, rolling:0, rollDur:1.1,
   onTrainTop:false,
   score:0, coins:0, keys:2, boards:1,
   mult:1, starT:0, magnetT:0, sneakT:0, jetT:0, boardT:0, shield:false,
@@ -661,7 +726,7 @@ function doJump(){
   if(G.state!=='run') return;
   if(G.jetT>0) return;
   if(G.grounded){
-    G.vy = G.sneakT>0 ? 13.5 : 10;
+    G.vy = G.sneakT>0 ? 15.5 : 11.6;
     G.grounded=false; G.onTrainTop=false;
     G.jumps++; missionProg('jump'); maybeNextMissionSet();
     AudioSys.jump();
@@ -756,18 +821,18 @@ function checkCollisions(dt){
     // ramps are walkable ground (handled by groundAt) — never a collider
     if(u.kind==='ramp') continue;
     if(u.kind==='low'){
-      const box={x:ex, top:1.05, bottom:0, hw:1.0, len:0.6, z:dz};
+      const box={x:ex, top:1.05, bottom:0, hw:0.95, len:0.55, z:dz};
       if(overlap(pb,box)){
-        // must be airborne above bar
-        if((G.y) < 0.75) return die('tripped on a barrier!');
+        // must be airborne above bar (generous clearance)
+        if((G.y) < 0.45) return die('tripped on a barrier!');
       }
       continue;
     }
     if(u.kind==='high'){
       const rolling = G.rolling>0;
-      // sign occupies y 1.4..2.3 ; roll height 0.9 fits under
-      const headY = G.y + (rolling?0.9:1.9);
-      if(Math.abs(dz)<0.9 && Math.abs(ex-G.x)<1.0 && headY>1.35){
+      // roll duck height easily fits under overhead clearance sign
+      const headY = G.y + (rolling ? 0.65 : 1.85);
+      if(Math.abs(dz)<0.8 && Math.abs(ex-G.x)<0.95 && headY>1.40){
         return die('slammed into an overhead sign!');
       }
       continue;
@@ -985,19 +1050,18 @@ function animatePlayer(dt){
         u.legL.rotation.x=-tuck; u.legR.rotation.x=0.3;
         u.armL.rotation.x=-2.4; u.armR.rotation.x=-2.4;
       } else {
-        player.rotation.x=0;
-        u.legL.rotation.x=Math.sin(runPhase)*0.95;
-        u.legR.rotation.x=-Math.sin(runPhase)*0.95;
-        u.armL.rotation.x=-Math.sin(runPhase)*0.8;
-        u.armR.rotation.x=Math.sin(runPhase)*0.8;
-        player.position.y=G.y+Math.abs(Math.sin(runPhase))*0.08;
+        u.legL.rotation.x=Math.sin(runPhase)*0.65;
+        u.legR.rotation.x=-Math.sin(runPhase)*0.65;
+        u.armL.rotation.x=-Math.sin(runPhase)*0.45;
+        u.armR.rotation.x=Math.sin(runPhase)*0.45;
+        player.position.y=G.y+Math.abs(Math.sin(runPhase))*0.035;
       }
     }
   }
-  // lean into lane switches
-  const lean=clamp((targetX-G.x)*0.4,-0.5,0.5);
+  // lean into lane switches (gentle & stable, no dangling side-to-side)
+  const lean=clamp((targetX-G.x)*0.12,-0.16,0.16);
   player.rotation.z=-lean;
-  player.rotation.y=lean*0.7;
+  player.rotation.y=lean*0.35;
   // board glow pulse
   u.board.visible = G.boardT>0;
   if(u.board.visible) u.board.position.y=0.12+Math.sin(performance.now()*0.01)*0.03;
