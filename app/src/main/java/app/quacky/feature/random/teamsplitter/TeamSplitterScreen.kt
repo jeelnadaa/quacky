@@ -141,13 +141,14 @@ fun TeamSplitterScreen(
                         onClick = {
                             haptics.heavy()
                             viewModel.split()
+                            Toast.makeText(context, "Teams shuffled!", Toast.LENGTH_SHORT).show()
                         },
                         style = QuackyButtonStyle.Primary,
                         modifier = Modifier.weight(1f)
                     ) {
                         Icon(imageVector = Icons.Rounded.Shuffle, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text(text = "Reshuffle", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                        Text(text = "Shuffle Teams", fontSize = 14.sp, fontWeight = FontWeight.Bold)
                     }
 
                     QuackyButton(

@@ -82,7 +82,8 @@ class TeamSplitterViewModel @Inject constructor(
     fun split() {
         val teams = TeamSplitterEngine.splitIntoTeams(
             players = _players.value,
-            teamCount = _teamCount.value
+            teamCount = _teamCount.value,
+            previousTeams = _teams.value
         )
         _teams.value = teams
 

@@ -27,9 +27,13 @@ fun QuackyChip(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val haptics = app.quacky.core.haptics.rememberQuackyHaptics()
     val shape = RoundedCornerShape(PillCornerRadius)
     Surface(
-        modifier = modifier.clickable(onClick = onClick),
+        modifier = modifier.clickable {
+            haptics.selection()
+            onClick()
+        },
         shape = shape,
         color = if (selected) QuackyAccent else QuackySurface,
         border = if (selected) null else BorderStroke(1.dp, QuackyOutline)

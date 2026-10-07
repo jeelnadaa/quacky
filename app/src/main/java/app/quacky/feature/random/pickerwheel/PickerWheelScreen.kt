@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,12 +23,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.PieChart
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -74,6 +78,60 @@ fun PickerWheelScreen(
     val state by viewModel.uiState.collectAsState()
     val haptics = app.quacky.core.haptics.rememberQuackyHaptics()
     var newOptionText by remember { mutableStateOf("") }
+    var editingItem by remember { mutableStateOf<WheelItem?>(null) }
+    var editTextValue by remember { mutableStateOf("") }
+
+    if (editingItem != null) {
+        AlertDialog(
+            onDismissRequest = { editingItem = null },
+            title = {
+                Text(
+                    text = "Edit Option",
+                    fontFamily = SatoshiFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = QuackyTextPrimary
+                )
+            },
+            text = {
+                OutlinedTextField(
+                    value = editTextValue,
+                    onValueChange = { editTextValue = it },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = QuackyAccent,
+                        unfocusedBorderColor = QuackyOutline,
+                        focusedTextColor = QuackyTextPrimary,
+                        unfocusedTextColor = QuackyTextPrimary
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                QuackyButton(
+                    onClick = {
+                        editingItem?.let { item ->
+                            viewModel.editOption(item.id, editTextValue)
+                        }
+                        editingItem = null
+                    },
+                    style = QuackyButtonStyle.Primary
+                ) {
+                    Text("Save", fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                QuackyButton(
+                    onClick = { editingItem = null },
+                    style = QuackyButtonStyle.Secondary
+                ) {
+                    Text("Cancel")
+                }
+            },
+            containerColor = QuackySurface,
+            shape = RoundedCornerShape(16.dp)
+        )
+    }
 
     val animatedAngle by animateFloatAsState(
         targetValue = state.currentAngle,
@@ -108,13 +166,14 @@ fun PickerWheelScreen(
                     ) {
                         Box(
                             contentAlignment = Alignment.Center,
-                            modifier = Modifier.size(220.dp)
+                            modifier = Modifier.size(230.dp)
                         ) {
                             // Monochromatic Canvas Wheel
                             Canvas(modifier = Modifier.fillMaxSize()) {
-                                val radius = size.minDimension / 2 - 10f
+                                val radius = size.minDimension / 2 - 12f
                                 val center = Offset(size.width / 2, size.height / 2)
-                                val sweep = 360f / state.options.size
+                                val count = state.options.size.coerceAtLeast(1)
+                                val sweep = 360f / count
 
                                 val segmentColors = listOf(
                                     Color(0xFF1E1E1E),
@@ -122,6 +181,14 @@ fun PickerWheelScreen(
                                     Color(0xFF323232),
                                     Color(0xFF3C3C3C)
                                 )
+
+                                val textPaint = android.graphics.Paint().apply {
+                                    color = android.graphics.Color.WHITE
+                                    textSize = (11f * density).coerceIn(20f, 32f)
+                                    isAntiAlias = true
+                                    textAlign = android.graphics.Paint.Align.RIGHT
+                                    typeface = android.graphics.Typeface.DEFAULT_BOLD
+                                }
 
                                 for (i in state.options.indices) {
                                     val start = animatedAngle + i * sweep
@@ -143,6 +210,23 @@ fun PickerWheelScreen(
                                         size = Size(radius * 2, radius * 2),
                                         style = Stroke(1.5f)
                                     )
+
+                                    // Draw Option Label inside the wheel slice
+                                    val midAngle = start + sweep / 2f
+                                    drawContext.canvas.nativeCanvas.save()
+                                    drawContext.canvas.nativeCanvas.rotate(midAngle, center.x, center.y)
+
+                                    val label = state.options[i].label
+                                    val maxChars = if (count > 8) 7 else 12
+                                    val displayLabel = if (label.length > maxChars) label.take(maxChars - 1) + "…" else label
+
+                                    drawContext.canvas.nativeCanvas.drawText(
+                                        displayLabel,
+                                        center.x + radius - 16f,
+                                        center.y + 6f,
+                                        textPaint
+                                    )
+                                    drawContext.canvas.nativeCanvas.restore()
                                 }
 
                                 // Outer border
@@ -151,15 +235,20 @@ fun PickerWheelScreen(
                                 drawCircle(QuackyAccent, radius = 12f, center = center)
                             }
 
-                            // Pointer Arrow on top
-                            Icon(
-                                imageVector = Icons.Rounded.PieChart,
-                                contentDescription = null,
-                                tint = QuackyAccent,
+                            // Downward Pointer Needle on top (replaces white wheel icon)
+                            Canvas(
                                 modifier = Modifier
-                                    .size(24.dp)
+                                    .size(20.dp, 22.dp)
                                     .align(Alignment.TopCenter)
-                            )
+                            ) {
+                                val needlePath = Path().apply {
+                                    moveTo(0f, 0f)
+                                    lineTo(size.width, 0f)
+                                    lineTo(size.width / 2f, size.height)
+                                    close()
+                                }
+                                drawPath(needlePath, color = QuackyAccent)
+                            }
                         }
 
                         Spacer(modifier = Modifier.height(14.dp))
@@ -240,7 +329,12 @@ fun PickerWheelScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
-                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                        modifier = Modifier
+                            .clickable {
+                                editingItem = option
+                                editTextValue = option.label
+                            }
+                            .padding(horizontal = 14.dp, vertical = 10.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -248,13 +342,34 @@ fun PickerWheelScreen(
                             text = option.label,
                             fontFamily = SatoshiFontFamily,
                             fontSize = 14.sp,
-                            color = QuackyTextPrimary
+                            color = QuackyTextPrimary,
+                            modifier = Modifier.weight(1f)
                         )
-                        IconButton(
-                            onClick = { viewModel.removeOption(option.id) },
-                            modifier = Modifier.size(24.dp)
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(imageVector = Icons.Rounded.Close, contentDescription = null, tint = QuackyTextTertiary, modifier = Modifier.size(16.dp))
+                            IconButton(
+                                onClick = {
+                                    editingItem = option
+                                    editTextValue = option.label
+                                },
+                                modifier = Modifier.size(28.dp)
+                            ) {
+                                Icon(imageVector = Icons.Rounded.Edit, contentDescription = "Edit", tint = QuackyTextTertiary, modifier = Modifier.size(16.dp))
+                            }
+                            IconButton(
+                                onClick = { viewModel.removeOption(option.id) },
+                                modifier = Modifier.size(28.dp),
+                                enabled = state.options.size > 1
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Close,
+                                    contentDescription = "Delete",
+                                    tint = if (state.options.size > 1) QuackyTextTertiary else QuackyOutline,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
                         }
                     }
                 }

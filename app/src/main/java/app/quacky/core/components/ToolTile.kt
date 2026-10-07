@@ -39,15 +39,18 @@ fun ToolTile(
     onLongClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val haptic = LocalHapticFeedback.current
+    val haptics = app.quacky.core.haptics.rememberQuackyHaptics()
 
     Surface(
         modifier = modifier
             .fillMaxWidth()
             .combinedClickable(
-                onClick = onClick,
+                onClick = {
+                    haptics.click()
+                    onClick()
+                },
                 onLongClick = {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    haptics.heavy()
                     onLongClick()
                 }
             ),

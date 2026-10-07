@@ -36,13 +36,18 @@ fun QuackyButton(
     contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
     content: @Composable RowScope.() -> Unit
 ) {
+    val haptics = app.quacky.core.haptics.rememberQuackyHaptics()
+    val wrappedOnClick = {
+        haptics.click()
+        onClick()
+    }
     val shape = RoundedCornerShape(ButtonCornerRadius)
 
     when (style) {
         QuackyButtonStyle.Primary -> {
             val contentColor = if (enabled) QuackyBackground else QuackyTextTertiary
             Button(
-                onClick = onClick,
+                onClick = wrappedOnClick,
                 modifier = modifier,
                 enabled = enabled,
                 shape = shape,
@@ -73,7 +78,7 @@ fun QuackyButton(
         QuackyButtonStyle.Secondary -> {
             val contentColor = if (enabled) QuackyTextPrimary else QuackyTextTertiary
             OutlinedButton(
-                onClick = onClick,
+                onClick = wrappedOnClick,
                 modifier = modifier,
                 enabled = enabled,
                 shape = shape,
@@ -104,7 +109,7 @@ fun QuackyButton(
         QuackyButtonStyle.Text -> {
             val contentColor = if (enabled) QuackyTextSecondary else QuackyTextTertiary
             TextButton(
-                onClick = onClick,
+                onClick = wrappedOnClick,
                 modifier = modifier,
                 enabled = enabled,
                 shape = shape,

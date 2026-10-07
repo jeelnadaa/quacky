@@ -67,46 +67,135 @@ class LiveEdgeDetector(
                 return
             }
 
-            val avgLum = (sumLum / count).toInt()
-            // Threshold: find brighter document pixels against background
-            val threshold = (avgLum * 1.15f).toInt().coerceIn(60, 220)
+            // Compute horizontal and vertical gradients to identify true document edges
+            val grad = IntArray(sampleW * sampleH)
+            var sumGrad = 0L
+            var gradCount = 0
 
-            var minX = sampleW
-            var maxX = 0
-            var minY = sampleH
-            var maxY = 0
-            var docPixels = 0
-
-            for (sy in 0 until sampleH) {
-                for (sx in 0 until sampleW) {
-                    val lum = sampled[sy * sampleW + sx]
-                    if (lum > threshold) {
-                        docPixels++
-                        if (sx < minX) minX = sx
-                        if (sx > maxX) maxX = sx
-                        if (sy < minY) minY = sy
-                        if (sy > maxY) maxY = sy
-                    }
+            for (sy in 1 until sampleH - 1) {
+                for (sx in 1 until sampleW - 1) {
+                    val gx = kotlin.math.abs(sampled[sy * sampleW + (sx + 1)] - sampled[sy * sampleW + (sx - 1)])
+                    val gy = kotlin.math.abs(sampled[(sy + 1) * sampleW + sx] - sampled[(sy - 1) * sampleW + sx])
+                    val magnitude = gx + gy
+                    grad[sy * sampleW + sx] = magnitude
+                    sumGrad += magnitude
+                    gradCount++
                 }
             }
 
-            val areaFraction = docPixels.toFloat() / (sampleW * sampleH)
-            // If reasonable document region detected (between 12% and 92% of frame)
-            if (areaFraction in 0.12f..0.92f && maxX > minX + 10 && maxY > minY + 10) {
-                val padX = (maxX - minX) * 0.03f
-                val padY = (maxY - minY) * 0.03f
+            val avgGrad = if (gradCount > 0) (sumGrad / gradCount).toInt() else 15
+            val edgeThreshold = max(25, avgGrad * 2)
 
-                val normTL = CornerPoint(((minX - padX) / sampleW).coerceIn(0.04f, 0.45f), ((minY - padY) / sampleH).coerceIn(0.04f, 0.45f))
-                val normTR = CornerPoint(((maxX + padX) / sampleW).coerceIn(0.55f, 0.96f), ((minY - padY) / sampleH).coerceIn(0.04f, 0.45f))
-                val normBR = CornerPoint(((maxX + padX) / sampleW).coerceIn(0.55f, 0.96f), ((maxY + padY) / sampleH).coerceIn(0.55f, 0.96f))
-                val normBL = CornerPoint(((minX - padX) / sampleW).coerceIn(0.04f, 0.45f), ((maxY + padY) / sampleH).coerceIn(0.55f, 0.96f))
+            // Scan inward from each border to locate the outermost strong edge lines
+            // Left edge
+            var leftEdge = 0
+            for (sx in 2 until sampleW / 2) {
+                var edgeHits = 0
+                for (sy in sampleH / 5 until (sampleH * 4) / 5) {
+                    if (grad[sy * sampleW + sx] > edgeThreshold) edgeHits++
+                }
+                if (edgeHits >= sampleH / 8) {
+                    leftEdge = sx
+                    break
+                }
+            }
 
-                val newQuad = DocumentQuad(normTL, normTR, normBR, normBL)
+            // Right edge
+            var rightEdge = sampleW - 1
+            for (sx in sampleW - 3 downTo sampleW / 2) {
+                var edgeHits = 0
+                for (sy in sampleH / 5 until (sampleH * 4) / 5) {
+                    if (grad[sy * sampleW + sx] > edgeThreshold) edgeHits++
+                }
+                if (edgeHits >= sampleH / 8) {
+                    rightEdge = sx
+                    break
+                }
+            }
 
-                // Smooth with previous quad to avoid jitter
+            // Top edge
+            var topEdge = 0
+            for (sy in 2 until sampleH / 2) {
+                var edgeHits = 0
+                for (sx in sampleW / 5 until (sampleW * 4) / 5) {
+                    if (grad[sy * sampleW + sx] > edgeThreshold) edgeHits++
+                }
+                if (edgeHits >= sampleW / 8) {
+                    topEdge = sy
+                    break
+                }
+            }
+
+            // Bottom edge
+            var bottomEdge = sampleH - 1
+            for (sy in sampleH - 3 downTo sampleH / 2) {
+                var edgeHits = 0
+                for (sx in sampleW / 5 until (sampleW * 4) / 5) {
+                    if (grad[sy * sampleW + sx] > edgeThreshold) edgeHits++
+                }
+                if (edgeHits >= sampleW / 8) {
+                    bottomEdge = sy
+                    break
+                }
+            }
+
+            // Also check brightness contrast to refine corners
+            val avgLum = (sumLum / count).toInt()
+            val lumThreshold = (avgLum * 1.1f).toInt().coerceIn(50, 230)
+
+            var minX = leftEdge.coerceAtLeast(1)
+            var maxX = rightEdge.coerceAtMost(sampleW - 2)
+            var minY = topEdge.coerceAtLeast(1)
+            var maxY = bottomEdge.coerceAtMost(sampleH - 2)
+
+            // If edge scan gave narrow region, fallback to adaptive luminance bounding
+            if (maxX - minX < sampleW / 4 || maxY - minY < sampleH / 4) {
+                var docMinX = sampleW
+                var docMaxX = 0
+                var docMinY = sampleH
+                var docMaxY = 0
+                var found = 0
+
+                for (sy in 0 until sampleH) {
+                    for (sx in 0 until sampleW) {
+                        if (sampled[sy * sampleW + sx] > lumThreshold) {
+                            found++
+                            if (sx < docMinX) docMinX = sx
+                            if (sx > docMaxX) docMaxX = sx
+                            if (sy < docMinY) docMinY = sy
+                            if (sy > docMaxY) docMaxY = sy
+                        }
+                    }
+                }
+
+                if (found > (sampleW * sampleH) * 0.10f && docMaxX > docMinX + 8 && docMaxY > docMinY + 8) {
+                    minX = docMinX
+                    maxX = docMaxX
+                    minY = docMinY
+                    maxY = docMaxY
+                }
+            }
+
+            // Compute normalized corners without artificial quadrant clamping
+            val padX = (maxX - minX) * 0.02f
+            val padY = (maxY - minY) * 0.02f
+
+            val normLeft = ((minX - padX) / sampleW).coerceIn(0.03f, 0.90f)
+            val normRight = ((maxX + padX) / sampleW).coerceIn(0.10f, 0.97f)
+            val normTop = ((minY - padY) / sampleH).coerceIn(0.03f, 0.90f)
+            val normBottom = ((maxY + padY) / sampleH).coerceIn(0.10f, 0.97f)
+
+            if (normRight > normLeft + 0.15f && normBottom > normTop + 0.15f) {
+                val newQuad = DocumentQuad(
+                    topLeft = CornerPoint(normLeft, normTop),
+                    topRight = CornerPoint(normRight, normTop),
+                    bottomRight = CornerPoint(normRight, normBottom),
+                    bottomLeft = CornerPoint(normLeft, normBottom)
+                )
+
                 val prev = previousQuad
                 val smoothed = if (prev != null) {
-                    smoothQuad(prev, newQuad, 0.35f)
+                    smoothQuad(prev, newQuad, 0.30f)
                 } else {
                     newQuad
                 }
@@ -114,10 +203,10 @@ class LiveEdgeDetector(
                 onEdgeDetected(smoothed)
             } else {
                 val fallback = DocumentQuad(
-                    topLeft = CornerPoint(0.10f, 0.10f),
-                    topRight = CornerPoint(0.90f, 0.10f),
-                    bottomRight = CornerPoint(0.90f, 0.90f),
-                    bottomLeft = CornerPoint(0.10f, 0.90f)
+                    topLeft = CornerPoint(0.08f, 0.08f),
+                    topRight = CornerPoint(0.92f, 0.08f),
+                    bottomRight = CornerPoint(0.92f, 0.92f),
+                    bottomLeft = CornerPoint(0.08f, 0.92f)
                 )
                 onEdgeDetected(fallback)
             }

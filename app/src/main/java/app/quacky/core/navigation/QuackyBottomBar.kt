@@ -1,17 +1,18 @@
 package app.quacky.core.navigation
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,6 +27,7 @@ import app.quacky.core.designsystem.theme.QuackyBackground
 import app.quacky.core.designsystem.theme.QuackyOutline
 import app.quacky.core.designsystem.theme.QuackyTextTertiary
 import app.quacky.core.designsystem.theme.SatoshiFontFamily
+import app.quacky.core.haptics.rememberQuackyHaptics
 
 sealed class BottomNavItem(
     val route: String,
@@ -49,20 +51,26 @@ fun QuackyBottomBar(
     onNavigateToRoute: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = QuackyBackground,
-        border = BorderStroke(1.dp, QuackyOutline)
+    val haptics = rememberQuackyHaptics()
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(QuackyBackground)
     ) {
+        HorizontalDivider(color = QuackyOutline, thickness = 1.dp)
         NavigationBar(
             containerColor = QuackyBackground,
-            modifier = Modifier.height(64.dp)
+            modifier = Modifier.height(68.dp)
         ) {
             BottomNavItems.forEach { item ->
                 val selected = currentRoute == item.route
                 NavigationBarItem(
                     selected = selected,
-                    onClick = { onNavigateToRoute(item.route) },
+                    onClick = {
+                        haptics.click()
+                        onNavigateToRoute(item.route)
+                    },
                     icon = {
                         Icon(
                             imageVector = item.icon,

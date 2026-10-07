@@ -180,8 +180,8 @@ fun CompressorScreen(
                             IconButton(onClick = { filePickerLauncher.launch(arrayOf("image/*", "application/pdf")) }) {
                                 Icon(Icons.Rounded.UploadFile, contentDescription = "Add Files", tint = QuackyTextPrimary)
                             }
-                            IconButton(onClick = { viewModel.clearFiles() }) {
-                                Icon(Icons.Rounded.Clear, contentDescription = "Clear", tint = QuackyTextTertiary)
+                            IconButton(onClick = { viewModel.removeFile(state.activeIndex) }) {
+                                Icon(Icons.Rounded.Close, contentDescription = "Remove File", tint = QuackyTextTertiary)
                             }
                         }
                     }
@@ -206,7 +206,7 @@ fun CompressorScreen(
                                             shape = RoundedCornerShape(8.dp)
                                         )
                                         .clickable { viewModel.selectActiveIndex(idx) }
-                                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                                        .padding(horizontal = 10.dp, vertical = 6.dp)
                                 ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Icon(
@@ -221,6 +221,15 @@ fun CompressorScreen(
                                             color = if (isSelected) Color.White else QuackyTextSecondary,
                                             fontSize = 12.sp,
                                             maxLines = 1
+                                        )
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Icon(
+                                            imageVector = Icons.Rounded.Close,
+                                            contentDescription = "Remove file",
+                                            tint = if (isSelected) Color.White else QuackyTextTertiary,
+                                            modifier = Modifier
+                                                .size(14.dp)
+                                                .clickable { viewModel.removeFile(idx) }
                                         )
                                     }
                                 }
@@ -594,7 +603,7 @@ fun CompressorScreen(
                         Spacer(modifier = Modifier.width(12.dp))
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = "Compression complete",
+                                text = "Saved to Pictures/Quacky",
                                 style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = QuackyTextPrimary

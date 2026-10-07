@@ -83,8 +83,15 @@ class PickerWheelViewModel @Inject constructor(
     }
 
     fun removeOption(id: String) {
-        if (_options.value.size <= 2) return
+        if (_options.value.size <= 1) return
         _options.value = _options.value.filter { it.id != id }
+    }
+
+    fun editOption(id: String, newLabel: String) {
+        if (newLabel.isBlank()) return
+        _options.value = _options.value.map {
+            if (it.id == id) it.copy(label = newLabel.trim()) else it
+        }
     }
 
     fun spin() {

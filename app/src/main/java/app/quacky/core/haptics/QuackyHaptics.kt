@@ -83,6 +83,10 @@ class QuackyHaptics(
             view?.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
         } catch (_: Exception) {}
     }
+
+    fun selection() {
+        tick()
+    }
 }
 
 @Composable

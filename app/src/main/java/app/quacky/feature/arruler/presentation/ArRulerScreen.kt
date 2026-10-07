@@ -37,6 +37,7 @@ import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CameraAlt
+import androidx.compose.material.icons.rounded.CenterFocusStrong
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.ContentCopy
@@ -478,6 +479,44 @@ fun ArRulerScreen(
                 }
             }
 
+            // Surface Detection Prompt (shown while searching surface)
+            if (state.trackingStatus == ArTrackingStatus.SEARCHING_SURFACE) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 32.dp)
+                        .background(QuackySurfaceElevated.copy(alpha = 0.95f), RoundedCornerShape(16.dp))
+                        .border(1.dp, QuackyOutline, RoundedCornerShape(16.dp))
+                        .padding(20.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = Icons.Rounded.CenterFocusStrong,
+                            contentDescription = null,
+                            tint = QuackyAccent,
+                            modifier = Modifier.size(36.dp)
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text(
+                            text = "Detecting Surface",
+                            fontFamily = SatoshiFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = QuackyTextPrimary
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = "Keep phone stable and scan a flat surface slowly. Measuring will start once detected.",
+                            fontFamily = SatoshiFontFamily,
+                            fontSize = 13.sp,
+                            color = QuackyTextSecondary,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
+                    }
+                }
+            }
+
             // Bottom Multi-Measurement Strip & Readout Deck
             Column(
                 modifier = Modifier
@@ -495,13 +534,14 @@ fun ArRulerScreen(
                 }
                 val isSurfaceFound = state.trackingStatus == ArTrackingStatus.SURFACE_FOUND
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 12.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Button(
+                if (isSurfaceFound) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Button(
                         onClick = {
                             val viewW = view.width.toFloat().takeIf { it > 0 } ?: 1080f
                             val viewH = view.height.toFloat().takeIf { it > 0 } ?: 1920f
@@ -535,6 +575,7 @@ fun ArRulerScreen(
                         )
                     }
                 }
+            }
 
                 // Bottom Strip: Horizontal Scrollable List of Measurements
                 if (state.finishedMeasurements.isNotEmpty() || state.activeMeasurement != null) {

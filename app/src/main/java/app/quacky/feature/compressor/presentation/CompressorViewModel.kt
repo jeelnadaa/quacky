@@ -109,6 +109,21 @@ class CompressorViewModel @Inject constructor(
         }
     }
 
+    fun removeFile(index: Int) {
+        val current = _uiState.value.files
+        if (index in current.indices) {
+            val updated = current.toMutableList().apply { removeAt(index) }
+            val newIndex = if (updated.isEmpty()) 0 else _uiState.value.activeIndex.coerceAtMost(updated.size - 1)
+            _uiState.update {
+                it.copy(
+                    files = updated,
+                    activeIndex = newIndex,
+                    completionSummary = null
+                )
+            }
+        }
+    }
+
     fun clearFiles() {
         _uiState.update { it.copy(files = emptyList(), activeIndex = 0, results = emptyList(), completionSummary = null) }
     }

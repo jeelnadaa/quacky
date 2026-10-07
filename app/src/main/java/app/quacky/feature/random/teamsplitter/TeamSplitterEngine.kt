@@ -21,33 +21,46 @@ object TeamSplitterEngine {
     fun splitIntoTeams(
         players: List<Player>,
         teamCount: Int,
-        seed: Long? = null
+        seed: Long? = null,
+        previousTeams: List<Team>? = null
     ): List<Team> {
         val activePlayers = players.filter { !it.isExcluded }
         if (activePlayers.isEmpty() || teamCount <= 0) return emptyList()
 
         val actualTeamsCount = minOf(teamCount, activePlayers.size)
-        val teamBuckets = List(actualTeamsCount) { mutableListOf<Player>() }
-
         val pool = activePlayers.toMutableList()
 
-        if (seed != null) {
-            val rng = SplittableRandom(seed)
-            pool.shuffle(java.util.Random(seed))
-        } else {
-            pool.shuffle()
-        }
+        var attempts = 0
+        var result: List<Team>
 
-        // Evenly distribute players across teams
-        pool.forEachIndexed { index, player ->
-            teamBuckets[index % actualTeamsCount].add(player)
-        }
+        do {
+            val teamBuckets = List(actualTeamsCount) { mutableListOf<Player>() }
+            if (seed != null) {
+                pool.shuffle(java.util.Random(seed + attempts))
+            } else {
+                pool.shuffle()
+            }
 
-        return teamBuckets.mapIndexed { index, members ->
-            Team(
-                name = "Team ${index + 1}",
-                members = members
-            )
-        }
+            pool.forEachIndexed { index, player ->
+                teamBuckets[index % actualTeamsCount].add(player)
+            }
+
+            result = teamBuckets.mapIndexed { index, members ->
+                Team(
+                    name = "Team ${index + 1}",
+                    members = members
+                )
+            }
+            attempts++
+        } while (attempts < 8 && previousTeams != null && activePlayers.size > 2 && isSameGrouping(previousTeams, result))
+
+        return result
+    }
+
+    private fun isSameGrouping(a: List<Team>, b: List<Team>): Boolean {
+        if (a.size != b.size) return false
+        val aSets = a.map { it.members.map { p -> p.id }.toSet() }.toSet()
+        val bSets = b.map { it.members.map { p -> p.id }.toSet() }.toSet()
+        return aSets == bSets
     }
 }

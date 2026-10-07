@@ -204,9 +204,9 @@ class MetadataViewModel @Inject constructor(
 
             val summary = if (results.size == 1) {
                 val r = results.first()
-                "Cleaned ${r.originalFileName} • ${r.tagsRemoved} tags removed (${if (r.isLossless) "Lossless" else "Re-encoded"})"
+                "Saved to Pictures/Quacky • Cleaned ${r.originalFileName} (${r.tagsRemoved} tags removed)"
             } else {
-                "${results.size} photos cleaned and verified."
+                "Saved ${results.size} cleaned photos to Pictures/Quacky"
             }
 
             _uiState.update {

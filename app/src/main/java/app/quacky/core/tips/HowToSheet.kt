@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 fun HowToSheet(
     guide: ToolGuide,
     onDismiss: () -> Unit,
-    sheetState: SheetState = rememberModalBottomSheetState()
+    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 ) {
     val steps = guide.steps
     val pagerState = rememberPagerState(pageCount = { steps.size })

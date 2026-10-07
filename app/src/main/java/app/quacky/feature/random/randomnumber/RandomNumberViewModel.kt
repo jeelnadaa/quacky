@@ -72,8 +72,9 @@ class RandomNumberViewModel @Inject constructor(
 
     val uiState: StateFlow<RngUiState> = combine(
         configFlow,
-        sequenceFlow
-    ) { config, seq ->
+        sequenceFlow,
+        _generatedNumbers
+    ) { config, seq, nums ->
         RngUiState(
             min = config.min,
             max = config.max,
@@ -82,7 +83,7 @@ class RandomNumberViewModel @Inject constructor(
             isSortResults = seq.isSortResults,
             seed = seq.seed,
             sequenceIndex = seq.sequenceIndex,
-            generatedNumbers = _generatedNumbers.value
+            generatedNumbers = nums
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), RngUiState())
 

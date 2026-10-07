@@ -19,8 +19,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.Today
@@ -362,12 +364,28 @@ private fun DateSelectorCard(
     date: LocalDate,
     onDateChange: (LocalDate) -> Unit
 ) {
+    val context = LocalContext.current
     val formatter = DateTimeFormatter.ofPattern("MMM d, yyyy")
+
+    val openDatePicker = {
+        android.app.DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                onDateChange(LocalDate.of(year, month + 1, dayOfMonth))
+            },
+            date.year,
+            date.monthValue - 1,
+            date.dayOfMonth
+        ).show()
+    }
+
     Surface(
         shape = RoundedCornerShape(CardCornerRadius),
         color = QuackySurface,
         border = BorderStroke(1.dp, QuackyOutline),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { openDatePicker() }
     ) {
         Row(
             modifier = Modifier
@@ -392,14 +410,19 @@ private fun DateSelectorCard(
                     color = QuackyTextPrimary
                 )
             }
-            QuackyButton(
-                onClick = { onDateChange(LocalDate.now()) },
-                style = QuackyButtonStyle.Secondary,
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(imageVector = Icons.Rounded.Today, contentDescription = null, modifier = Modifier.size(14.dp))
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(text = "Today", fontSize = 12.sp)
+                QuackyButton(
+                    onClick = openDatePicker,
+                    style = QuackyButtonStyle.Secondary,
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Icon(imageVector = Icons.Rounded.CalendarMonth, contentDescription = "Choose Date", modifier = Modifier.size(14.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(text = "Change", fontSize = 12.sp)
+                }
             }
         }
     }

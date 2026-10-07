@@ -371,7 +371,7 @@ class DocumentScannerViewModel @Inject constructor(
                             it.copy(
                                 isGeneratingPdf = false,
                                 generatedPdfFile = file,
-                                snackbarMessage = "PDF created: ${file.name} ($sizeKb KB)"
+                                snackbarMessage = "PDF saved to Documents/Quacky/${file.name} ($sizeKb KB)"
                             )
                         }
                     }
