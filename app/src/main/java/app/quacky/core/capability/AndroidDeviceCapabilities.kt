@@ -64,6 +64,11 @@ class AndroidDeviceCapabilities @Inject constructor(
         }
     }
 
+    override val hasMagnetometer: Boolean by lazy {
+        val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as? SensorManager
+        sensorManager?.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null
+    }
+
     override val arCoreStatus: ArCoreStatus
         get() {
             return try {

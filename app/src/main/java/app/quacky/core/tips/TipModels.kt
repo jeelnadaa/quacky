@@ -75,7 +75,10 @@ enum class VisualType {
     DOC_QUAD_CROP,
     DOC_ENHANCE_FILTER,
     DOC_PAGES_REORDER,
-    DOC_PDF_EXPORT
+    DOC_PDF_EXPORT,
+    SURFER_LANES,
+    SURFER_JUMP_SLIDE,
+    SURFER_POWERUPS
 }
 
 data class TipStep(

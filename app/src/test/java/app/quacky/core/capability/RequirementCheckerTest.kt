@@ -13,6 +13,7 @@ class FakeDeviceCapabilities(
     override val hasFlashUnit: Boolean = true,
     override val hasAccelerometer: Boolean = true,
     override val hasVibrator: Boolean = true,
+    override val hasMagnetometer: Boolean = true,
     override val arCoreStatus: ArCoreStatus = ArCoreStatus.SUPPORTED_AND_READY,
     override val isDisplayMetricsPlausible: Boolean = true
 ) : DeviceCapabilities {
@@ -92,5 +93,17 @@ class RequirementCheckerTest {
         // Once calibrated by user, ruler should be ready
         val calibratedResult = checker.check(ToolRegistry.SCREEN_RULER, isRulerCalibrated = true)
         assertTrue(calibratedResult is RequirementResult.Ready)
+    }
+
+    @Test
+    fun `missing magnetometer reports missing for compass`() {
+        val capabilities = FakeDeviceCapabilities(hasMagnetometer = false)
+        val checker = RequirementChecker(capabilities)
+
+        val result = checker.check(ToolRegistry.COMPASS)
+        assertTrue(result is RequirementResult.Missing)
+        val missing = result as RequirementResult.Missing
+        assertEquals(ToolRequirement.MAGNETOMETER, missing.requirement)
+        assertEquals(R.string.req_missing_magnetometer, missing.reasonRes)
     }
 }

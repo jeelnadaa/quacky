@@ -456,6 +456,98 @@ object GuideRegistry {
                     a11yDescription = "Phone showing estimate margin of error"
                 )
             )
+        ),
+        ToolRegistry.QUACKY_SURFER.id to ToolGuide(
+            toolId = ToolRegistry.QUACKY_SURFER.id,
+            steps = listOf(
+                TipStep(
+                    visualType = VisualType.SURFER_LANES,
+                    title = "Switch lanes",
+                    body = "Swipe left or right (or tap the on-screen buttons) to move between the 3 railway tracks.",
+                    a11yDescription = "Duck switching between three perspective lanes"
+                ),
+                TipStep(
+                    visualType = VisualType.SURFER_JUMP_SLIDE,
+                    title = "Jump & Duck",
+                    body = "Swipe up to jump over low hurdles and potholes. Swipe down to duck and slide under overhead steam pipes.",
+                    a11yDescription = "Duck jumping over roadblocks and ducking under pipes"
+                ),
+                TipStep(
+                    visualType = VisualType.SURFER_POWERUPS,
+                    title = "Collect power-ups",
+                    body = "Grab breadcrumbs to boost your score. Collect Magnets to pull coins, Shields to absorb crashes, and Quack Dash to smash through obstacles!",
+                    a11yDescription = "Power-up icons showing magnet, coins, and dash boost"
+                )
+            )
+        ),
+        ToolRegistry.SPIRIT_LEVEL.id to ToolGuide(
+            toolId = ToolRegistry.SPIRIT_LEVEL.id,
+            steps = listOf(
+                TipStep(
+                    visualType = VisualType.RULER_ALIGN,
+                    title = "Surface leveling",
+                    body = "Place your phone flat on any table or countertop. The 2D circular bullseye will guide the bubble directly to the center.",
+                    a11yDescription = "Phone flat on a surface with bullseye bubble"
+                ),
+                TipStep(
+                    visualType = VisualType.RULER_MARKERS,
+                    title = "Edge leveling",
+                    body = "Stand your phone on its side against a shelf, frame, or wall to view tubular spirit levels with pitch and roll angle readouts.",
+                    a11yDescription = "Phone standing on its edge like a spirit level"
+                ),
+                TipStep(
+                    visualType = VisualType.RULER_CALIBRATE,
+                    title = "Zero & Hold",
+                    body = "Tap 'Zero Calibrate' to calibrate against a known level surface. Tap 'Hold' to freeze the readout when working in tight corners.",
+                    a11yDescription = "Tapping Zero Calibrate to calibrate angle"
+                )
+            )
+        ),
+        ToolRegistry.COMPASS.id to ToolGuide(
+            toolId = ToolRegistry.COMPASS.id,
+            steps = listOf(
+                TipStep(
+                    visualType = VisualType.RULER_ALIGN,
+                    title = "Hold Flat for Precision",
+                    body = "Hold your phone flat or place it on a level surface. The center leveling bubble will align in the crosshairs for optimal heading accuracy.",
+                    a11yDescription = "Hold phone flat with compass bubble centered"
+                ),
+                TipStep(
+                    visualType = VisualType.RULER_CALIBRATE,
+                    title = "Lock Heading & Course",
+                    body = "Tap 'Lock Heading' to fix an azimuth target (e.g. 180°). Quacky tracks your heading deviations and alerts you if you drift off course.",
+                    a11yDescription = "Lock azimuth heading to navigate"
+                ),
+                TipStep(
+                    visualType = VisualType.AREA_RESULTS,
+                    title = "EMF & Metal Detector",
+                    body = "View real-time magnetic flux in microtesla (µT). Normal ambient Earth field is 25–65 µT. Move near metals or magnets to observe live spikes.",
+                    a11yDescription = "Microtesla flux meter measuring metal magnetic field"
+                )
+            )
+        ),
+        ToolRegistry.UNIT_CONVERTER.id to ToolGuide(
+            toolId = ToolRegistry.UNIT_CONVERTER.id,
+            steps = listOf(
+                TipStep(
+                    visualType = VisualType.AREA_TABS,
+                    title = "Choose Measurement Category",
+                    body = "Switch between 9 categories: Length, Mass, Temperature, Speed, Area, Pressure, Digital Storage, Fuel Economy, and Volume.",
+                    a11yDescription = "Pill tabs selecting measurement categories"
+                ),
+                TipStep(
+                    visualType = VisualType.LIVE_TYPE,
+                    title = "Instant Live Conversion",
+                    body = "Type any value using the ergonomic keypad. The target unit and all other category units update simultaneously in real time.",
+                    a11yDescription = "Typing value to convert units instantly"
+                ),
+                TipStep(
+                    visualType = VisualType.EXPORT_FORMATS,
+                    title = "Swap & One-Tap Copy",
+                    body = "Tap the Swap button to reverse source and target units instantly. Tap Copy on any result or breakdown row to copy to clipboard.",
+                    a11yDescription = "Swap units and copy converted result"
+                )
+            )
         )
     )
 

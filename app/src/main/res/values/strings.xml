@@ -61,6 +61,72 @@
     <string name="tool_picker_wheel_desc">Spin a custom weighted wheel with elimination mode</string>
     <string name="tool_team_splitter_name">Team Splitter</string>
     <string name="tool_team_splitter_desc">Divide groups fairly with skill balancing and constraints</string>
+    <string name="tool_quacky_surfer_name">Quacky Surfer</string>
+    <string name="tool_quacky_surfer_desc">Offline 3-lane endless runner: dodge hurdles, duck barriers, and collect breadcrumbs</string>
+    <string name="tool_spirit_level_name">Spirit Level</string>
+    <string name="tool_spirit_level_desc">Surface bullseye level and inclinometer pitch/roll gauge</string>
+    <string name="tool_compass_name">Compass &amp; EMF</string>
+    <string name="tool_compass_desc">Minimalist compass with azimuth heading, true north, and microtesla metal/EMF detector</string>
+    <string name="tool_unit_converter_name">Unit Converter</string>
+    <string name="tool_unit_converter_desc">Fast offline converter for length, mass, temperature, speed, area, pressure, digital storage, volume, and fuel</string>
+
+    <!-- Compass Strings -->
+    <string name="compass_heading">Heading</string>
+    <string name="compass_declination">Declination</string>
+    <string name="compass_true_north">True North</string>
+    <string name="compass_magnetic_north">Magnetic North</string>
+    <string name="compass_lock_heading">Lock Heading</string>
+    <string name="compass_locked">LOCKED</string>
+    <string name="compass_unlock">Unlock</string>
+    <string name="compass_metal_detector">Magnetic Flux / Metal Detector</string>
+    <string name="compass_calibrate_sensor">Calibrate Sensor</string>
+    <string name="compass_figure_8_prompt">Wave phone in a figure-8 motion to calibrate the magnetometer</string>
+    <string name="compass_field_normal">NORMAL AMBIENT</string>
+    <string name="compass_field_elevated">ELEVATED FIELD</string>
+    <string name="compass_field_strong">STRONG METAL / EMF</string>
+    <string name="compass_field_shielded">WEAK / SHIELDED</string>
+
+    <!-- Unit Converter Strings -->
+    <string name="unit_swap">Swap</string>
+    <string name="unit_copy_result">Copy</string>
+    <string name="unit_all_conversions">All Units Breakdown</string>
+    <string name="unit_copied_toast">Copied to clipboard</string>
+    <string name="unit_cat_length">Length</string>
+    <string name="unit_cat_mass">Mass</string>
+    <string name="unit_cat_temperature">Temperature</string>
+    <string name="unit_cat_speed">Speed</string>
+    <string name="unit_cat_area">Area</string>
+    <string name="unit_cat_pressure">Pressure</string>
+    <string name="unit_cat_digital">Digital</string>
+    <string name="unit_cat_fuel">Fuel Economy</string>
+    <string name="unit_cat_volume">Volume</string>
+
+    <!-- Spirit Level Strings -->
+    <string name="level_pitch">Pitch</string>
+    <string name="level_roll">Roll</string>
+    <string name="level_tilt">Tilt Angle</string>
+    <string name="level_perfect_level">PERFECT LEVEL</string>
+    <string name="level_hold_button">Hold Angle</string>
+    <string name="level_release_button">Release</string>
+    <string name="level_zero_calibrate">Zero Calibrate</string>
+    <string name="level_reset_zero">Reset Zero</string>
+    <string name="level_surface_mode">Surface Level</string>
+    <string name="level_edge_mode">Edge Level</string>
+
+    <!-- Quacky Surfer Game Strings -->
+    <string name="surfer_start_title">QUACKY SURFER</string>
+    <string name="surfer_start_subtitle">Subway-style 3-lane offline runner</string>
+    <string name="surfer_tap_to_start">Tap to Start Run</string>
+    <string name="surfer_score">Score</string>
+    <string name="surfer_high_score">High Score</string>
+    <string name="surfer_coins">Breadcrumbs</string>
+    <string name="surfer_distance">Distance</string>
+    <string name="surfer_game_over">CRASHED!</string>
+    <string name="surfer_new_high_score">NEW HIGH SCORE!</string>
+    <string name="surfer_play_again">Play Again</string>
+    <string name="surfer_pause">Pause</string>
+    <string name="surfer_resume">Resume</string>
+    <string name="surfer_controls_tip">Swipe ⬅️ ➡️ to switch lanes · ⬆️ to Jump · ⬇️ to Duck</string>
 
     <!-- Missing Requirement Messages (Honest by Design, 5A.3) -->
     <string name="req_missing_back_camera">Your phone doesn\'t have a back camera, which this tool needs.</string>
@@ -71,6 +137,7 @@
     <string name="req_missing_flash">Your phone doesn\'t have a flash, so the torch isn\'t available.</string>
     <string name="req_missing_accelerometer">Your phone doesn\'t have an accelerometer, so shake detection isn\'t available.</string>
     <string name="req_missing_vibrator">Haptics are not supported on this device.</string>
+    <string name="req_missing_magnetometer">Your phone doesn\'t have a magnetometer (compass sensor), which this tool needs.</string>
     <string name="req_missing_display_metrics">Display scale could not be verified automatically. Please calibrate the ruler to ensure physical accuracy.</string>
     <string name="req_no_intent_handler">No app on this phone can open this.</string>
     <string name="req_unsupported_file_type">This phone can\'t open this file type.</string>

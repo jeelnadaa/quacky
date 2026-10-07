@@ -84,6 +84,11 @@ class RequirementChecker @Inject constructor(
                         return RequirementResult.Missing(req, R.string.req_missing_vibrator)
                     }
                 }
+                ToolRequirement.MAGNETOMETER -> {
+                    if (!capabilities.hasMagnetometer) {
+                        return RequirementResult.Missing(req, R.string.req_missing_magnetometer)
+                    }
+                }
             }
         }
         return RequirementResult.Ready

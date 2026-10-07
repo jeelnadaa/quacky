@@ -17,6 +17,7 @@ interface DeviceCapabilities {
     val hasFlashUnit: Boolean
     val hasAccelerometer: Boolean
     val hasVibrator: Boolean
+    val hasMagnetometer: Boolean
     val arCoreStatus: ArCoreStatus
     val isDisplayMetricsPlausible: Boolean
 

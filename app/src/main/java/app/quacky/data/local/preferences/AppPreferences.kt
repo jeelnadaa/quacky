@@ -41,6 +41,10 @@ class AppPreferences @Inject constructor(
         val KEY_AR_RULER_ACCURACY_NOTE_DISMISSED = booleanPreferencesKey("ar_ruler_accuracy_note_dismissed")
         val KEY_AR_AUTO_FINISH = booleanPreferencesKey("ar_auto_finish")
         val KEY_CONFIRM_ON_BACK = booleanPreferencesKey("confirm_on_back")
+        val KEY_SURFER_HIGH_SCORE = intPreferencesKey("surfer_high_score")
+        val KEY_SURFER_TOTAL_COINS = intPreferencesKey("surfer_total_coins")
+        val KEY_SURFER_GAMES_PLAYED = intPreferencesKey("surfer_games_played")
+        val KEY_SURFER_MAX_DISTANCE = intPreferencesKey("surfer_max_distance")
     }
 
     // Pinned Tools: stored as comma-separated or JSON list of IDs
@@ -159,5 +163,33 @@ class AppPreferences @Inject constructor(
                 prefs.remove(key as Preferences.Key<Any>)
             }
         }
+    }
+
+    // Quacky Surfer Game Stats
+    val surferHighScore: Flow<Int> = dataStore.data.map { it[KEY_SURFER_HIGH_SCORE] ?: 0 }
+    val surferTotalCoins: Flow<Int> = dataStore.data.map { it[KEY_SURFER_TOTAL_COINS] ?: 0 }
+    val surferGamesPlayed: Flow<Int> = dataStore.data.map { it[KEY_SURFER_GAMES_PLAYED] ?: 0 }
+    val surferMaxDistance: Flow<Int> = dataStore.data.map { it[KEY_SURFER_MAX_DISTANCE] ?: 0 }
+
+    suspend fun recordSurferGameResult(score: Int, coins: Int, distance: Int): Boolean {
+        var isNewHighScore = false
+        dataStore.edit { prefs ->
+            val currentBest = prefs[KEY_SURFER_HIGH_SCORE] ?: 0
+            if (score > currentBest) {
+                prefs[KEY_SURFER_HIGH_SCORE] = score
+                isNewHighScore = true
+            }
+            val currentCoins = prefs[KEY_SURFER_TOTAL_COINS] ?: 0
+            prefs[KEY_SURFER_TOTAL_COINS] = currentCoins + coins
+
+            val games = prefs[KEY_SURFER_GAMES_PLAYED] ?: 0
+            prefs[KEY_SURFER_GAMES_PLAYED] = games + 1
+
+            val currentMaxDist = prefs[KEY_SURFER_MAX_DISTANCE] ?: 0
+            if (distance > currentMaxDist) {
+                prefs[KEY_SURFER_MAX_DISTANCE] = distance
+            }
+        }
+        return isNewHighScore
     }
 }

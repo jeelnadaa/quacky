@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import app.quacky.core.designsystem.theme.QuackyAccent
+import app.quacky.core.designsystem.theme.QuackyBackground
 import app.quacky.core.designsystem.theme.QuackyOutline
 import app.quacky.core.designsystem.theme.QuackySurface
 import app.quacky.core.designsystem.theme.QuackySurfaceElevated
@@ -107,6 +108,9 @@ fun TipVisual(
             VisualType.DOC_ENHANCE_FILTER -> drawDocEnhanceFilterVisual(progress)
             VisualType.DOC_PAGES_REORDER -> drawDocPagesReorderVisual(progress)
             VisualType.DOC_PDF_EXPORT -> drawDocPdfExportVisual(progress)
+            VisualType.SURFER_LANES -> drawSurferLanesVisual(progress)
+            VisualType.SURFER_JUMP_SLIDE -> drawSurferJumpSlideVisual(progress)
+            VisualType.SURFER_POWERUPS -> drawSurferPowerupsVisual(progress)
             else -> drawGenericTipVisual(progress)
         }
     }
@@ -874,6 +878,53 @@ private fun DrawScope.drawDocPdfExportVisual(progress: Float) {
     // Export badge
     val badgeY = cy + 22f + kotlin.math.sin(progress * kotlin.math.PI * 2).toFloat() * 3f
     drawCircle(QuackyAccent, radius = 10f, center = Offset(cx, badgeY))
+}
+
+private fun DrawScope.drawSurferLanesVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+    val trackW = 140f
+    val laneW = trackW / 3f
+
+    // 3 Lanes
+    for (i in 0..3) {
+        val x = cx - trackW / 2 + i * laneW
+        drawLine(QuackyTextTertiary, Offset(x, cy - 35f), Offset(x, cy + 35f), 2f)
+    }
+
+    // Animated duck switching between lanes
+    val laneIdx = ((progress * 3).toInt()) % 3
+    val duckX = cx - trackW / 2 + (laneIdx + 0.5f) * laneW
+    drawCircle(QuackyAccent, radius = 12f, center = Offset(duckX, cy))
+    drawCircle(QuackyBackground, radius = 4f, center = Offset(duckX + 3f, cy - 3f))
+}
+
+private fun DrawScope.drawSurferJumpSlideVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+
+    // Ground line
+    drawLine(QuackyTextTertiary, Offset(cx - 70f, cy + 25f), Offset(cx + 70f, cy + 25f), 2.5f)
+
+    // Barrier hurdle
+    drawRect(Color(0xFFFFB300), topLeft = Offset(cx - 10f, cy + 8f), size = Size(20f, 17f))
+
+    // Parabolic jump arc
+    val jumpArcX = cx - 50f + progress * 100f
+    val jumpArcY = cy + 20f - kotlin.math.sin(progress * kotlin.math.PI).toFloat() * 38f
+    drawCircle(QuackyAccent, radius = 10f, center = Offset(jumpArcX, jumpArcY))
+}
+
+private fun DrawScope.drawSurferPowerupsVisual(progress: Float) {
+    val cx = size.width / 2
+    val cy = size.height / 2
+
+    // Gold coin
+    drawCircle(Color(0xFFFFD700), radius = 14f, center = Offset(cx - 45f, cy))
+    // Cyan magnet
+    drawCircle(Color(0xFF00E5FF), radius = 14f, center = Offset(cx, cy))
+    // Orange boost
+    drawCircle(Color(0xFFFF6D00), radius = 14f, center = Offset(cx + 45f, cy))
 }
 
 

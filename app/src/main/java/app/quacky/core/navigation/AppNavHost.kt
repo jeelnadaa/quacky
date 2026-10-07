@@ -278,6 +278,46 @@ fun AppNavHost(
                                     onOpenHowToUse = { activeGuideTool = tool }
                                 )
                             }
+                            ToolRegistry.QUACKY_SURFER.id -> {
+                                val surferViewModel: app.quacky.feature.surfer.presentation.QuackySurferViewModel = hiltViewModel()
+                                app.quacky.feature.surfer.presentation.QuackySurferScreen(
+                                    viewModel = surferViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool },
+                                    isPinned = pinnedToolIds.contains(tool.id),
+                                    onTogglePin = { homeViewModel.togglePin(tool.id) }
+                                )
+                            }
+                            ToolRegistry.SPIRIT_LEVEL.id -> {
+                                val levelViewModel: app.quacky.feature.level.presentation.LevelViewModel = hiltViewModel()
+                                app.quacky.feature.level.presentation.LevelScreen(
+                                    viewModel = levelViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool },
+                                    isPinned = pinnedToolIds.contains(tool.id),
+                                    onTogglePin = { homeViewModel.togglePin(tool.id) }
+                                )
+                            }
+                            ToolRegistry.COMPASS.id -> {
+                                val compassViewModel: app.quacky.feature.compass.presentation.CompassViewModel = hiltViewModel()
+                                app.quacky.feature.compass.presentation.CompassScreen(
+                                    viewModel = compassViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool },
+                                    isPinned = pinnedToolIds.contains(tool.id),
+                                    onTogglePin = { homeViewModel.togglePin(tool.id) }
+                                )
+                            }
+                            ToolRegistry.UNIT_CONVERTER.id -> {
+                                val converterViewModel: app.quacky.feature.converter.presentation.UnitConverterViewModel = hiltViewModel()
+                                app.quacky.feature.converter.presentation.UnitConverterScreen(
+                                    viewModel = converterViewModel,
+                                    onBack = { navController.popBackStack() },
+                                    onOpenHowToUse = { activeGuideTool = tool },
+                                    isPinned = pinnedToolIds.contains(tool.id),
+                                    onTogglePin = { homeViewModel.togglePin(tool.id) }
+                                )
+                            }
                             ToolRegistry.SCREEN_RULER.id -> {
                                 val rulerViewModel: app.quacky.feature.screenruler.presentation.ScreenRulerViewModel = hiltViewModel()
                                 app.quacky.feature.screenruler.presentation.ScreenRulerScreen(

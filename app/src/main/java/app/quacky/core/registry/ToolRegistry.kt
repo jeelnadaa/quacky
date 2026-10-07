@@ -1,11 +1,13 @@
 package app.quacky.core.registry
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.DirectionsRun
 import androidx.compose.material.icons.rounded.AspectRatio
 import androidx.compose.material.icons.rounded.Calculate
 import androidx.compose.material.icons.rounded.Casino
 import androidx.compose.material.icons.rounded.Compress
 import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material.icons.rounded.Explore
 import androidx.compose.material.icons.rounded.Groups
 import androidx.compose.material.icons.rounded.MonetizationOn
 import androidx.compose.material.icons.rounded.Numbers
@@ -87,6 +89,17 @@ object ToolRegistry {
         keywords = listOf("area", "volume", "calculator", "geometry", "paint", "tile", "concrete", "tank"),
         route = "tool/area_volume",
         requirements = emptySet()
+    )
+
+    val SPIRIT_LEVEL = ToolDefinition(
+        id = "spirit_level",
+        nameRes = R.string.tool_spirit_level_name,
+        descriptionRes = R.string.tool_spirit_level_desc,
+        category = ToolCategory.MEASURE,
+        icon = Icons.Rounded.Straighten,
+        keywords = listOf("level", "spirit", "bubble", "inclinometer", "angle", "pitch", "roll", "tilt", "surface"),
+        route = "tool/spirit_level",
+        requirements = setOf(ToolRequirement.ACCELEROMETER)
     )
 
     val COLOR_PICKER = ToolDefinition(
@@ -199,6 +212,39 @@ object ToolRegistry {
         requirements = emptySet()
     )
 
+    val QUACKY_SURFER = ToolDefinition(
+        id = "quacky_surfer",
+        nameRes = R.string.tool_quacky_surfer_name,
+        descriptionRes = R.string.tool_quacky_surfer_desc,
+        category = ToolCategory.RANDOM,
+        icon = Icons.AutoMirrored.Rounded.DirectionsRun,
+        keywords = listOf("subway", "surfer", "runner", "game", "duck", "dodge", "jump", "arcade", "offline"),
+        route = "tool/quacky_surfer",
+        requirements = emptySet()
+    )
+
+    val COMPASS = ToolDefinition(
+        id = "compass",
+        nameRes = R.string.tool_compass_name,
+        descriptionRes = R.string.tool_compass_desc,
+        category = ToolCategory.MEASURE,
+        icon = Icons.Rounded.Explore,
+        keywords = listOf("compass", "magnetic", "north", "heading", "azimuth", "emf", "metal", "detector", "microtesla"),
+        route = "tool/compass",
+        requirements = setOf(ToolRequirement.MAGNETOMETER, ToolRequirement.ACCELEROMETER)
+    )
+
+    val UNIT_CONVERTER = ToolDefinition(
+        id = "unit_converter",
+        nameRes = R.string.tool_unit_converter_name,
+        descriptionRes = R.string.tool_unit_converter_desc,
+        category = ToolCategory.MEASURE,
+        icon = Icons.Rounded.Calculate,
+        keywords = listOf("unit", "converter", "length", "mass", "temperature", "speed", "area", "pressure", "digital", "bytes", "storage", "fuel", "volume"),
+        route = "tool/unit_converter",
+        requirements = emptySet()
+    )
+
     val allTools: List<ToolDefinition> = listOf(
         QR_SCANNER,
         QR_GENERATOR,
@@ -215,7 +261,11 @@ object ToolRegistry {
         COIN_FLIP,
         RANDOM_NUMBER,
         PICKER_WHEEL,
-        TEAM_SPLITTER
+        TEAM_SPLITTER,
+        QUACKY_SURFER,
+        SPIRIT_LEVEL,
+        COMPASS,
+        UNIT_CONVERTER
     )
 
     fun getById(id: String): ToolDefinition? = allTools.firstOrNull { it.id == id }
