@@ -177,8 +177,8 @@ class Game3dRenderer(
 
                 fogOptions = View.FogOptions().apply {
                     enabled = true
-                    distance = 25.0f
-                    cutOffDistance = 110.0f
+                    distance = 50.0f
+                    cutOffDistance = 140.0f
                     color = floatArrayOf(0.04f, 0.04f, 0.04f)
                 }
 
@@ -282,7 +282,8 @@ class Game3dRenderer(
         val chunkBufB = loadGlbBuffer("env_chunk_b.glb")
         val chunkBufC = loadGlbBuffer("env_chunk_c.glb")
 
-        var chunkZ = 0.0f
+        // Start at +24m so chunk 0 extends from +24 to 0, covering behind duck and camera
+        var chunkZ = SurferTuning.CHUNK_LENGTH
         for (i in 0 until SurferTuning.CHUNK_COUNT) {
             val type = pickNextChunkType()
             val buf = when (type) {
@@ -401,6 +402,14 @@ class Game3dRenderer(
         elapsedRunTime = 0.0f
         nextSpawnDistance = 15.0f
         lastEmittedRow = null
+
+        // Reset continuous chunk sequence
+        var resetZ = SurferTuning.CHUNK_LENGTH
+        for (chunk in chunkRing) {
+            chunk.z = resetZ
+            resetZ -= SurferTuning.CHUNK_LENGTH
+        }
+
         camX = 0.0f
         camY = SurferTuning.READY_CAM_Y
         camZ = SurferTuning.READY_CAM_Z
@@ -492,6 +501,7 @@ class Game3dRenderer(
         if (isRunning) {
             elapsedRunTime += dt
             currentSpeed = SurferTuning.calculateSpeed(elapsedRunTime)
+            updateCameraProjection()
             val moveDist = currentSpeed * dt
             distanceMeters += moveDist
 
@@ -563,17 +573,17 @@ class Game3dRenderer(
         val eng = engine ?: return
         val scn = scene ?: return
 
-        // Player physics
-        player.update(dt)
+        // Player physics (scaled to speed)
+        player.update(dt, currentSpeed)
 
         // Environment Chunks Scrolling
         for (chunk in chunkRing) {
             chunk.z += moveDist
         }
-        // Recycle chunks when near edge exceeds 10m behind camera
-        val nearestChunk = chunkRing.minByOrNull { it.z }
+        // Recycle a chunk only when its FAR END (chunk.z - 24m) is completely behind the camera (camZ = 4.3m)
+        val recycleThreshold = SurferTuning.CAM_Z + SurferTuning.CHUNK_LENGTH + 6.0f
         for (chunk in chunkRing) {
-            if (chunk.z > 10.0f) {
+            if (chunk.z > recycleThreshold) {
                 val furthestZ = chunkRing.minOf { it.z }
                 chunk.z = furthestZ - SurferTuning.CHUNK_LENGTH
             }
@@ -646,30 +656,38 @@ class Game3dRenderer(
 
             when (obs.type) {
                 RowPlanner.CellType.TRAIN -> {
-                    // Train extends from z 0.0 to -11.0 ahead of front
-                    if (dist in -1.0f..SurferTuning.Colliders.TRAIN_LENGTH &&
-                        abs(obsX - pX) < pHalfW + SurferTuning.Colliders.TRAIN_HALF_WIDTH &&
-                        pYMin < SurferTuning.Colliders.TRAIN_HEIGHT
-                    ) {
+                    // Train origin is front-bottom-center; body extends toward -Z by 11m
+                    // With obstacle at z = -dist, front is at z = -dist, rear is at z = -dist - 11m
+                    // Player is at z = 0 with collider [-0.25, 0.25]
+                    // Overlaps in Z when:
+                    //   front (-dist) >= playerBackZ (-0.25) => dist <= 0.25
+                    //   rear (-dist - 11.0) <= playerFrontZ (+0.25) => dist >= -11.25
+                    val inZ = dist in (-SurferTuning.Colliders.TRAIN_LENGTH - 0.25f)..0.25f
+                    val inX = abs(obsX - pX) < (pHalfW + SurferTuning.Colliders.TRAIN_HALF_WIDTH)
+                    val inY = pYMin < SurferTuning.Colliders.TRAIN_HEIGHT
+
+                    if (inZ && inX && inY) {
                         triggerCrash("Hit a train! Dodge to the side.")
                         return
                     }
                 }
                 RowPlanner.CellType.BARRIER -> {
                     // Low barrier (must be jumped)
-                    if (dist in -SurferTuning.Colliders.BARRIER_HALF_DEPTH..SurferTuning.Colliders.BARRIER_HALF_DEPTH &&
-                        abs(obsX - pX) < pHalfW + SurferTuning.Colliders.BARRIER_HALF_WIDTH &&
-                        pYMin < SurferTuning.Colliders.BARRIER_HEIGHT
-                    ) {
+                    val inZ = abs(dist) <= (0.25f + SurferTuning.Colliders.BARRIER_HALF_DEPTH)
+                    val inX = abs(obsX - pX) < (pHalfW + SurferTuning.Colliders.BARRIER_HALF_WIDTH)
+                    val inY = pYMin < SurferTuning.Colliders.BARRIER_HEIGHT
+
+                    if (inZ && inX && inY) {
                         triggerCrash("Hit a barrier! Swipe up to jump.")
                         return
                     }
                 }
                 RowPlanner.CellType.DUCT -> {
                     // Overhead duct (must be slid under)
-                    if (dist in -SurferTuning.Colliders.DUCT_BAR_HALF_DEPTH..SurferTuning.Colliders.DUCT_BAR_HALF_DEPTH &&
-                        abs(obsX - pX) < pHalfW + SurferTuning.Colliders.DUCT_BAR_HALF_WIDTH
-                    ) {
+                    val inZ = abs(dist) <= (0.25f + SurferTuning.Colliders.DUCT_BAR_HALF_DEPTH)
+                    val inX = abs(obsX - pX) < (pHalfW + SurferTuning.Colliders.DUCT_BAR_HALF_WIDTH)
+
+                    if (inZ && inX) {
                         if (pYMax > SurferTuning.Colliders.DUCT_BAR_MIN_Y) {
                             triggerCrash("Hit an overhead duct! Swipe down to slide.")
                             return
@@ -775,10 +793,17 @@ class Game3dRenderer(
             shakeY = (Random.nextFloat() * 2f - 1f) * amp
         }
 
+        // Camera subtle bob on run cycle
+        var bobY = 0.0f
+        if (isRunning && player.state == PlayerController.State.GROUNDED_RUN) {
+            val runSpeedScale = (currentSpeed / SurferTuning.SPEED_MIN).coerceIn(1.0f, 2.5f)
+            bobY = kotlin.math.sin(animTime * runSpeedScale * 12.5f) * 0.02f
+        }
+
         // Look-at: zero yaw, zero roll!
         cam.lookAt(
             (camX + shakeX).toDouble(),
-            (camY + shakeY).toDouble(),
+            (camY + shakeY + bobY).toDouble(),
             camZ.toDouble(),
             (camX + shakeX).toDouble(),
             SurferTuning.CAM_LOOK_Y.toDouble(),
@@ -802,15 +827,19 @@ class Game3dRenderer(
                 animator.applyAnimation(clipIdle, (animTime * 1.0f) % 1.6f)
             }
             PlayerController.State.GROUNDED_RUN -> {
-                val runSpeedScale = (currentSpeed / 10.0f).coerceIn(0.9f, 1.8f)
+                val runSpeedScale = (currentSpeed / SurferTuning.SPEED_MIN).coerceIn(1.0f, 2.5f)
                 animator.applyAnimation(clipRun, (animTime * runSpeedScale) % 0.5f)
             }
             PlayerController.State.JUMPING -> {
-                jumpAnimTime = min(0.7f, jumpAnimTime + dt)
+                val airTime = SurferTuning.calculateAirTime(currentSpeed)
+                val jumpRate = SurferTuning.AIR_TIME / airTime
+                jumpAnimTime = min(0.7f, jumpAnimTime + dt * jumpRate)
                 animator.applyAnimation(clipJump, jumpAnimTime)
             }
             PlayerController.State.SLIDING -> {
-                slideAnimTime = min(0.7f, slideAnimTime + dt)
+                val slideDuration = SurferTuning.calculateSlideDuration(currentSpeed)
+                val slideRate = SurferTuning.SLIDE_DURATION / slideDuration
+                slideAnimTime = min(0.7f, slideAnimTime + dt * slideRate)
                 // Slide hold pose mapping
                 val clipT = when {
                     slideAnimTime < 0.2f -> slideAnimTime
@@ -827,10 +856,11 @@ class Game3dRenderer(
         if (player.state != PlayerController.State.JUMPING) jumpAnimTime = 0.0f
         if (player.state != PlayerController.State.SLIDING) slideAnimTime = 0.0f
 
-        // 3. Lean Clip (Overlay on LeanPivot)
+        // 3. Lean Clip (Overlay on LeanPivot, scaled to lane duration)
         player.activeLean?.let { lean ->
             val leanClip = if (lean == "lean_left") clipLeanLeft else clipLeanRight
-            val leanProgress = (1.0f - (player.laneChangeTimer / SurferTuning.LANE_CHANGE_DURATION))
+            val laneDur = SurferTuning.calculateLaneChangeDuration(currentSpeed)
+            val leanProgress = (1.0f - (player.laneChangeTimer / laneDur)).coerceIn(0f, 1f)
             animator.applyAnimation(leanClip, leanProgress * 0.3f)
         }
 

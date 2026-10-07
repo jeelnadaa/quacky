@@ -80,6 +80,8 @@ class PlayerController {
         vy = 0.0f
     }
 
+    var currentSpeed: Float = SurferTuning.SPEED_MIN
+
     fun requestMoveLeft() {
         if (state == State.CRASHED) return
         requestLaneChange(-1)
@@ -94,8 +96,9 @@ class PlayerController {
         val newTarget = (targetLane + delta).coerceIn(0, 2)
         if (newTarget == targetLane) return
 
+        val laneDuration = SurferTuning.calculateLaneChangeDuration(currentSpeed)
         if (laneChangeTimer > 0f) {
-            val progress = 1.0f - (laneChangeTimer / SurferTuning.LANE_CHANGE_DURATION)
+            val progress = 1.0f - (laneChangeTimer / laneDuration)
             if (progress >= SurferTuning.LANE_BUFFER_THRESHOLD) {
                 bufferedLaneInput = newTarget
             }
@@ -109,19 +112,20 @@ class PlayerController {
         startX = x
         currentLane = targetLane
         targetLane = newTarget
-        laneChangeTimer = SurferTuning.LANE_CHANGE_DURATION
+        laneChangeTimer = SurferTuning.calculateLaneChangeDuration(currentSpeed)
         activeLean = if (newTarget < currentLane) "lean_left" else "lean_right"
     }
 
     fun requestJump() {
         if (state == State.CRASHED) return
+        val (v0, _) = SurferTuning.calculateJumpPhysics(currentSpeed)
         if (state == State.GROUNDED_RUN) {
             state = State.JUMPING
-            vy = SurferTuning.JUMP_V0
+            vy = v0
         } else if (state == State.SLIDING) {
             // Cancel slide and jump
             state = State.JUMPING
-            vy = SurferTuning.JUMP_V0
+            vy = v0
             slideTimer = 0.0f
         }
     }
@@ -133,7 +137,7 @@ class PlayerController {
             vy = SurferTuning.FAST_FALL_VY
         } else if (state == State.GROUNDED_RUN || state == State.SLIDING) {
             state = State.SLIDING
-            slideTimer = SurferTuning.SLIDE_DURATION
+            slideTimer = SurferTuning.calculateSlideDuration(currentSpeed)
         }
     }
 
@@ -142,16 +146,19 @@ class PlayerController {
         crashTimer = 0.0f
     }
 
-    fun update(dt: Float) {
+    fun update(dt: Float, speed: Float = currentSpeed) {
+        currentSpeed = speed
         if (state == State.CRASHED) {
             crashTimer += dt
             return
         }
 
+        val laneDuration = SurferTuning.calculateLaneChangeDuration(currentSpeed)
+
         // Lane change smoothstep
         if (laneChangeTimer > 0f) {
             laneChangeTimer = max(0.0f, laneChangeTimer - dt)
-            val t = 1.0f - (laneChangeTimer / SurferTuning.LANE_CHANGE_DURATION)
+            val t = 1.0f - (laneChangeTimer / laneDuration)
             val smoothT = t * t * (3.0f - 2.0f * t)
             val destX = SurferTuning.LANES[targetLane]
             x = startX + (destX - startX) * smoothT
@@ -172,7 +179,8 @@ class PlayerController {
 
         // Vertical physics
         if (state == State.JUMPING) {
-            vy -= SurferTuning.GRAVITY * dt
+            val (_, g) = SurferTuning.calculateJumpPhysics(currentSpeed)
+            vy -= g * dt
             y += vy * dt
 
             if (y <= 0.0f) {

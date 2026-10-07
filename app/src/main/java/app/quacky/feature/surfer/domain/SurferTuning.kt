@@ -18,27 +18,58 @@ object SurferTuning {
     // -------------------------------------------------------------------------
     // Speed Progression
     // -------------------------------------------------------------------------
+    // Speed Progression
+    // -------------------------------------------------------------------------
     const val SPEED_MIN = 10.0f
-    const val SPEED_MAX = 22.0f
-    const val SPEED_ACCEL = 0.07f
+    const val SPEED_MAX = 24.0f
+    const val SPEED_ACCEL = 0.28f // Noticeable acceleration from 10 to 24 m/s over ~50s
 
     fun calculateSpeed(elapsedSeconds: Float): Float =
         min(SPEED_MAX, SPEED_MIN + SPEED_ACCEL * elapsedSeconds)
 
     // -------------------------------------------------------------------------
-    // Player Movement & Physics
+    // Player Movement & Physics (Dynamically scales with speed)
     // -------------------------------------------------------------------------
-    const val LANE_CHANGE_DURATION = 0.12f // 120 ms smoothstep
+    const val LANE_CHANGE_DURATION = 0.12f // 120 ms base smoothstep
     const val LANE_BUFFER_THRESHOLD = 0.60f // Can buffer next lane input after 60% done
 
-    const val JUMP_V0 = 9.5f       // m/s
-    const val GRAVITY = 28.0f      // m/s² (apex ≈ 1.61 m, air time ≈ 0.68 s)
-    const val FAST_FALL_VY = -16.0f // m/s slam on swipe down in air
+    const val JUMP_V0 = 9.5f       // m/s base
+    const val GRAVITY = 28.0f      // m/s² base (apex ≈ 1.61 m, air time ≈ 0.68 s)
+    const val APEX_HEIGHT = 1.61f
+    const val AIR_TIME = 0.68f
+    const val FAST_FALL_VY = -18.0f // m/s slam on swipe down in air
 
-    const val SLIDE_DURATION = 0.65f // seconds
+    const val SLIDE_DURATION = 0.65f // seconds base
     const val SLIDE_CANCEL_JUMP_DELAY = 0.080f // 80 ms delay if swiping up during slide
 
     const val INPUT_BUFFER_WINDOW_MS = 120L // Input buffer memory window
+
+    /**
+     * Jump physics scaling with speed: keeps apex ~1.61m so barriers are safely cleared,
+     * while airTime tightens so the jump feels snappy and doesn't overshoot forward at high speed.
+     */
+    fun calculateJumpPhysics(speed: Float): Pair<Float, Float> {
+        val s = (speed / SPEED_MIN).coerceIn(1.0f, 2.5f)
+        val airTime = (AIR_TIME * Math.pow(s.toDouble(), -0.32)).toFloat()
+        val g = (8f * APEX_HEIGHT) / (airTime * airTime)
+        val v0 = g * (airTime / 2f)
+        return Pair(v0, g)
+    }
+
+    fun calculateAirTime(speed: Float): Float {
+        val s = (speed / SPEED_MIN).coerceIn(1.0f, 2.5f)
+        return (AIR_TIME * Math.pow(s.toDouble(), -0.32)).toFloat()
+    }
+
+    fun calculateSlideDuration(speed: Float): Float {
+        val s = (speed / SPEED_MIN).coerceIn(1.0f, 2.5f)
+        return (SLIDE_DURATION * Math.pow((1.0 / s), 0.38)).toFloat().coerceIn(0.40f, SLIDE_DURATION)
+    }
+
+    fun calculateLaneChangeDuration(speed: Float): Float {
+        val s = (speed / SPEED_MIN).coerceIn(1.0f, 2.5f)
+        return (LANE_CHANGE_DURATION * Math.pow((1.0 / s), 0.35)).toFloat().coerceIn(0.08f, LANE_CHANGE_DURATION)
+    }
 
     // -------------------------------------------------------------------------
     // Camera
@@ -50,7 +81,7 @@ object SurferTuning {
     const val CAM_LOOK_Z = -7.0f
 
     const val FOV_MIN = 58.0f // vertical FOV at speed 10 m/s
-    const val FOV_MAX = 66.0f // vertical FOV at speed 22 m/s
+    const val FOV_MAX = 68.0f // vertical FOV at top speed (perspective speed kick)
 
     const val READY_CAM_Y = 2.0f
     const val READY_CAM_Z = 3.4f
