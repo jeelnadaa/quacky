@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import app.quacky.R
+import app.quacky.core.brand.QuackyMark
 import app.quacky.core.designsystem.component.QuackyButton
 import app.quacky.core.designsystem.component.QuackyButtonStyle
 import app.quacky.core.designsystem.component.QuackyChip
@@ -268,6 +269,30 @@ fun QrGeneratorScreen(
                                         onClick = { viewModel.setEcLevel(level) }
                                     )
                                 }
+                            }
+
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    QuackyMark(size = 18.dp, tint = QuackyTextPrimary)
+                                    Text(
+                                        text = "Quacky logo in center",
+                                        color = QuackyTextSecondary,
+                                        fontSize = 13.sp
+                                    )
+                                }
+                                QuackyChip(
+                                    text = if (uiState.includeLogo) "Included" else "Off",
+                                    selected = uiState.includeLogo,
+                                    onClick = { viewModel.toggleIncludeLogo() }
+                                )
                             }
                         }
                     }

@@ -32,6 +32,37 @@ class BarcodeGeneratorEngineTest {
         assertTrue(svg.startsWith("<svg"))
         assertTrue(svg.endsWith("</svg>"))
         assertTrue(svg.contains("<rect"))
+        // By default includeLogo is true for QR codes, so duck path is rendered
+        assertTrue(svg.contains("M 120,280"))
+    }
+
+    @Test
+    fun `test SVG export without logo`() {
+        val options = GeneratorOptions(
+            format = GeneratorFormat.QR_CODE,
+            width = 100,
+            height = 100,
+            includeLogo = false
+        )
+        val matrix = BarcodeGeneratorEngine.generateBitMatrix("Hello Quacky", options)
+        val svg = BarcodeGeneratorEngine.exportToSvg(matrix, options)
+        assertTrue(svg.startsWith("<svg"))
+        assertTrue(svg.endsWith("</svg>"))
+        assertTrue(svg.contains("<rect"))
+        assertTrue(!svg.contains("M 120,280"))
+    }
+
+    @Test
+    fun `test SVG export 1D barcode does not include logo`() {
+        val options = GeneratorOptions(
+            format = GeneratorFormat.CODE_128,
+            width = 300,
+            height = 100,
+            includeLogo = true
+        )
+        val matrix = BarcodeGeneratorEngine.generateBitMatrix("QUACKY123", options)
+        val svg = BarcodeGeneratorEngine.exportToSvg(matrix, options)
+        assertTrue(!svg.contains("M 120,280"))
     }
 
     @Test

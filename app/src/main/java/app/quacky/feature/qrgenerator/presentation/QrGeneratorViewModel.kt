@@ -46,6 +46,7 @@ data class QrGeneratorUiState(
     val format: GeneratorFormat = GeneratorFormat.QR_CODE,
     val ecLevel: EcLevel = EcLevel.M,
     val margin: Int = 2,
+    val includeLogo: Boolean = true,
     // Fields
     val textValue: String = "https://quacky.app",
     val urlValue: String = "https://quacky.app",
@@ -107,6 +108,11 @@ class QrGeneratorViewModel @Inject constructor(
 
     fun setEcLevel(level: EcLevel) {
         _uiState.value = _uiState.value.copy(ecLevel = level)
+        generatePreview()
+    }
+
+    fun toggleIncludeLogo() {
+        _uiState.value = _uiState.value.copy(includeLogo = !_uiState.value.includeLogo)
         generatePreview()
     }
 
@@ -181,7 +187,8 @@ class QrGeneratorViewModel @Inject constructor(
                 ecLevel = _uiState.value.ecLevel,
                 margin = _uiState.value.margin,
                 width = 512,
-                height = 512
+                height = 512,
+                includeLogo = _uiState.value.includeLogo
             )
 
             try {
@@ -260,7 +267,8 @@ class QrGeneratorViewModel @Inject constructor(
                 ecLevel = _uiState.value.ecLevel,
                 margin = _uiState.value.margin,
                 width = 1000,
-                height = 1000
+                height = 1000,
+                includeLogo = _uiState.value.includeLogo
             )
             try {
                 val matrix = BarcodeGeneratorEngine.generateBitMatrix(payload, options)

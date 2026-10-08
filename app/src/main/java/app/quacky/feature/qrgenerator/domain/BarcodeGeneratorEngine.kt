@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.RectF
 import android.graphics.pdf.PdfDocument
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
@@ -38,7 +40,8 @@ data class GeneratorOptions(
     val foregroundColor: Int = Color.BLACK,
     val backgroundColor: Int = Color.WHITE,
     val width: Int = 600,
-    val height: Int = 600
+    val height: Int = 600,
+    val includeLogo: Boolean = true
 )
 
 object BarcodeGeneratorEngine {
@@ -110,7 +113,13 @@ object BarcodeGeneratorEngine {
         hints[EncodeHintType.MARGIN] = options.margin
 
         if (options.format == GeneratorFormat.QR_CODE) {
-            hints[EncodeHintType.ERROR_CORRECTION] = options.ecLevel.zxingLevel
+            // Ensure error correction is at least M (15%) when embedding center logo for guaranteed readability
+            val effectiveEc = if (options.includeLogo && options.ecLevel == EcLevel.L) {
+                EcLevel.M
+            } else {
+                options.ecLevel
+            }
+            hints[EncodeHintType.ERROR_CORRECTION] = effectiveEc.zxingLevel
         }
 
         val h = if (options.format.is2D) options.height else (options.width / 3).coerceAtLeast(150)
@@ -140,7 +149,106 @@ object BarcodeGeneratorEngine {
 
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height)
+
+        if (options.format == GeneratorFormat.QR_CODE && options.includeLogo) {
+            overlayQuackyLogo(bitmap, options)
+        }
+
         return bitmap
+    }
+
+    /**
+     * Overlays the iconic Quacky duck logo centered on the QR code with an anti-aliased badge background.
+     */
+    fun overlayQuackyLogo(bitmap: Bitmap, options: GeneratorOptions) {
+        val width = bitmap.width.toFloat()
+        val height = bitmap.height.toFloat()
+        val minDim = minOf(width, height)
+        val badgeSize = minDim * 0.22f
+        val badgeLeft = (width - badgeSize) / 2f
+        val badgeTop = (height - badgeSize) / 2f
+        val cornerRadius = badgeSize * 0.20f
+        val borderWidth = (badgeSize * 0.025f).coerceAtLeast(1.5f)
+
+        val canvas = Canvas(bitmap)
+
+        // 1. Draw badge background
+        val badgePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = options.backgroundColor
+            style = Paint.Style.FILL
+        }
+        val badgeRect = RectF(
+            badgeLeft,
+            badgeTop,
+            badgeLeft + badgeSize,
+            badgeTop + badgeSize
+        )
+        canvas.drawRoundRect(badgeRect, cornerRadius, cornerRadius, badgePaint)
+
+        // 2. Draw badge outline border
+        val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = options.foregroundColor
+            style = Paint.Style.STROKE
+            strokeWidth = borderWidth
+        }
+        canvas.drawRoundRect(badgeRect, cornerRadius, cornerRadius, borderPaint)
+
+        // 3. Draw Quacky Duck Logo
+        val duckAreaSize = badgeSize * 0.72f
+        val scale = duckAreaSize / 373f
+        val centerX = width / 2f
+        val centerY = height / 2f
+
+        canvas.save()
+        canvas.translate(centerX, centerY)
+        canvas.scale(scale, scale)
+        canvas.translate(-292f, -252f)
+
+        // Body silhouette
+        val bodyPath = Path().apply {
+            moveTo(120f, 280f)
+            cubicTo(100f, 245f, 140f, 220f, 180f, 235f)
+            cubicTo(215f, 248f, 245f, 220f, 275f, 180f)
+            cubicTo(290f, 160f, 305f, 130f, 340f, 130f)
+            cubicTo(385f, 130f, 415f, 165f, 415f, 205f)
+            cubicTo(415f, 210f, 414f, 216f, 412f, 222f)
+            lineTo(470f, 236f)
+            cubicTo(478f, 238f, 480f, 248f, 474f, 254f)
+            lineTo(412f, 282f)
+            cubicTo(395f, 330f, 345f, 365f, 290f, 370f)
+            cubicTo(210f, 375f, 135f, 340f, 120f, 280f)
+            close()
+        }
+        val bodyPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = options.foregroundColor
+            style = Paint.Style.FILL
+        }
+        canvas.drawPath(bodyPath, bodyPaint)
+
+        // Beak seam
+        val seamPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = options.backgroundColor
+            style = Paint.Style.STROKE
+            strokeWidth = 4f
+            strokeCap = Paint.Cap.ROUND
+        }
+        canvas.drawLine(412f, 248f, 460f, 245f, seamPaint)
+
+        // Eye cutout
+        val eyePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = options.backgroundColor
+            style = Paint.Style.FILL
+        }
+        canvas.drawCircle(360f, 190f, 14f, eyePaint)
+
+        // Catchlight
+        val catchlightPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = options.foregroundColor
+            style = Paint.Style.FILL
+        }
+        canvas.drawCircle(364f, 186f, 4.5f, catchlightPaint)
+
+        canvas.restore()
     }
 
     /**
@@ -162,6 +270,29 @@ object BarcodeGeneratorEngine {
                     sb.append("""<rect x="$x" y="$y" width="1" height="1" fill="$fgHex"/>""")
                 }
             }
+        }
+
+        if (options.format == GeneratorFormat.QR_CODE && options.includeLogo) {
+            val minDim = minOf(width, height)
+            val badgeSize = minDim * 0.22f
+            val badgeLeft = (width - badgeSize) / 2f
+            val badgeTop = (height - badgeSize) / 2f
+            val cornerRadius = badgeSize * 0.20f
+            val borderWidth = (badgeSize * 0.025f).coerceAtLeast(1.5f)
+
+            sb.append("""<rect x="$badgeLeft" y="$badgeTop" width="$badgeSize" height="$badgeSize" rx="$cornerRadius" ry="$cornerRadius" fill="$bgHex" stroke="$fgHex" stroke-width="$borderWidth"/>""")
+
+            val duckAreaSize = badgeSize * 0.72f
+            val scale = duckAreaSize / 373f
+            val centerX = width / 2f
+            val centerY = height / 2f
+
+            sb.append("""<g transform="translate($centerX, $centerY) scale($scale) translate(-292, -252)">""")
+            sb.append("""<path d="M 120,280 C 100,245 140,220 180,235 C 215,248 245,220 275,180 C 290,160 305,130 340,130 C 385,130 415,165 415,205 C 415,210 414,216 412,222 L 470,236 C 478,238 480,248 474,254 L 412,282 C 395,330 345,365 290,370 C 210,375 135,340 120,280 Z" fill="$fgHex"/>""")
+            sb.append("""<path d="M 412,248 L 460,245" stroke="$bgHex" stroke-width="4" stroke-linecap="round"/>""")
+            sb.append("""<circle cx="360" cy="190" r="14" fill="$bgHex"/>""")
+            sb.append("""<circle cx="364" cy="186" r="4.5" fill="$fgHex"/>""")
+            sb.append("""</g>""")
         }
 
         sb.append("</svg>")
