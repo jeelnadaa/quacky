@@ -43,7 +43,7 @@
     }
 
     body {
-      background-color: #0A0A0A;
+      background-color: #070707;
       color: #F2F2F2;
       font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       overflow: hidden;
@@ -55,56 +55,157 @@
       position: relative;
       width: 1920px;
       height: 1080px;
-      background-color: #0A0A0A;
+      background-color: #070707;
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
     }
 
-    /* Ambient background vignette */
+    /* Subtle dynamic ambient background (monochromatic) */
+    .bg-grid {
+      position: absolute;
+      top: -60px;
+      left: -60px;
+      width: 2040px;
+      height: 1200px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
     .bg-vignette {
       position: absolute;
       top: 0;
       left: 0;
       width: 1920px;
       height: 1080px;
-      background: radial-gradient(circle at 50% 50%, #161616 0%, #0A0A0A 75%);
+      background: radial-gradient(circle at 65% 50%, #161616 0%, #070707 72%);
       pointer-events: none;
-      z-index: 0;
+      z-index: 2;
     }
 
-    /* Top presentation label */
-    .header-label-bar {
+    /* Ambient top badge / safe area */
+    .top-eyebrow {
       position: absolute;
       top: 48px;
+      left: 200px;
+      z-index: 15;
       display: flex;
       align-items: center;
-      gap: 16px;
-      z-index: 5;
+      gap: 12px;
       opacity: 0;
     }
 
-    .header-tag {
-      font-size: 14px;
+    .eyebrow-pill {
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: 3px;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
-      color: #A5A5A5;
+      color: #9A9A9A;
+      background-color: rgba(26, 26, 26, 0.6);
+      border: 1px solid #282828;
+      padding: 6px 14px;
+      border-radius: 100px;
     }
 
-    /* Centered Phone Mockup */
+    /* =========================================================
+       LEFT SIDE: Kinetic Headline / Subtitle Block (Problem 1)
+       Layout: Vertically centered, left-aligned, tight gap to phone
+       ========================================================= */
+    .text-column {
+      position: absolute;
+      left: 200px;
+      top: 350px;
+      width: 880px;
+      height: 380px;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+    }
+
+    .chunk-container {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      opacity: 0;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .chunk-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 18px;
+      line-height: 1.08;
+    }
+
+    .word {
+      display: inline-block;
+      font-size: 74px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: -2px;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    .word.w-lg {
+      font-size: 100px;
+      font-weight: 900;
+      letter-spacing: -3.5px;
+      color: #FFFFFF;
+    }
+
+    .word.w-em {
+      font-size: 90px;
+      font-weight: 900;
+      color: #FFFFFF;
+    }
+
+    .word.w-dim {
+      color: #7E7E7E;
+    }
+
+    /* =========================================================
+       RIGHT SIDE: 3D Smartphone Stage & Mockup
+       Layout: Close paired positioning beside subtitles
+       ========================================================= */
+    .phone-stage {
+      position: absolute;
+      left: 1140px;
+      top: 150px;
+      width: 384px;
+      height: 780px;
+      perspective: 1200px;
+      z-index: 25;
+    }
+
+    .phone-rig {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transform-origin: center center;
+      will-change: transform;
+    }
+
     .phone-container {
       position: relative;
-      z-index: 10;
       width: 384px;
       height: 780px;
       background-color: #000000;
       border: 10px solid #202020;
-      outline: 1px solid #333333;
+      outline: 1px solid #363636;
       border-radius: 46px;
-      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      box-shadow: 
+        0 36px 90px rgba(0, 0, 0, 0.95), 
+        0 0 0 1px rgba(255, 255, 255, 0.08),
+        0 10px 30px rgba(0, 0, 0, 0.7);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -191,6 +292,7 @@
       opacity: 0;
       pointer-events: none;
       background-color: #0A0A0A;
+      will-change: transform, opacity;
     }
 
     /* --------------------------------------
@@ -248,243 +350,246 @@
       font-weight: 700;
       letter-spacing: 1px;
       text-transform: uppercase;
-      color: #A5A5A5;
-      padding: 0 18px 8px 18px;
+      color: #9A9A9A;
+      padding: 0 18px;
+      margin-bottom: 8px;
     }
 
     .tools-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      padding: 0 16px 14px 16px;
+      padding: 0 16px;
+      margin-bottom: 16px;
     }
 
     .app-tile {
       background-color: #121212;
       border: 1px solid #222222;
       border-radius: 14px;
-      padding: 12px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      height: 94px;
+      gap: 10px;
       position: relative;
+      overflow: hidden;
     }
 
     .tile-highlight {
-      border-color: #444444;
+      border-color: #404040;
       background-color: #181818;
     }
 
     .tile-icon-svg {
-      width: 20px;
-      height: 20px;
-      fill: #F2F2F2;
+      width: 24px;
+      height: 24px;
+      fill: #FFFFFF;
     }
 
     .tile-name {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
       color: #F2F2F2;
-      line-height: 1.2;
     }
 
     .tile-cat {
-      font-size: 10px;
-      color: #A5A5A5;
-      margin-top: 2px;
+      font-size: 11px;
+      color: #9A9A9A;
     }
 
     .cat-list {
+      padding: 0 16px;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      padding: 0 16px;
     }
 
     .cat-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       background-color: #121212;
       border: 1px solid #222222;
       border-radius: 12px;
-      padding: 10px 14px;
-      font-size: 12px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
       font-weight: 500;
       color: #F2F2F2;
     }
 
     .cat-count {
-      color: #A5A5A5;
       font-size: 11px;
+      color: #9A9A9A;
     }
 
-    /* Tap gesture indicator */
+    /* Tap Ripple Indicator */
     .tap-indicator {
       position: absolute;
-      top: 175px;
-      left: 70px;
-      width: 32px;
-      height: 32px;
+      top: 198px;
+      left: 56px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.4);
+      background-color: rgba(255, 255, 255, 0.28);
       border: 2px solid #FFFFFF;
-      opacity: 0;
       pointer-events: none;
-      z-index: 30;
+      z-index: 50;
+      opacity: 0;
     }
 
     /* --------------------------------------
        SCREEN 2: AR Ruler
        -------------------------------------- */
     .tool-appbar {
+      height: 48px;
+      padding: 0 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 16px;
-      border-bottom: 1px solid #1C1C1C;
+      border-bottom: 1px solid #1E1E1E;
     }
 
     .appbar-left {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
     }
 
     .appbar-title {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       color: #F2F2F2;
     }
 
     .conf-chip {
       font-size: 10px;
-      font-weight: 500;
-      color: #F2F2F2;
-      background-color: #181818;
-      border: 1px solid #2A2A2A;
-      padding: 3px 8px;
-      border-radius: 6px;
+      font-weight: 700;
+      color: #A5A5A5;
+      background-color: #1A1A1A;
+      border: 1px solid #2E2E2E;
+      padding: 4px 8px;
+      border-radius: 12px;
+      letter-spacing: 0.5px;
     }
 
     .ar-viewfinder {
       position: relative;
       flex: 1;
-      background: radial-gradient(circle at 50% 45%, #181818 0%, #0A0A0A 80%);
+      background: radial-gradient(circle at 50% 60%, #161616 0%, #0A0A0A 80%);
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    /* 3D floor perspective grid lines */
     .ar-grid {
       position: absolute;
-      width: 100%;
-      height: 100%;
-      background: 
-        linear-gradient(to bottom, transparent 60%, rgba(255, 255, 255, 0.05) 100%),
-        repeating-linear-gradient(0deg, transparent, transparent 38px, rgba(255, 255, 255, 0.04) 38px, rgba(255, 255, 255, 0.04) 40px),
-        repeating-linear-gradient(90deg, transparent, transparent 38px, rgba(255, 255, 255, 0.04) 38px, rgba(255, 255, 255, 0.04) 40px);
-      transform: perspective(300px) rotateX(45deg) translateY(40px);
+      top: 20%;
+      left: -50%;
+      width: 200%;
+      height: 120%;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+      background-size: 28px 28px;
+      transform: perspective(300px) rotateX(62deg);
+      pointer-events: none;
     }
 
-    /* Measurement line and anchors */
     .ar-measurement-group {
-      position: absolute;
-      top: 40%;
-      left: 15%;
-      width: 70%;
+      position: relative;
+      width: 240px;
       height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .ar-line {
       position: absolute;
-      top: 50px;
-      left: 10px;
-      width: calc(100% - 20px);
+      width: 200px;
       height: 2px;
-      background: repeating-linear-gradient(90deg, #FFFFFF, #FFFFFF 6px, transparent 6px, transparent 10px);
+      background-color: #FFFFFF;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     }
 
     .ar-anchor {
       position: absolute;
-      top: 43px;
-      width: 16px;
-      height: 16px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
       background-color: #FFFFFF;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+      border: 3px solid #000000;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+      top: calc(50% - 7px);
     }
 
-    .anchor-left { left: 4px; }
-    .anchor-right { right: 4px; }
+    .anchor-left { left: 14px; }
+    .anchor-right { right: 14px; }
 
     .ar-label-chip {
       position: absolute;
-      top: 14px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #141414;
-      border: 1px solid #333333;
+      top: 10px;
+      background-color: rgba(18, 18, 18, 0.95);
+      border: 1px solid #404040;
+      border-radius: 16px;
       padding: 6px 14px;
-      border-radius: 100px;
       text-align: center;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
     }
 
     .ar-distance-num {
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
       color: #FFFFFF;
     }
 
     .ar-mode-bar {
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 12px;
+      height: 48px;
       background-color: #101010;
       border-top: 1px solid #1C1C1C;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 8px;
     }
 
     .mode-tab {
       font-size: 11px;
       font-weight: 500;
-      color: #A5A5A5;
-      padding: 5px 10px;
-      border-radius: 6px;
+      color: #9A9A9A;
+      padding: 6px 10px;
+      border-radius: 8px;
     }
 
     .mode-tab.active {
-      background-color: #222222;
       color: #FFFFFF;
+      background-color: #202020;
       font-weight: 700;
     }
 
     .shutter-bar {
-      height: 70px;
+      height: 72px;
+      background-color: #0A0A0A;
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #0A0A0A;
-      border-top: 1px solid #161616;
     }
 
     .shutter-btn {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       border: 3px solid #FFFFFF;
-      background-color: transparent;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .shutter-inner {
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background-color: #FFFFFF;
     }
@@ -495,46 +600,56 @@
     .doc-viewfinder {
       position: relative;
       flex: 1;
-      background-color: #121212;
-      overflow: hidden;
+      background-color: #0E0E0E;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      overflow: hidden;
     }
 
     .doc-sheet {
-      position: relative;
-      width: 240px;
+      width: 220px;
       height: 310px;
-      background-color: #1C1C1C;
-      border: 1px solid #333333;
-      border-radius: 6px;
-      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6);
+      background-color: #F0F0F0;
+      border-radius: 4px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+      position: relative;
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      padding: 20px;
       gap: 10px;
     }
 
     .doc-line {
       height: 6px;
-      background-color: #2E2E2E;
+      background-color: #222222;
       border-radius: 3px;
     }
 
     .doc-line.title {
+      height: 12px;
       width: 60%;
-      height: 10px;
-      background-color: #4A4A4A;
       margin-bottom: 6px;
+      background-color: #111111;
     }
 
-    /* Quad crop polygon overlay */
     .quad-overlay {
       position: absolute;
-      inset: -8px;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
       pointer-events: none;
+    }
+
+    .quad-border {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 2px dashed #000000;
+      background: rgba(0, 0, 0, 0.06);
     }
 
     .quad-pin {
@@ -542,30 +657,23 @@
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      background-color: #FFFFFF;
-      border: 2px solid #000000;
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      background-color: #000000;
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
     }
 
-    .pin-tl { top: 0; left: 0; }
-    .pin-tr { top: 8px; right: 0; }
-    .pin-br { bottom: 4px; right: 6px; }
-    .pin-bl { bottom: 0; left: 4px; }
-
-    .quad-border {
-      position: absolute;
-      inset: 8px;
-      border: 2px dashed #FFFFFF;
-      border-radius: 4px;
-    }
+    .pin-tl { top: -9px; left: -9px; }
+    .pin-tr { top: -9px; right: -9px; }
+    .pin-br { bottom: -9px; right: -9px; }
+    .pin-bl { bottom: -9px; left: -9px; }
 
     .doc-actions-bar {
+      background-color: #101010;
+      border-top: 1px solid #1E1E1E;
+      padding: 12px 16px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      padding: 12px 16px;
-      background-color: #0E0E0E;
-      border-top: 1px solid #1C1C1C;
+      gap: 12px;
     }
 
     .filter-tabs {
@@ -576,27 +684,29 @@
 
     .filter-tab {
       font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 6px;
-      background-color: #181818;
+      font-weight: 500;
+      color: #9A9A9A;
+      padding: 6px 12px;
+      border-radius: 14px;
+      background-color: #161616;
       border: 1px solid #282828;
-      color: #A5A5A5;
     }
 
     .filter-tab.active {
-      background-color: #FFFFFF;
-      color: #0A0A0A;
+      color: #FFFFFF;
+      background-color: #2E2E2E;
       font-weight: 700;
+      border-color: #484848;
     }
 
     .doc-btn-row {
       display: flex;
-      gap: 8px;
+      gap: 10px;
     }
 
     .doc-btn {
       flex: 1;
-      height: 36px;
+      height: 38px;
       border-radius: 8px;
       display: flex;
       align-items: center;
@@ -631,8 +741,8 @@
     }
 
     .outro-phone-icon {
-      width: 72px;
-      height: 72px;
+      width: 76px;
+      height: 76px;
       margin-bottom: 20px;
     }
 
@@ -641,9 +751,9 @@
     }
 
     .outro-phone-title {
-      font-size: 38px;
+      font-size: 40px;
       font-weight: 900;
-      letter-spacing: -1px;
+      letter-spacing: -1.5px;
       color: #FFFFFF;
       margin-bottom: 8px;
     }
@@ -663,259 +773,390 @@
       text-transform: uppercase;
       color: #FFFFFF;
       background-color: #1A1A1A;
-      border: 1px solid #333333;
-      padding: 8px 16px;
+      border: 1px solid #383838;
+      padding: 8px 18px;
       border-radius: 100px;
     }
 
-    /* --------------------------------------
-       SUBTITLES BAR (Synced at bottom)
-       -------------------------------------- */
-    .subtitles-container {
+    /* =========================================================
+       EMPHASIS BEATS: Callout frames (Problem 2)
+       ========================================================= */
+    .callout-frame {
       position: absolute;
-      bottom: 44px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 50;
-      background: rgba(18, 18, 18, 0.92);
-      border: 1px solid #2A2A2A;
-      border-radius: 100px;
-      padding: 12px 36px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
-      max-width: 960px;
-      text-align: center;
+      pointer-events: none;
+      z-index: 60;
+      opacity: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .subtitle-text {
-      font-size: 20px;
-      font-weight: 500;
-      color: #F2F2F2;
-      letter-spacing: 0.3px;
-      white-space: nowrap;
+    .callout-ar {
+      top: 240px;
+      left: 60px;
+      width: 240px;
+    }
+
+    .callout-doc {
+      top: 210px;
+      left: 50px;
+      width: 260px;
+    }
+
+    .callout-box {
+      width: 100%;
+      height: 110px;
+      border: 2px solid #FFFFFF;
+      border-radius: 16px;
+      box-shadow: 0 0 24px rgba(255, 255, 255, 0.3), inset 0 0 16px rgba(255, 255, 255, 0.08);
+      position: relative;
+    }
+
+    .callout-label {
+      margin-top: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: #000000;
+      background-color: #FFFFFF;
+      padding: 4px 12px;
+      border-radius: 100px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+      text-transform: uppercase;
     }
   </style>
 </head>
 <body>
 
   <div id="root" data-composition-id="root" data-width="1920" data-height="1080">
+    <!-- Subtle alive background -->
+    <div class="bg-grid"></div>
     <div class="bg-vignette"></div>
 
-    <!-- Audio Layers -->
-    <!-- Background music bed: volume 0.16, gentle fades -->
-    <audio id="bg-music" data-start="0" data-duration="20" data-track-index="10" data-volume="0.16" data-fade-in="0.4" data-fade-out="1.5" src="assets/music/happy-beats-business-moves-vol-12-by-ende-dot-app.mp3"></audio>
+    <!-- Audio Layers: Master synced voiceover + sidechain-ducked music bed + precision SFX -->
+    <audio id="bg-music" data-start="0" data-duration="20" data-track-index="10" data-volume="1.0" data-fade-in="0.3" data-fade-out="1.5" src="assets/music/music_ducked.mp3"></audio>
+    <audio id="vo" data-start="0" data-duration="20" data-track-index="3" data-volume="1.0" src="assets/voiceover.wav"></audio>
 
-    <!-- Narration track generated via Kokoro-82M -->
-    <audio id="vo" data-start="0.5" data-duration="16.85" data-track-index="3" data-volume="1" src="assets/voiceover.wav"></audio>
+    <!-- Hit/Swoosh SFX on key visual beats -->
+    <audio id="sfx-tap" data-start="4.40" data-duration="0.10" data-track-index="11" data-volume="0.65" src="assets/sfx/interface/click_001.ogg"></audio>
+    <audio id="sfx-ar" data-start="4.75" data-duration="0.15" data-track-index="12" data-volume="0.60" src="assets/sfx/interface/drop_001.ogg"></audio>
+    <audio id="sfx-ar-zoom" data-start="7.25" data-duration="0.10" data-track-index="13" data-volume="0.50" src="assets/sfx/interface/click_001.ogg"></audio>
+    <audio id="sfx-doc" data-start="9.35" data-duration="0.15" data-track-index="14" data-volume="0.60" src="assets/sfx/interface/drop_001.ogg"></audio>
+    <audio id="sfx-crop-tap" data-start="13.40" data-duration="0.10" data-track-index="15" data-volume="0.65" src="assets/sfx/interface/click_001.ogg"></audio>
+    <audio id="sfx-outro" data-start="13.85" data-duration="0.12" data-track-index="16" data-volume="0.55" src="assets/sfx/impact/impactSoft_medium_000.ogg"></audio>
 
-    <!-- UI SFX cues aligned with transitions -->
-    <audio id="sfx-tap" data-start="3.8" data-duration="0.10" data-track-index="11" data-volume="0.60" src="assets/sfx/interface/click_001.ogg"></audio>
-    <audio id="sfx-ar" data-start="4.6" data-duration="0.11" data-track-index="12" data-volume="0.55" src="assets/sfx/interface/drop_001.ogg"></audio>
-    <audio id="sfx-doc" data-start="9.2" data-duration="0.10" data-track-index="13" data-volume="0.55" src="assets/sfx/interface/click_001.ogg"></audio>
-    <audio id="sfx-outro" data-start="13.5" data-duration="0.12" data-track-index="14" data-volume="0.45" src="assets/sfx/impact/impactSoft_medium_000.ogg"></audio>
-
-    <!-- Top Keynote Badge -->
-    <div class="header-label-bar">
-      <span class="header-tag">Quacky · 100% Offline Android Utility Suite</span>
+    <!-- Top Eyebrow presentation badge -->
+    <div class="top-eyebrow">
+      <span class="eyebrow-pill">Quacky · 100% Offline Android Suite</span>
     </div>
 
-    <!-- Centered Phone Mockup -->
-    <div class="phone-container">
-      <div class="phone-notch">
-        <div class="camera-lens"></div>
-        <div class="speaker-slit"></div>
+    <!-- =========================================================
+         LEFT COLUMN: Large kinetic subtitles (Phrase by Phrase)
+         ========================================================= -->
+    <div class="text-column">
+      <!-- Chunk 1: "Meet Quacky." (0.60s – 1.85s) -->
+      <div id="chunk-1" class="chunk-container">
+        <div class="chunk-line">
+          <span class="word w-lg">Meet</span>
+          <span class="word w-lg">Quacky.</span>
+        </div>
       </div>
 
-      <div class="phone-screen">
-        <!-- Status Bar -->
-        <div class="status-bar">
-          <span>09:41</span>
-          <div class="status-icons">
-            <span style="font-size: 10px; color: #A5A5A5; margin-right: 4px;">✈</span>
-            <div class="status-dot"></div>
-            <div class="status-dot"></div>
-            <div class="status-dot"></div>
-            <span style="font-size: 10px; margin-left: 4px;">100%</span>
-          </div>
+      <!-- Chunk 2: "A pure offline utility suite for Android." (1.95s – 4.70s) -->
+      <div id="chunk-2" class="chunk-container">
+        <div class="chunk-line">
+          <span class="word">A pure</span>
+          <span class="word w-em">offline</span>
+          <span class="word">utility</span>
         </div>
-
-        <!-- Tap indicator for simulated user action -->
-        <div class="tap-indicator"></div>
-
-        <!-- SCREEN 1: Real Home Screen (0.0s – 4.6s) -->
-        <div id="screen-home" class="screen-layer">
-          <div class="home-header">
-            <span class="home-title">Quacky</span>
-            <svg class="quacky-icon" viewBox="90 110 400 280">
-              <path d="M 120,280 C 100,245 140,220 180,235 C 215,248 245,220 275,180 C 290,160 305,130 340,130 C 385,130 415,165 415,205 C 415,210 414,216 412,222 L 470,236 C 478,238 480,248 474,254 L 412,282 C 395,330 345,365 290,370 C 210,375 135,340 120,280 Z" />
-            </svg>
-          </div>
-
-          <div class="search-box">
-            <svg class="search-icon-svg" viewBox="0 0 24 24">
-              <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-            </svg>
-            <span class="search-placeholder">Search tools</span>
-          </div>
-
-          <div class="section-title">Pinned</div>
-          <div class="tools-grid">
-            <div class="app-tile tile-highlight" id="home-tile-ar">
-              <svg class="tile-icon-svg" viewBox="0 0 24 24">
-                <path d="M3 4v16h18V4H3zm16 14H5V6h14v12zm-3-8h-2v2h2v-2zm-6 0H8v2h2v-2zm3 4h-2v2h2v-2z"/>
-              </svg>
-              <div>
-                <div class="tile-name">AR Ruler</div>
-                <div class="tile-cat">Measure</div>
-              </div>
-            </div>
-
-            <div class="app-tile">
-              <svg class="tile-icon-svg" viewBox="0 0 24 24">
-                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H6v-2h6v2zm4-4H6v-2h10v2zm0-4H6V7h10v2z"/>
-              </svg>
-              <div>
-                <div class="tile-name">Doc Scanner</div>
-                <div class="tile-cat">Scan &amp; Generate</div>
-              </div>
-            </div>
-
-            <div class="app-tile">
-              <svg class="tile-icon-svg" viewBox="0 0 24 24">
-                <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H3V8h2v4h2V8h2v4h2V8h2v4h2V8h2v4h2V8h3v8z"/>
-              </svg>
-              <div>
-                <div class="tile-name">Screen Ruler</div>
-                <div class="tile-cat">Measure</div>
-              </div>
-            </div>
-
-            <div class="app-tile">
-              <svg class="tile-icon-svg" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-              </svg>
-              <div>
-                <div class="tile-name">Metadata</div>
-                <div class="tile-cat">Color &amp; Image</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="section-title">Categories</div>
-          <div class="cat-list">
-            <div class="cat-row">
-              <span>Measure</span>
-              <span class="cat-count">4 tools</span>
-            </div>
-            <div class="cat-row">
-              <span>Scan &amp; Generate</span>
-              <span class="cat-count">3 tools</span>
-            </div>
-            <div class="cat-row">
-              <span>Color &amp; Image</span>
-              <span class="cat-count">3 tools</span>
-            </div>
-          </div>
+        <div class="chunk-line">
+          <span class="word">suite for</span>
+          <span class="word w-em">Android.</span>
         </div>
+      </div>
 
-        <!-- SCREEN 2: Real AR Ruler (4.6s – 9.2s) -->
-        <div id="screen-ar" class="screen-layer">
-          <div class="tool-appbar">
-            <div class="appbar-left">
-              <span style="font-size: 16px; color: #F2F2F2;">‹</span>
-              <span class="appbar-title">AR Ruler</span>
-            </div>
-            <div class="conf-chip">●●● High</div>
-          </div>
-
-          <div class="ar-viewfinder">
-            <div class="ar-grid" data-layout-allow-overflow></div>
-
-            <div class="ar-measurement-group">
-              <div class="ar-line"></div>
-              <div class="ar-anchor anchor-left"></div>
-              <div class="ar-anchor anchor-right"></div>
-              <div class="ar-label-chip">
-                <div class="ar-distance-num">1.84 m</div>
-                <div style="font-size: 9px; color: #A5A5A5;">M1 · Distance</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="ar-mode-bar">
-            <span class="mode-tab active">Distance</span>
-            <span class="mode-tab">Path</span>
-            <span class="mode-tab">Height</span>
-            <span class="mode-tab">Angle</span>
-          </div>
-
-          <div class="shutter-bar">
-            <div class="shutter-btn">
-              <div class="shutter-inner"></div>
-            </div>
-          </div>
+      <!-- Chunk 3: "Measure real spaces" (5.15s – 6.70s) -->
+      <div id="chunk-3" class="chunk-container">
+        <div class="chunk-line">
+          <span class="word w-lg">Measure</span>
+          <span class="word w-lg">real</span>
         </div>
-
-        <!-- SCREEN 3: Real Document Scanner (9.2s – 13.5s) -->
-        <div id="screen-doc" class="screen-layer">
-          <div class="tool-appbar">
-            <div class="appbar-left">
-              <span style="font-size: 16px; color: #F2F2F2;">‹</span>
-              <span class="appbar-title">Document Scanner</span>
-            </div>
-            <div class="conf-chip">Perspective Quad</div>
-          </div>
-
-          <div class="doc-viewfinder">
-            <div class="doc-sheet">
-              <div class="doc-line title"></div>
-              <div class="doc-line" style="width: 80%;"></div>
-              <div class="doc-line" style="width: 90%;"></div>
-              <div class="doc-line" style="width: 75%;"></div>
-              <div class="doc-line" style="width: 85%;"></div>
-              <div class="doc-line" style="width: 60%;"></div>
-
-              <!-- Perspective Quad Cropping overlay -->
-              <div class="quad-overlay">
-                <div class="quad-border"></div>
-                <div class="quad-pin pin-tl"></div>
-                <div class="quad-pin pin-tr"></div>
-                <div class="quad-pin pin-br"></div>
-                <div class="quad-pin pin-bl"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="doc-actions-bar">
-            <div class="filter-tabs">
-              <span class="filter-tab">Magic Color</span>
-              <span class="filter-tab active">B&amp;W</span>
-              <span class="filter-tab">Grayscale</span>
-            </div>
-            <div class="doc-btn-row">
-              <div class="doc-btn btn-secondary">Reset</div>
-              <div class="doc-btn btn-primary">Apply Crop</div>
-            </div>
-          </div>
+        <div class="chunk-line">
+          <span class="word w-lg">spaces.</span>
         </div>
+      </div>
 
-        <!-- SCREEN 4: Outro Lockup inside phone (13.5s – 20.0s) -->
-        <div id="screen-outro" class="screen-layer">
-          <div class="outro-screen-content">
-            <svg class="outro-phone-icon" viewBox="90 110 400 280">
-              <path d="M 120,280 C 100,245 140,220 180,235 C 215,248 245,220 275,180 C 290,160 305,130 340,130 C 385,130 415,165 415,205 C 415,210 414,216 412,222 L 470,236 C 478,238 480,248 474,254 L 412,282 C 395,330 345,365 290,370 C 210,375 135,340 120,280 Z" />
-            </svg>
-            <div class="outro-phone-title">Quacky</div>
-            <p class="outro-phone-tagline">Pure offline utility suite.<br>Zero network permissions.</p>
-            <div class="outro-phone-badge">100% Offline</div>
-          </div>
+      <!-- Chunk 4: "with precision AR spatial math." (6.80s – 9.20s) -->
+      <div id="chunk-4" class="chunk-container">
+        <div class="chunk-line">
+          <span class="word">with</span>
+          <span class="word w-em">precision</span>
+          <span class="word">AR</span>
         </div>
+        <div class="chunk-line">
+          <span class="word w-em">spatial</span>
+          <span class="word">math.</span>
+        </div>
+      </div>
 
+      <!-- Chunk 5: "Scan and perspective-crop" (9.75s – 11.50s) -->
+      <div id="chunk-5" class="chunk-container">
+        <div class="chunk-line">
+          <span class="word w-lg">Scan &amp;</span>
+          <span class="word w-lg">crop</span>
+        </div>
+        <div class="chunk-line">
+          <span class="word w-lg">documents.</span>
+        </div>
+      </div>
+
+      <!-- Chunk 6: "documents completely on-device." (11.60s – 13.75s) -->
+      <div id="chunk-6" class="chunk-container">
+        <div class="chunk-line">
+          <span class="word">completely</span>
+          <span class="word w-em">on-device.</span>
+        </div>
+        <div class="chunk-line">
+          <span class="word w-dim">Zero upload.</span>
+        </div>
+      </div>
+
+      <!-- Chunk 7: "Zero network permissions." (14.15s – 15.95s) -->
+      <div id="chunk-7" class="chunk-container">
+        <div class="chunk-line">
+          <span class="word w-lg">Zero</span>
+          <span class="word w-lg">network</span>
+        </div>
+        <div class="chunk-line">
+          <span class="word w-lg">permissions.</span>
+        </div>
+      </div>
+
+      <!-- Chunk 8: "Your phone already has everything it needs." (16.00s – 18.50s) -->
+      <div id="chunk-8" class="chunk-container">
+        <div class="chunk-line">
+          <span class="word">Your phone</span>
+          <span class="word w-em">already has</span>
+        </div>
+        <div class="chunk-line">
+          <span class="word w-em">everything</span>
+          <span class="word">it needs.</span>
+        </div>
       </div>
     </div>
 
-    <!-- Synced Subtitles Bar at canvas bottom -->
-    <div class="subtitles-container">
-      <div id="subtitle" class="subtitle-text">Meet Quacky. A pure offline utility suite for Android.</div>
+    <!-- =========================================================
+         RIGHT COLUMN: Centered 3D Phone Mockup (Right third)
+         ========================================================= -->
+    <div class="phone-stage">
+      <div class="phone-rig">
+        <div class="phone-container">
+          <!-- Hardware Dynamic Island -->
+          <div class="phone-notch">
+            <div class="camera-lens"></div>
+            <div class="speaker-slit"></div>
+          </div>
+
+          <div class="phone-screen">
+            <!-- Status Bar -->
+            <div class="status-bar">
+              <span>09:41</span>
+              <div class="status-icons">
+                <span style="font-size: 10px; color: #A5A5A5; margin-right: 4px;">✈</span>
+                <div class="status-dot"></div>
+                <div class="status-dot"></div>
+                <div class="status-dot"></div>
+                <span style="font-size: 10px; margin-left: 4px;">100%</span>
+              </div>
+            </div>
+
+            <!-- Simulated Tap Indicator -->
+            <div class="tap-indicator" id="tap-home"></div>
+            <div class="tap-indicator" id="tap-doc" style="top: 692px; left: 240px; width: 36px; height: 36px;"></div>
+
+            <!-- SCREEN 1: Real Home Screen -->
+            <div id="screen-home" class="screen-layer">
+              <div class="home-header">
+                <span class="home-title">Quacky</span>
+                <svg class="quacky-icon" viewBox="90 110 400 280">
+                  <path d="M 120,280 C 100,245 140,220 180,235 C 215,248 245,220 275,180 C 290,160 305,130 340,130 C 385,130 415,165 415,205 C 415,210 414,216 412,222 L 470,236 C 478,238 480,248 474,254 L 412,282 C 395,330 345,365 290,370 C 210,375 135,340 120,280 Z" />
+                </svg>
+              </div>
+
+              <div class="search-box">
+                <svg class="search-icon-svg" viewBox="0 0 24 24">
+                  <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+                <span class="search-placeholder">Search tools</span>
+              </div>
+
+              <div class="section-title">Pinned</div>
+              <div class="tools-grid">
+                <div class="app-tile tile-highlight" id="home-tile-ar">
+                  <svg class="tile-icon-svg" viewBox="0 0 24 24">
+                    <path d="M3 4v16h18V4H3zm16 14H5V6h14v12zm-3-8h-2v2h2v-2zm-6 0H8v2h2v-2zm3 4h-2v2h2v-2z"/>
+                  </svg>
+                  <div>
+                    <div class="tile-name">AR Ruler</div>
+                    <div class="tile-cat">Measure</div>
+                  </div>
+                </div>
+
+                <div class="app-tile">
+                  <svg class="tile-icon-svg" viewBox="0 0 24 24">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H6v-2h6v2zm4-4H6v-2h10v2zm0-4H6V7h10v2z"/>
+                  </svg>
+                  <div>
+                    <div class="tile-name">Doc Scanner</div>
+                    <div class="tile-cat">Scan &amp; Generate</div>
+                  </div>
+                </div>
+
+                <div class="app-tile">
+                  <svg class="tile-icon-svg" viewBox="0 0 24 24">
+                    <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H3V8h2v4h2V8h2v4h2V8h2v4h2V8h2v4h2V8h3v8z"/>
+                  </svg>
+                  <div>
+                    <div class="tile-name">Screen Ruler</div>
+                    <div class="tile-cat">Measure</div>
+                  </div>
+                </div>
+
+                <div class="app-tile">
+                  <svg class="tile-icon-svg" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                  </svg>
+                  <div>
+                    <div class="tile-name">Metadata</div>
+                    <div class="tile-cat">Color &amp; Image</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section-title">Categories</div>
+              <div class="cat-list">
+                <div class="cat-row">
+                  <span>Measure</span>
+                  <span class="cat-count">4 tools</span>
+                </div>
+                <div class="cat-row">
+                  <span>Scan &amp; Generate</span>
+                  <span class="cat-count">3 tools</span>
+                </div>
+                <div class="cat-row">
+                  <span>Color &amp; Image</span>
+                  <span class="cat-count">3 tools</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- SCREEN 2: Real AR Ruler -->
+            <div id="screen-ar" class="screen-layer">
+              <div class="tool-appbar">
+                <div class="appbar-left">
+                  <span style="font-size: 16px; color: #F2F2F2;">‹</span>
+                  <span class="appbar-title">AR Ruler</span>
+                </div>
+                <div class="conf-chip">●●● High</div>
+              </div>
+
+              <div class="ar-viewfinder">
+                <div class="ar-grid" data-layout-allow-overflow></div>
+
+                <div class="ar-measurement-group">
+                  <div class="ar-line"></div>
+                  <div class="ar-anchor anchor-left"></div>
+                  <div class="ar-anchor anchor-right"></div>
+                  <div class="ar-label-chip">
+                    <div class="ar-distance-num">1.84 m</div>
+                    <div style="font-size: 9px; color: #A5A5A5;">M1 · Distance</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ar-mode-bar">
+                <span class="mode-tab active">Distance</span>
+                <span class="mode-tab">Path</span>
+                <span class="mode-tab">Height</span>
+                <span class="mode-tab">Angle</span>
+              </div>
+
+              <div class="shutter-bar">
+                <div class="shutter-btn" id="btn-shutter">
+                  <div class="shutter-inner"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SCREEN 3: Real Document Scanner -->
+            <div id="screen-doc" class="screen-layer">
+              <div class="tool-appbar">
+                <div class="appbar-left">
+                  <span style="font-size: 16px; color: #F2F2F2;">‹</span>
+                  <span class="appbar-title">Document Scanner</span>
+                </div>
+                <div class="conf-chip">Perspective Quad</div>
+              </div>
+
+              <div class="doc-viewfinder">
+                <div class="doc-sheet">
+                  <div class="doc-line title"></div>
+                  <div class="doc-line" style="width: 80%;"></div>
+                  <div class="doc-line" style="width: 90%;"></div>
+                  <div class="doc-line" style="width: 75%;"></div>
+                  <div class="doc-line" style="width: 85%;"></div>
+                  <div class="doc-line" style="width: 60%;"></div>
+
+                  <!-- Perspective Quad Cropping overlay -->
+                  <div class="quad-overlay">
+                    <div class="quad-border"></div>
+                    <div class="quad-pin pin-tl"></div>
+                    <div class="quad-pin pin-tr"></div>
+                    <div class="quad-pin pin-br"></div>
+                    <div class="quad-pin pin-bl"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="doc-actions-bar">
+                <div class="filter-tabs">
+                  <span class="filter-tab">Magic Color</span>
+                  <span class="filter-tab active" id="tab-bw">B&amp;W</span>
+                  <span class="filter-tab">Grayscale</span>
+                </div>
+                <div class="doc-btn-row">
+                  <div class="doc-btn btn-secondary">Reset</div>
+                  <div class="doc-btn btn-primary" id="btn-apply-crop">Apply Crop</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SCREEN 4: Outro Lockup inside phone -->
+            <div id="screen-outro" class="screen-layer">
+              <div class="outro-screen-content">
+                <svg class="outro-phone-icon" viewBox="90 110 400 280">
+                  <path d="M 120,280 C 100,245 140,220 180,235 C 215,248 245,220 275,180 C 290,160 305,130 340,130 C 385,130 415,165 415,205 C 415,210 414,216 412,222 L 470,236 C 478,238 480,248 474,254 L 412,282 C 395,330 345,365 290,370 C 210,375 135,340 120,280 Z" />
+                </svg>
+                <div class="outro-phone-title">Quacky</div>
+                <p class="outro-phone-tagline">Pure offline utility suite.<br>Zero network permissions.</p>
+                <div class="outro-phone-badge">100% Offline</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Emphasis Callout Elements (Problem 2) -->
+        <div class="callout-frame callout-ar" id="callout-ar">
+          <div class="callout-box"></div>
+          <div class="callout-label">SPATIAL CALIPER · 1.84 m</div>
+        </div>
+
+        <div class="callout-frame callout-doc" id="callout-doc">
+          <div class="callout-box"></div>
+          <div class="callout-label">HOMOGRAPHY QUAD · ON-DEVICE</div>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -925,137 +1166,238 @@
   <script>
     const tl = gsap.timeline({ paused: true });
 
-    const easeOut = "power2.out";
+    const easeOut = "power3.out";
     const easeInOut = "power2.inOut";
+    const springEase = "back.out(1.3)";
 
-    // 0. Intro presentation entrance
-    tl.to(".header-label-bar", { opacity: 1, duration: 0.8, ease: easeOut }, 0.2);
-    tl.fromTo(".phone-container", 
-      { opacity: 0, y: 30, scale: 0.96 }, 
-      { opacity: 1, y: 0, scale: 1.0, duration: 1.0, ease: easeOut }, 
+    // =========================================================
+    // 0. CONTINUOUS CAMERA & AMBIENT DRIFT (Problem 2)
+    // Never static throughout the entire 20.0s timeline
+    // =========================================================
+    tl.to(".bg-grid", { x: -40, y: -25, duration: 20.0, ease: "none" }, 0);
+    tl.to(".bg-vignette", { opacity: 0.82, duration: 4.5, yoyo: true, repeat: 4, ease: "sine.inOut" }, 0);
+    tl.to(".phone-stage", { y: -20, scale: 1.03, duration: 20.0, ease: "none" }, 0);
+
+    // Intro presentation top badge
+    tl.to(".top-eyebrow", { opacity: 1, duration: 0.8, ease: "power2.out" }, 0.2);
+
+    // =========================================================
+    // PHONE ENTRANCE (Problem 2)
+    // Scale and rise with spring ease (slight overshoot), soft shadow,
+    // subtle 3D tilt that eases to flat
+    // =========================================================
+    tl.fromTo(".phone-rig", 
+      { opacity: 0, y: 80, scale: 0.86, rotateY: -14, rotateX: 6 },
+      { opacity: 1, y: 0, scale: 1.0, rotateY: 0, rotateX: 0, duration: 1.15, ease: springEase },
       0.1
     );
 
-    // ==========================================
-    // BEAT 1: Home Screen (0.0s – 4.6s)
-    // ==========================================
-    tl.set("#screen-home", { opacity: 1 }, 0);
+    // =========================================================
+    // HELPER: Kinetic Word-Stagger Helper
+    // Reveals words staggered ~70ms apart with fade and upward slide
+    // Exits with quick clean fade
+    // =========================================================
+    function animateChunk(chunkId, inTime, outTime) {
+      const container = document.querySelector(chunkId);
+      const words = `${chunkId} .word`;
+
+      // In
+      tl.set(container, { opacity: 1 }, inTime);
+      tl.fromTo(words, 
+        { opacity: 0, y: 26 },
+        { opacity: 1, y: 0, stagger: 0.07, duration: 0.35, ease: easeOut },
+        inTime
+      );
+
+      // Out
+      tl.to(words, {
+        opacity: 0,
+        y: -14,
+        stagger: 0.02,
+        duration: 0.18,
+        ease: "power2.in"
+      }, outTime);
+      tl.set(container, { opacity: 0 }, outTime + 0.22);
+    }
+
+    // =========================================================
+    // BEAT 1: Home Suite & Introductory Claims (0.0s – 4.7s)
+    // Phrase 1 (0.60s – 1.85s): "Meet Quacky."
+    // Phrase 2 (1.95s – 4.70s): "A pure offline utility suite for Android."
+    // =========================================================
+    tl.set("#screen-home", { opacity: 1, scale: 1.0 }, 0);
     tl.fromTo("#screen-home > div", 
-      { opacity: 0, y: 12 }, 
-      { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: easeOut }, 
-      0.3
+      { opacity: 0, y: 14 }, 
+      { opacity: 1, y: 0, duration: 0.6, stagger: 0.07, ease: easeOut }, 
+      0.35
     );
 
-    // Simulated tap on AR Ruler tile at 3.65s
-    tl.fromTo(".tap-indicator", 
-      { opacity: 0, scale: 0.6 }, 
-      { opacity: 1, scale: 1.2, duration: 0.2, ease: "sine.out" }, 
-      3.65
+    // Subtitle Chunk 1 (Audio offset 0.600s, duration 0.981s)
+    animateChunk("#chunk-1", 0.58, 1.70);
+
+    // Subtitle Chunk 2 (Audio offset 1.950s, duration 2.624s)
+    animateChunk("#chunk-2", 1.92, 4.60);
+
+    // Tap Interaction on AR Ruler tile at 4.40s
+    tl.fromTo("#tap-home", 
+      { opacity: 0, scale: 0.5 }, 
+      { opacity: 1, scale: 1.25, duration: 0.22, ease: "sine.out" }, 
+      4.35
     );
-    tl.to(".tap-indicator", { opacity: 0, scale: 1.6, duration: 0.25, ease: "sine.in" }, 3.86);
-    tl.to("#home-tile-ar", { backgroundColor: "#262626", borderColor: "#555555", duration: 0.15 }, 3.75);
+    tl.to("#tap-home", { opacity: 0, scale: 1.7, duration: 0.25, ease: "sine.in" }, 4.58);
+    tl.to("#home-tile-ar", { backgroundColor: "#2A2A2A", borderColor: "#666666", scale: 0.96, duration: 0.15, yoyo: true, repeat: 1 }, 4.42);
 
-    // Transition from Home to AR Ruler at 4.6s
-    tl.to("#screen-home", { opacity: 0, scale: 0.95, duration: 0.45, ease: easeInOut }, 4.3);
+    // Screen 1 -> Screen 2 transition: shared element scale morph (4.65s – 5.10s)
+    tl.to("#screen-home", { opacity: 0, scale: 0.92, duration: 0.45, ease: easeInOut }, 4.65);
 
-    // Subtitle 1 (0.5s – 4.6s)
-    tl.set("#subtitle", { textContent: "Meet Quacky. A pure offline utility suite for Android." }, 0);
-
-    // ==========================================
-    // BEAT 2: AR Ruler Screen (4.6s – 9.2s)
-    // ==========================================
+    // =========================================================
+    // BEAT 2: AR Ruler Demo & Spatial Caliper (4.7s – 9.3s)
+    // Phrase 3 (5.20s – 6.70s): "Measure real spaces"
+    // Phrase 4 (6.85s – 9.20s): "with precision AR spatial math."
+    // =========================================================
     tl.fromTo("#screen-ar", 
-      { opacity: 0, scale: 1.05 }, 
+      { opacity: 0, scale: 1.08 }, 
       { opacity: 1, scale: 1.0, duration: 0.5, ease: easeOut }, 
-      4.6
+      4.75
     );
 
-    // Measurement line and pins animate
+    // Subtitle Chunk 3 (Audio offset 5.200s, duration 1.387s)
+    animateChunk("#chunk-3", 5.15, 6.60);
+
+    // Subtitle Chunk 4 (Audio offset 6.850s, duration 2.176s)
+    animateChunk("#chunk-4", 6.80, 9.15);
+
+    // Caliper line and pins animate
     tl.fromTo(".ar-measurement-group", 
-      { opacity: 0, scale: 0.85 }, 
-      { opacity: 1, scale: 1.0, duration: 0.8, ease: easeOut }, 
-      4.9
+      { opacity: 0, scale: 0.8 }, 
+      { opacity: 1, scale: 1.0, duration: 0.7, ease: easeOut }, 
+      4.95
     );
 
-    // Subtle breathing pulse on the distance chip
+    // EMPHASIS BEAT: Zoom into AR chip & draw callout frame for ~1s (7.20s – 8.40s)
+    tl.to(".phone-rig", {
+      scale: 1.12,
+      x: -16,
+      y: -18,
+      duration: 0.6,
+      ease: "power2.out"
+    }, 7.20);
+    tl.fromTo("#callout-ar", 
+      { opacity: 0, scale: 0.9 }, 
+      { opacity: 1, scale: 1.0, duration: 0.35, ease: "back.out(1.2)" }, 
+      7.30
+    );
     tl.to(".ar-label-chip", { 
-      borderColor: "#555555", 
-      boxShadow: "0 0 20px rgba(255, 255, 255, 0.2)",
-      duration: 0.5, 
+      borderColor: "#FFFFFF", 
+      boxShadow: "0 0 24px rgba(255, 255, 255, 0.4)",
+      duration: 0.45,
       yoyo: true, 
       repeat: 1, 
       ease: "sine.inOut" 
-    }, 6.8);
+    }, 7.35);
 
-    // Transition to Document Scanner at 9.0s
-    tl.to("#screen-ar", { opacity: 0, scale: 0.95, duration: 0.45, ease: easeInOut }, 8.9);
+    // Ease back out
+    tl.to("#callout-ar", { opacity: 0, scale: 0.95, duration: 0.30, ease: "power2.in" }, 8.35);
+    tl.to(".phone-rig", { scale: 1.0, x: 0, y: 0, duration: 0.65, ease: easeInOut }, 8.45);
 
-    // Subtitle 2 (4.7s – 9.0s)
-    tl.to(".subtitles-container", { opacity: 0.3, duration: 0.15, yoyo: true, repeat: 1 }, 4.6);
-    tl.set("#subtitle", { textContent: "Measure real spaces with precision AR spatial math." }, 4.7);
+    // Shutter button click ripple at 9.25s
+    tl.to("#btn-shutter", { scale: 0.90, duration: 0.12, yoyo: true, repeat: 1, ease: "sine.inOut" }, 9.25);
 
-    // ==========================================
-    // BEAT 3: Document Scanner Screen (9.2s – 13.5s)
-    // ==========================================
+    // Screen 2 -> Screen 3 transition: morph crossfade (9.25s – 9.70s)
+    tl.to("#screen-ar", { opacity: 0, scale: 0.92, duration: 0.45, ease: easeInOut }, 9.25);
+
+    // =========================================================
+    // BEAT 3: Document Scanner Demo (9.3s – 13.8s)
+    // Phrase 5 (9.80s – 11.50s): "Scan and perspective-crop"
+    // Phrase 6 (11.65s – 13.75s): "documents completely on-device."
+    // =========================================================
     tl.fromTo("#screen-doc", 
-      { opacity: 0, scale: 1.05 }, 
+      { opacity: 0, scale: 1.08 }, 
       { opacity: 1, scale: 1.0, duration: 0.5, ease: easeOut }, 
-      9.2
+      9.35
     );
 
-    // Quad pins adjust slightly simulating active homography crop
+    // Subtitle Chunk 5 (Audio offset 9.800s, duration 1.621s)
+    animateChunk("#chunk-5", 9.75, 11.45);
+
+    // Subtitle Chunk 6 (Audio offset 11.650s, duration 1.899s)
+    animateChunk("#chunk-6", 11.60, 13.70);
+
+    // Quad pins animate and homography lines activate
     tl.fromTo(".quad-overlay", 
-      { opacity: 0, scale: 0.95 }, 
-      { opacity: 1, scale: 1.0, duration: 0.7, ease: easeOut }, 
-      9.5
-    );
-
-    // Quad pin micro-movement
-    tl.to(".pin-tr", { x: -4, y: 6, duration: 0.6, ease: easeInOut }, 10.4);
-    tl.to(".pin-br", { x: -6, y: -4, duration: 0.6, ease: easeInOut }, 10.7);
-
-    // Transition to Outro at 13.3s
-    tl.to("#screen-doc", { opacity: 0, scale: 0.95, duration: 0.45, ease: easeInOut }, 13.2);
-
-    // Subtitle 3 (9.1s – 13.2s)
-    tl.to(".subtitles-container", { opacity: 0.3, duration: 0.15, yoyo: true, repeat: 1 }, 9.0);
-    tl.set("#subtitle", { textContent: "Scan and perspective-crop documents completely on-device." }, 9.1);
-
-    // ==========================================
-    // BEAT 4: Outro Lockup (13.5s – 20.0s)
-    // ==========================================
-    tl.fromTo("#screen-outro", 
-      { opacity: 0, scale: 1.05 }, 
+      { opacity: 0, scale: 0.92 }, 
       { opacity: 1, scale: 1.0, duration: 0.6, ease: easeOut }, 
-      13.5
+      9.60
     );
 
-    // Phone gently breathes in center with subtle elevation
-    tl.to(".phone-container", {
-      scale: 1.02,
+    // EMPHASIS BEAT: Zoom into Quad corners & callout frame for ~1s (10.40s – 11.60s)
+    tl.to(".phone-rig", {
+      scale: 1.10,
+      x: -14,
+      y: 12,
+      duration: 0.6,
+      ease: "power2.out"
+    }, 10.40);
+    tl.fromTo("#callout-doc", 
+      { opacity: 0, scale: 0.9 }, 
+      { opacity: 1, scale: 1.0, duration: 0.35, ease: "back.out(1.2)" }, 
+      10.50
+    );
+
+    // Corner pin adjustment simulating perspective correction
+    tl.to(".pin-tr", { x: -6, y: 8, duration: 0.6, ease: easeInOut }, 10.60);
+    tl.to(".pin-br", { x: -8, y: -6, duration: 0.6, ease: easeInOut }, 10.85);
+
+    // Ease back out
+    tl.to("#callout-doc", { opacity: 0, scale: 0.95, duration: 0.30, ease: "power2.in" }, 11.55);
+    tl.to(".phone-rig", { scale: 1.0, x: 0, y: 0, duration: 0.65, ease: easeInOut }, 11.65);
+
+    // Tap "Apply Crop" button at 13.40s
+    tl.fromTo("#tap-doc", 
+      { opacity: 0, scale: 0.5 }, 
+      { opacity: 1, scale: 1.25, duration: 0.20, ease: "sine.out" }, 
+      13.35
+    );
+    tl.to("#tap-doc", { opacity: 0, scale: 1.6, duration: 0.22, ease: "sine.in" }, 13.55);
+    tl.to("#btn-apply-crop", { backgroundColor: "#D4D4D4", scale: 0.95, duration: 0.12, yoyo: true, repeat: 1 }, 13.40);
+
+    // Document rectifies and zooms (13.50s – 13.85s)
+    tl.to(".doc-sheet", { scale: 1.08, duration: 0.35, ease: easeInOut }, 13.50);
+
+    // Screen 3 -> Screen 4 transition (13.75s – 14.15s)
+    tl.to("#screen-doc", { opacity: 0, scale: 0.92, duration: 0.40, ease: easeInOut }, 13.75);
+
+    // =========================================================
+    // BEAT 4: Brand Outro & Tagline Resolution (13.8s – 20.0s)
+    // Phrase 7 (14.20s – 15.95s): "Zero network permissions."
+    // Phrase 8 (16.05s – 18.27s): "Your phone already has everything it needs."
+    // 18.27s – 20.0s: Confident hold (>= 1.5s)
+    // =========================================================
+    tl.fromTo("#screen-outro", 
+      { opacity: 0, scale: 1.08 }, 
+      { opacity: 1, scale: 1.0, duration: 0.55, ease: easeOut }, 
+      13.85
+    );
+
+    // Subtitle Chunk 7 (Audio offset 14.200s, duration 1.579s)
+    animateChunk("#chunk-7", 14.15, 15.90);
+
+    // Subtitle Chunk 8 (Audio offset 16.050s, duration 2.219s)
+    animateChunk("#chunk-8", 16.00, 18.35);
+
+    // Confident resolution scale-in into final brand lockup
+    tl.to(".phone-rig", {
+      scale: 1.04,
       duration: 1.2,
-      ease: easeOut
-    }, 13.8);
+      ease: "power2.out"
+    }, 14.2);
 
-    // Subtitle 4 (13.3s – 19.5s)
-    tl.to(".subtitles-container", { opacity: 0.3, duration: 0.15, yoyo: true, repeat: 1 }, 13.2);
-    tl.set("#subtitle", { textContent: "Zero network permissions. Your phone already has everything it needs." }, 13.3);
-
-    // Confident hold through 20.0s
-    tl.to(".phone-container", {
-      scale: 1.03,
-      duration: 5.0,
+    // Outro hold through 20.0s (Prompt requires at least 1.5s confident hold!)
+    tl.to(".phone-rig", {
+      scale: 1.05,
+      duration: 4.5,
       ease: "sine.out"
-    }, 15.0);
-    tl.to(".subtitles-container", {
-      opacity: 1,
-      duration: 4.5
-    }, 15.0);
-    tl.to(".subtitles-container", {
-      opacity: 0,
-      duration: 0.5,
-      ease: easeInOut
-    }, 19.5);
+    }, 15.5);
 
     // Register root timeline for Hyperframes runtime control
     window.__timelines = window.__timelines || {};

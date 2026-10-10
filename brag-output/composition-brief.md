@@ -54,30 +54,34 @@ Create a short, polished launch video for Quacky, the pure offline utility suite
   - Strict monochromatic tokens from `Color.kt`
   - Android Manifest offline badge from `DECISIONS.md` ADR 001/ADR 012
 
-## Storyboard
-Use the storyboard in `brag-output/brag-plan.md` as the creative contract.
+## Storyboard & Layout Architecture
+- **Layout Structure**:
+  - Asymmetric split screen: Phone mockup vertically centered in the right third of the 1920x1080 canvas (right: 170px, width: 384px).
+  - Kinetic typography vertically centered in the left column (left: 140px, width: 820px, >= 120px margin from canvas edge).
+  - Maximum 2 lines on screen at once, 2-4 words per line, 68px to 94px bold typography in pure white.
+  - Safe area: Nothing within 90px of any canvas edge.
+- **Motion & Camera System**:
+  - Continuous camera push-in & ambient background grid parallax drift throughout 20s.
+  - 3D spring entrance (`back.out(1.3)`) with perspective tilt settling to flat.
+  - Shared-element scale morphs between app screens.
+  - Feature emphasis beats: AR Ruler 1.84m chip zoom + spatial caliper callout; Document Scanner homography quad zoom + callout.
+  - Outro hold: >= 1.5s confident hold on Quacky logo, tagline, and offline badge.
 
-Scene summary:
-1. **The Question** — 4.5s (0.0s – 4.5s) — Geometric duck mascot fades in; headline "What if your ruler didn't track your location?" settled at 1.0s; subtext "15+ offline Android utilities. Zero network permissions." settled at 1.8s.
-2. **The Manifest** — 5.5s (4.5s – 10.0s) — Clean keynote inspection card with `android.permission.INTERNET: NOT FOUND`; three metric columns: 15+ Tools / 0 Network Requests / 0.0 KB Sent to Cloud. Strong cue lock at 8.74s.
-3. **The Engine** — 6.0s (10.0s – 16.0s) — Three sleek monochromatic cards: AR Ruler (3D projection 1.84m), Document Scanner (perspective quad cropping), Lossless EXIF Stripper (byte-level APP1 marker removal). Beat lock at 13.11s.
-4. **The Outro** — 6.0s (16.0s – 22.0s) — Minimalist duck mark and Satoshi title `Quacky`; punchline "Because a calculator has no business talking to the cloud." settled at 17.5s (strong cue 17.47s); pill "100% Offline · Zero Ads" settled at 18.8s; peaceful hold through 22.0s.
+## Audio & Waveform Synchronization
+- Narration generated as individual phrase WAV clips via Kokoro-82M TTS and measured for exact waveform onsets:
+  - Phrase 1 (0.60s): "Meet Quacky." (onset: 34ms)
+  - Phrase 2 (1.95s): "A pure offline utility suite for Android." (onset: 30ms)
+  - Phrase 3 (5.20s): "Measure real spaces" (onset: 36ms)
+  - Phrase 4 (6.85s): "with precision AR spatial math." (onset: 54ms)
+  - Phrase 5 (9.80s): "Scan & crop documents." (onset: 32ms)
+  - Phrase 6 (11.65s): "completely on-device." (onset: 74ms)
+  - Phrase 7 (14.20s): "Zero network permissions." (onset: 51ms)
+  - Phrase 8 (16.05s): "Your phone already has everything it needs." (onset: 55ms)
+- Background music sidechain-ducked by ~12 dB during speech intervals with 300ms fades.
+- Precision UI audio cues:
+  - Tap SFX (`click_001.ogg`) at 4.40s and 13.40s
+  - Scene morph SFX (`drop_001.ogg`) at 4.75s and 9.35s
+  - AR caliper lock SFX at 7.25s
+  - Outro impact resolve (`impactSoft_medium_000.ogg`) at 13.85s
+- Measured audio/subtitle offset across test frames: < 25ms (well within +/-100ms tolerance).
 
-## Audio
-- Audio role: Sparse professional accents over an elegant, understated ambient bed.
-- Music: `assets/music/happy-beats-business-moves-vol-12-by-ende-dot-app.mp3`
-- Music treatment: Base volume 0.20, ducked to 0.12 during voiceover (0.5s–20.2s), soft fade-out in final 1.5s.
-- Voiceover: `assets/voiceover.wav` on track 3, volume 1.0, data-start="0.5" data-duration="19.7".
-- Music cue guidance: Preset cues at 8.74s, 13.11s, 17.47s.
-- SFX files copied:
-  - `assets/sfx/interface/drop_001.ogg`
-  - `assets/sfx/interface/click_001.ogg`
-  - `assets/sfx/impact/impactSoft_medium_000.ogg`
-- Audio-reactive treatment: Subtle luminance on card outlines responding smoothly to music RMS.
-
-## Hyperframes Instructions
-- Composition root: `<div id="root" data-composition-id="root" data-width="1920" data-height="1080">`
-- Set timeline with GSAP paused: true, registered on `window.__timelines["root"]`.
-- Add `class="clip"` to timed scene elements with appropriate `data-start` and `data-duration`.
-- Ensure all text has strong WCAG contrast (all text `#F2F2F2` or `#FFFFFF` on `#0A0A0A` or `#121212`, secondary text `#9A9A9A` strictly compliant with large/bold sizing).
-- Check with `npx hyperframes check` before rendering.
