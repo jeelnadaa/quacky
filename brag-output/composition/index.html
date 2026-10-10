@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quacky — Pure Offline Android Utilities</title>
+  <style>
+    @font-face {
+      font-family: 'Satoshi';
+      src: local('Satoshi'), url('https://cdn.fontshare.com/wf/TTX2Z3BF3P6Y5BQT3IV2VNOK6FL22KUT/7QYRJOI3JIMYHGY6CH7SOIFRQLZOLNJ6/KFIAZD4RUMEZIYV6FQ3T3GP5PDBDB6JY.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Satoshi';
+      src: local('Satoshi Medium'), url('https://cdn.fontshare.com/wf/P2LQKHE6KA6ZP4AAGN72KDWMHH6ZH3TA/ZC32TK2P7FPS5GFTL46EU6KQJA24ZYDB/7AHDUZ4A7LFLVFUIFSARGIWCRQJHISQP.woff2') format('woff2');
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Satoshi';
+      src: local('Satoshi Bold'), url('https://cdn.fontshare.com/wf/LAFFD4SDUCDVQEXFPDC7C53EQ4ZELWQI/PXCT3G6LO6ICM5I3NTYENYPWJAECAWDD/GHM6WVH6MILNYOOCXHXB5GTSGNTMGXZR.woff2') format('woff2');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Satoshi';
+      src: local('Satoshi Black'), url('https://cdn.fontshare.com/wf/NHPGVFYUXYXE33DZ75OIT4JFGHITX5PE/PSUTMASCDJTVPERDYJZPN23BVUFUCQIF/J64QX5IPOHK56I2KYUNBQ5M2XWZEYKYX.woff2') format('woff2');
+      font-weight: 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background-color: #0A0A0A;
+      color: #F2F2F2;
+      font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      width: 1920px;
+      height: 1080px;
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      background-color: #0A0A0A;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Ambient background vignette */
+    .bg-vignette {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 1080px;
+      background: radial-gradient(circle at 50% 50%, #161616 0%, #0A0A0A 75%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Top presentation label */
+    .header-label-bar {
+      position: absolute;
+      top: 48px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 5;
+      opacity: 0;
+    }
+
+    .header-tag {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #A5A5A5;
+    }
+
+    /* Centered Phone Mockup */
+    .phone-container {
+      position: relative;
+      z-index: 10;
+      width: 384px;
+      height: 780px;
+      background-color: #000000;
+      border: 10px solid #202020;
+      outline: 1px solid #333333;
+      border-radius: 46px;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Dynamic Island notch */
+    .phone-notch {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90px;
+      height: 22px;
+      background-color: #000000;
+      border-radius: 20px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+    }
+
+    .camera-lens {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #141414;
+      border: 1px solid #222222;
+    }
+
+    .speaker-slit {
+      width: 36px;
+      height: 4px;
+      border-radius: 2px;
+      background-color: #161616;
+    }
+
+    /* Inner phone screen viewport */
+    .phone-screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-color: #0A0A0A;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* System status bar inside phone */
+    .status-bar {
+      height: 40px;
+      padding: 10px 20px 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #F2F2F2;
+      z-index: 15;
+    }
+
+    .status-icons {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #F2F2F2;
+    }
+
+    /* Screen layers inside phone */
+    .screen-layer {
+      position: absolute;
+      top: 40px;
+      left: 0;
+      width: 100%;
+      height: calc(100% - 40px);
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      background-color: #0A0A0A;
+    }
+
+    /* --------------------------------------
+       SCREEN 1: Home Screen
+       -------------------------------------- */
+    .home-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 18px 8px 18px;
+    }
+
+    .home-title {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #F2F2F2;
+    }
+
+    .quacky-icon {
+      width: 28px;
+      height: 28px;
+    }
+
+    .quacky-icon path {
+      fill: #FFFFFF;
+    }
+
+    .search-box {
+      margin: 6px 16px 14px 16px;
+      height: 40px;
+      background-color: #121212;
+      border: 1px solid #262626;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 10px;
+      color: #5E5E5E;
+      font-size: 13px;
+    }
+
+    .search-icon-svg {
+      width: 15px;
+      height: 15px;
+      fill: #A5A5A5;
+    }
+
+    .search-placeholder {
+      color: #9A9A9A;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #A5A5A5;
+      padding: 0 18px 8px 18px;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 16px 14px 16px;
+    }
+
+    .app-tile {
+      background-color: #121212;
+      border: 1px solid #222222;
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 94px;
+      position: relative;
+    }
+
+    .tile-highlight {
+      border-color: #444444;
+      background-color: #181818;
+    }
+
+    .tile-icon-svg {
+      width: 20px;
+      height: 20px;
+      fill: #F2F2F2;
+    }
+
+    .tile-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #F2F2F2;
+      line-height: 1.2;
+    }
+
+    .tile-cat {
+      font-size: 10px;
+      color: #A5A5A5;
+      margin-top: 2px;
+    }
+
+    .cat-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0 16px;
+    }
+
+    .cat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #121212;
+      border: 1px solid #222222;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #F2F2F2;
+    }
+
+    .cat-count {
+      color: #A5A5A5;
+      font-size: 11px;
+    }
+
+    /* Tap gesture indicator */
+    .tap-indicator {
+      position: absolute;
+      top: 175px;
+      left: 70px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      border: 2px solid #FFFFFF;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 30;
+    }
+
+    /* --------------------------------------
+       SCREEN 2: AR Ruler
+       -------------------------------------- */
+    .tool-appbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      border-bottom: 1px solid #1C1C1C;
+    }
+
+    .appbar-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .appbar-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #F2F2F2;
+    }
+
+    .conf-chip {
+      font-size: 10px;
+      font-weight: 500;
+      color: #F2F2F2;
+      background-color: #181818;
+      border: 1px solid #2A2A2A;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .ar-viewfinder {
+      position: relative;
+      flex: 1;
+      background: radial-gradient(circle at 50% 45%, #181818 0%, #0A0A0A 80%);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 3D floor perspective grid lines */
+    .ar-grid {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(to bottom, transparent 60%, rgba(255, 255, 255, 0.05) 100%),
+        repeating-linear-gradient(0deg, transparent, transparent 38px, rgba(255, 255, 255, 0.04) 38px, rgba(255, 255, 255, 0.04) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 38px, rgba(255, 255, 255, 0.04) 38px, rgba(255, 255, 255, 0.04) 40px);
+      transform: perspective(300px) rotateX(45deg) translateY(40px);
+    }
+
+    /* Measurement line and anchors */
+    .ar-measurement-group {
+      position: absolute;
+      top: 40%;
+      left: 15%;
+      width: 70%;
+      height: 120px;
+    }
+
+    .ar-line {
+      position: absolute;
+      top: 50px;
+      left: 10px;
+      width: calc(100% - 20px);
+      height: 2px;
+      background: repeating-linear-gradient(90deg, #FFFFFF, #FFFFFF 6px, transparent 6px, transparent 10px);
+    }
+
+    .ar-anchor {
+      position: absolute;
+      top: 43px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: #FFFFFF;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    }
+
+    .anchor-left { left: 4px; }
+    .anchor-right { right: 4px; }
+
+    .ar-label-chip {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #141414;
+      border: 1px solid #333333;
+      padding: 6px 14px;
+      border-radius: 100px;
+      text-align: center;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    }
+
+    .ar-distance-num {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+
+    .ar-mode-bar {
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 12px;
+      background-color: #101010;
+      border-top: 1px solid #1C1C1C;
+    }
+
+    .mode-tab {
+      font-size: 11px;
+      font-weight: 500;
+      color: #A5A5A5;
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+
+    .mode-tab.active {
+      background-color: #222222;
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+
+    .shutter-bar {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #0A0A0A;
+      border-top: 1px solid #161616;
+    }
+
+    .shutter-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 3px solid #FFFFFF;
+      background-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .shutter-inner {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #FFFFFF;
+    }
+
+    /* --------------------------------------
+       SCREEN 3: Document Scanner
+       -------------------------------------- */
+    .doc-viewfinder {
+      position: relative;
+      flex: 1;
+      background-color: #121212;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .doc-sheet {
+      position: relative;
+      width: 240px;
+      height: 310px;
+      background-color: #1C1C1C;
+      border: 1px solid #333333;
+      border-radius: 6px;
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 10px;
+    }
+
+    .doc-line {
+      height: 6px;
+      background-color: #2E2E2E;
+      border-radius: 3px;
+    }
+
+    .doc-line.title {
+      width: 60%;
+      height: 10px;
+      background-color: #4A4A4A;
+      margin-bottom: 6px;
+    }
+
+    /* Quad crop polygon overlay */
+    .quad-overlay {
+      position: absolute;
+      inset: -8px;
+      pointer-events: none;
+    }
+
+    .quad-pin {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: #FFFFFF;
+      border: 2px solid #000000;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    }
+
+    .pin-tl { top: 0; left: 0; }
+    .pin-tr { top: 8px; right: 0; }
+    .pin-br { bottom: 4px; right: 6px; }
+    .pin-bl { bottom: 0; left: 4px; }
+
+    .quad-border {
+      position: absolute;
+      inset: 8px;
+      border: 2px dashed #FFFFFF;
+      border-radius: 4px;
+    }
+
+    .doc-actions-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px 16px;
+      background-color: #0E0E0E;
+      border-top: 1px solid #1C1C1C;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .filter-tab {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background-color: #181818;
+      border: 1px solid #282828;
+      color: #A5A5A5;
+    }
+
+    .filter-tab.active {
+      background-color: #FFFFFF;
+      color: #0A0A0A;
+      font-weight: 700;
+    }
+
+    .doc-btn-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .doc-btn {
+      flex: 1;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .btn-secondary {
+      background-color: #1A1A1A;
+      border: 1px solid #333333;
+      color: #F2F2F2;
+    }
+
+    .btn-primary {
+      background-color: #FFFFFF;
+      color: #0A0A0A;
+      border: none;
+    }
+
+    /* --------------------------------------
+       SCREEN 4: Outro Screen inside phone
+       -------------------------------------- */
+    .outro-screen-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .outro-phone-icon {
+      width: 72px;
+      height: 72px;
+      margin-bottom: 20px;
+    }
+
+    .outro-phone-icon path {
+      fill: #FFFFFF;
+    }
+
+    .outro-phone-title {
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+    }
+
+    .outro-phone-tagline {
+      font-size: 14px;
+      font-weight: 400;
+      color: #A5A5A5;
+      line-height: 1.4;
+      margin-bottom: 24px;
+    }
+
+    .outro-phone-badge {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #FFFFFF;
+      background-color: #1A1A1A;
+      border: 1px solid #333333;
+      padding: 8px 16px;
+      border-radius: 100px;
+    }
+
+    /* --------------------------------------
+       SUBTITLES BAR (Synced at bottom)
+       -------------------------------------- */
+    .subtitles-container {
+      position: absolute;
+      bottom: 44px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      background: rgba(18, 18, 18, 0.92);
+      border: 1px solid #2A2A2A;
+      border-radius: 100px;
+      padding: 12px 36px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8);
+      max-width: 960px;
+      text-align: center;
+    }
+
+    .subtitle-text {
+      font-size: 20px;
+      font-weight: 500;
+      color: #F2F2F2;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="root" data-composition-id="root" data-width="1920" data-height="1080">
+    <div class="bg-vignette"></div>
+
+    <!-- Audio Layers -->
+    <!-- Background music bed: volume 0.16, gentle fades -->
+    <audio id="bg-music" data-start="0" data-duration="20" data-track-index="10" data-volume="0.16" data-fade-in="0.4" data-fade-out="1.5" src="assets/music/happy-beats-business-moves-vol-12-by-ende-dot-app.mp3"></audio>
+
+    <!-- Narration track generated via Kokoro-82M -->
+    <audio id="vo" data-start="0.5" data-duration="16.85" data-track-index="3" data-volume="1" src="assets/voiceover.wav"></audio>
+
+    <!-- UI SFX cues aligned with transitions -->
+    <audio id="sfx-tap" data-start="3.8" data-duration="0.10" data-track-index="11" data-volume="0.60" src="assets/sfx/interface/click_001.ogg"></audio>
+    <audio id="sfx-ar" data-start="4.6" data-duration="0.11" data-track-index="12" data-volume="0.55" src="assets/sfx/interface/drop_001.ogg"></audio>
+    <audio id="sfx-doc" data-start="9.2" data-duration="0.10" data-track-index="13" data-volume="0.55" src="assets/sfx/interface/click_001.ogg"></audio>
+    <audio id="sfx-outro" data-start="13.5" data-duration="0.12" data-track-index="14" data-volume="0.45" src="assets/sfx/impact/impactSoft_medium_000.ogg"></audio>
+
+    <!-- Top Keynote Badge -->
+    <div class="header-label-bar">
+      <span class="header-tag">Quacky · 100% Offline Android Utility Suite</span>
+    </div>
+
+    <!-- Centered Phone Mockup -->
+    <div class="phone-container">
+      <div class="phone-notch">
+        <div class="camera-lens"></div>
+        <div class="speaker-slit"></div>
+      </div>
+
+      <div class="phone-screen">
+        <!-- Status Bar -->
+        <div class="status-bar">
+          <span>09:41</span>
+          <div class="status-icons">
+            <span style="font-size: 10px; color: #A5A5A5; margin-right: 4px;">✈</span>
+            <div class="status-dot"></div>
+            <div class="status-dot"></div>
+            <div class="status-dot"></div>
+            <span style="font-size: 10px; margin-left: 4px;">100%</span>
+          </div>
+        </div>
+
+        <!-- Tap indicator for simulated user action -->
+        <div class="tap-indicator"></div>
+
+        <!-- SCREEN 1: Real Home Screen (0.0s – 4.6s) -->
+        <div id="screen-home" class="screen-layer">
+          <div class="home-header">
+            <span class="home-title">Quacky</span>
+            <svg class="quacky-icon" viewBox="90 110 400 280">
+              <path d="M 120,280 C 100,245 140,220 180,235 C 215,248 245,220 275,180 C 290,160 305,130 340,130 C 385,130 415,165 415,205 C 415,210 414,216 412,222 L 470,236 C 478,238 480,248 474,254 L 412,282 C 395,330 345,365 290,370 C 210,375 135,340 120,280 Z" />
+            </svg>
+          </div>
+
+          <div class="search-box">
+            <svg class="search-icon-svg" viewBox="0 0 24 24">
+              <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+            <span class="search-placeholder">Search tools</span>
+          </div>
+
+          <div class="section-title">Pinned</div>
+          <div class="tools-grid">
+            <div class="app-tile tile-highlight" id="home-tile-ar">
+              <svg class="tile-icon-svg" viewBox="0 0 24 24">
+                <path d="M3 4v16h18V4H3zm16 14H5V6h14v12zm-3-8h-2v2h2v-2zm-6 0H8v2h2v-2zm3 4h-2v2h2v-2z"/>
+              </svg>
+              <div>
+                <div class="tile-name">AR Ruler</div>
+                <div class="tile-cat">Measure</div>
+              </div>
+            </div>
+
+            <div class="app-tile">
+              <svg class="tile-icon-svg" viewBox="0 0 24 24">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H6v-2h6v2zm4-4H6v-2h10v2zm0-4H6V7h10v2z"/>
+              </svg>
+              <div>
+                <div class="tile-name">Doc Scanner</div>
+                <div class="tile-cat">Scan &amp; Generate</div>
+              </div>
+            </div>
+
+            <div class="app-tile">
+              <svg class="tile-icon-svg" viewBox="0 0 24 24">
+                <path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H3V8h2v4h2V8h2v4h2V8h2v4h2V8h2v4h2V8h3v8z"/>
+              </svg>
+              <div>
+                <div class="tile-name">Screen Ruler</div>
+                <div class="tile-cat">Measure</div>
+              </div>
+            </div>
+
+            <div class="app-tile">
+              <svg class="tile-icon-svg" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+              </svg>
+              <div>
+                <div class="tile-name">Metadata</div>
+                <div class="tile-cat">Color &amp; Image</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-title">Categories</div>
+          <div class="cat-list">
+            <div class="cat-row">
+              <span>Measure</span>
+              <span class="cat-count">4 tools</span>
+            </div>
+            <div class="cat-row">
+              <span>Scan &amp; Generate</span>
+              <span class="cat-count">3 tools</span>
+            </div>
+            <div class="cat-row">
+              <span>Color &amp; Image</span>
+              <span class="cat-count">3 tools</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCREEN 2: Real AR Ruler (4.6s – 9.2s) -->
+        <div id="screen-ar" class="screen-layer">
+          <div class="tool-appbar">
+            <div class="appbar-left">
+              <span style="font-size: 16px; color: #F2F2F2;">‹</span>
+              <span class="appbar-title">AR Ruler</span>
+            </div>
+            <div class="conf-chip">●●● High</div>
+          </div>
+
+          <div class="ar-viewfinder">
+            <div class="ar-grid" data-layout-allow-overflow></div>
+
+            <div class="ar-measurement-group">
+              <div class="ar-line"></div>
+              <div class="ar-anchor anchor-left"></div>
+              <div class="ar-anchor anchor-right"></div>
+              <div class="ar-label-chip">
+                <div class="ar-distance-num">1.84 m</div>
+                <div style="font-size: 9px; color: #A5A5A5;">M1 · Distance</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ar-mode-bar">
+            <span class="mode-tab active">Distance</span>
+            <span class="mode-tab">Path</span>
+            <span class="mode-tab">Height</span>
+            <span class="mode-tab">Angle</span>
+          </div>
+
+          <div class="shutter-bar">
+            <div class="shutter-btn">
+              <div class="shutter-inner"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCREEN 3: Real Document Scanner (9.2s – 13.5s) -->
+        <div id="screen-doc" class="screen-layer">
+          <div class="tool-appbar">
+            <div class="appbar-left">
+              <span style="font-size: 16px; color: #F2F2F2;">‹</span>
+              <span class="appbar-title">Document Scanner</span>
+            </div>
+            <div class="conf-chip">Perspective Quad</div>
+          </div>
+
+          <div class="doc-viewfinder">
+            <div class="doc-sheet">
+              <div class="doc-line title"></div>
+              <div class="doc-line" style="width: 80%;"></div>
+              <div class="doc-line" style="width: 90%;"></div>
+              <div class="doc-line" style="width: 75%;"></div>
+              <div class="doc-line" style="width: 85%;"></div>
+              <div class="doc-line" style="width: 60%;"></div>
+
+              <!-- Perspective Quad Cropping overlay -->
+              <div class="quad-overlay">
+                <div class="quad-border"></div>
+                <div class="quad-pin pin-tl"></div>
+                <div class="quad-pin pin-tr"></div>
+                <div class="quad-pin pin-br"></div>
+                <div class="quad-pin pin-bl"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="doc-actions-bar">
+            <div class="filter-tabs">
+              <span class="filter-tab">Magic Color</span>
+              <span class="filter-tab active">B&amp;W</span>
+              <span class="filter-tab">Grayscale</span>
+            </div>
+            <div class="doc-btn-row">
+              <div class="doc-btn btn-secondary">Reset</div>
+              <div class="doc-btn btn-primary">Apply Crop</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SCREEN 4: Outro Lockup inside phone (13.5s – 20.0s) -->
+        <div id="screen-outro" class="screen-layer">
+          <div class="outro-screen-content">
+            <svg class="outro-phone-icon" viewBox="90 110 400 280">
+              <path d="M 120,280 C 100,245 140,220 180,235 C 215,248 245,220 275,180 C 290,160 305,130 340,130 C 385,130 415,165 415,205 C 415,210 414,216 412,222 L 470,236 C 478,238 480,248 474,254 L 412,282 C 395,330 345,365 290,370 C 210,375 135,340 120,280 Z" />
+            </svg>
+            <div class="outro-phone-title">Quacky</div>
+            <p class="outro-phone-tagline">Pure offline utility suite.<br>Zero network permissions.</p>
+            <div class="outro-phone-badge">100% Offline</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Synced Subtitles Bar at canvas bottom -->
+    <div class="subtitles-container">
+      <div id="subtitle" class="subtitle-text">Meet Quacky. A pure offline utility suite for Android.</div>
+    </div>
+
+  </div>
+
+  <!-- GSAP Animation Library -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    const easeOut = "power2.out";
+    const easeInOut = "power2.inOut";
+
+    // 0. Intro presentation entrance
+    tl.to(".header-label-bar", { opacity: 1, duration: 0.8, ease: easeOut }, 0.2);
+    tl.fromTo(".phone-container", 
+      { opacity: 0, y: 30, scale: 0.96 }, 
+      { opacity: 1, y: 0, scale: 1.0, duration: 1.0, ease: easeOut }, 
+      0.1
+    );
+
+    // ==========================================
+    // BEAT 1: Home Screen (0.0s – 4.6s)
+    // ==========================================
+    tl.set("#screen-home", { opacity: 1 }, 0);
+    tl.fromTo("#screen-home > div", 
+      { opacity: 0, y: 12 }, 
+      { opacity: 1, y: 0, duration: 0.6, stagger: 0.08, ease: easeOut }, 
+      0.3
+    );
+
+    // Simulated tap on AR Ruler tile at 3.65s
+    tl.fromTo(".tap-indicator", 
+      { opacity: 0, scale: 0.6 }, 
+      { opacity: 1, scale: 1.2, duration: 0.2, ease: "sine.out" }, 
+      3.65
+    );
+    tl.to(".tap-indicator", { opacity: 0, scale: 1.6, duration: 0.25, ease: "sine.in" }, 3.86);
+    tl.to("#home-tile-ar", { backgroundColor: "#262626", borderColor: "#555555", duration: 0.15 }, 3.75);
+
+    // Transition from Home to AR Ruler at 4.6s
+    tl.to("#screen-home", { opacity: 0, scale: 0.95, duration: 0.45, ease: easeInOut }, 4.3);
+
+    // Subtitle 1 (0.5s – 4.6s)
+    tl.set("#subtitle", { textContent: "Meet Quacky. A pure offline utility suite for Android." }, 0);
+
+    // ==========================================
+    // BEAT 2: AR Ruler Screen (4.6s – 9.2s)
+    // ==========================================
+    tl.fromTo("#screen-ar", 
+      { opacity: 0, scale: 1.05 }, 
+      { opacity: 1, scale: 1.0, duration: 0.5, ease: easeOut }, 
+      4.6
+    );
+
+    // Measurement line and pins animate
+    tl.fromTo(".ar-measurement-group", 
+      { opacity: 0, scale: 0.85 }, 
+      { opacity: 1, scale: 1.0, duration: 0.8, ease: easeOut }, 
+      4.9
+    );
+
+    // Subtle breathing pulse on the distance chip
+    tl.to(".ar-label-chip", { 
+      borderColor: "#555555", 
+      boxShadow: "0 0 20px rgba(255, 255, 255, 0.2)",
+      duration: 0.5, 
+      yoyo: true, 
+      repeat: 1, 
+      ease: "sine.inOut" 
+    }, 6.8);
+
+    // Transition to Document Scanner at 9.0s
+    tl.to("#screen-ar", { opacity: 0, scale: 0.95, duration: 0.45, ease: easeInOut }, 8.9);
+
+    // Subtitle 2 (4.7s – 9.0s)
+    tl.to(".subtitles-container", { opacity: 0.3, duration: 0.15, yoyo: true, repeat: 1 }, 4.6);
+    tl.set("#subtitle", { textContent: "Measure real spaces with precision AR spatial math." }, 4.7);
+
+    // ==========================================
+    // BEAT 3: Document Scanner Screen (9.2s – 13.5s)
+    // ==========================================
+    tl.fromTo("#screen-doc", 
+      { opacity: 0, scale: 1.05 }, 
+      { opacity: 1, scale: 1.0, duration: 0.5, ease: easeOut }, 
+      9.2
+    );
+
+    // Quad pins adjust slightly simulating active homography crop
+    tl.fromTo(".quad-overlay", 
+      { opacity: 0, scale: 0.95 }, 
+      { opacity: 1, scale: 1.0, duration: 0.7, ease: easeOut }, 
+      9.5
+    );
+
+    // Quad pin micro-movement
+    tl.to(".pin-tr", { x: -4, y: 6, duration: 0.6, ease: easeInOut }, 10.4);
+    tl.to(".pin-br", { x: -6, y: -4, duration: 0.6, ease: easeInOut }, 10.7);
+
+    // Transition to Outro at 13.3s
+    tl.to("#screen-doc", { opacity: 0, scale: 0.95, duration: 0.45, ease: easeInOut }, 13.2);
+
+    // Subtitle 3 (9.1s – 13.2s)
+    tl.to(".subtitles-container", { opacity: 0.3, duration: 0.15, yoyo: true, repeat: 1 }, 9.0);
+    tl.set("#subtitle", { textContent: "Scan and perspective-crop documents completely on-device." }, 9.1);
+
+    // ==========================================
+    // BEAT 4: Outro Lockup (13.5s – 20.0s)
+    // ==========================================
+    tl.fromTo("#screen-outro", 
+      { opacity: 0, scale: 1.05 }, 
+      { opacity: 1, scale: 1.0, duration: 0.6, ease: easeOut }, 
+      13.5
+    );
+
+    // Phone gently breathes in center with subtle elevation
+    tl.to(".phone-container", {
+      scale: 1.02,
+      duration: 1.2,
+      ease: easeOut
+    }, 13.8);
+
+    // Subtitle 4 (13.3s – 19.5s)
+    tl.to(".subtitles-container", { opacity: 0.3, duration: 0.15, yoyo: true, repeat: 1 }, 13.2);
+    tl.set("#subtitle", { textContent: "Zero network permissions. Your phone already has everything it needs." }, 13.3);
+
+    // Confident hold through 20.0s
+    tl.to(".phone-container", {
+      scale: 1.03,
+      duration: 5.0,
+      ease: "sine.out"
+    }, 15.0);
+    tl.to(".subtitles-container", {
+      opacity: 1,
+      duration: 4.5
+    }, 15.0);
+    tl.to(".subtitles-container", {
+      opacity: 0,
+      duration: 0.5,
+      ease: easeInOut
+    }, 19.5);
+
+    // Register root timeline for Hyperframes runtime control
+    window.__timelines = window.__timelines || {};
+    window.__timelines["root"] = tl;
+  </script>
+</body>
+</html>

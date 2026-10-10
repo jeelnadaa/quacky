@@ -1,0 +1,1 @@
+We built Quacky: 15+ offline Android tools with zero ads and zero network permissions. Because your ruler doesn't need to phone home.
